@@ -1,0 +1,20 @@
+{% extends 'redhat_access/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Search" %}{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("Search") %}
+{% endblock page_header %}
+
+{% block redhat_access_main %}
+<form id="rh-search" style="padding-left: 1.3%;">
+    <fieldset>
+        <label>Red Hat Access: Search</label>
+            <input type="text" id="rhSearchStr" name="searchString" class="input-xxlarge" placeholder="Search Articles and Solutions"/>
+            <button type="submit" class="btn btn-small btn-primary" style="vertical-align: top;">Search</button>
+    </fieldset>
+</form>
+
+<div id='solutions' style="width: 50%">
+</div>
+{% endblock %}
