@@ -115,24 +115,9 @@ function fetchSolutions(suggestions) {
 
 function searchResults(suggestions) {
     $("#solutions").on("click", function () {
-        $(".collapse").collapse('hide'); 
+        $(".collapse").collapse('hide');
     });
     suggestions.forEach(fetchSolution);
-}
-
-function searchResult(element, index, array) {
-    var fetchSolutionText = $.extend({}, baseAjaxParams, {
-        dataType: 'json',
-        contentType: 'application/json',
-        url: element.uri,
-        type: "GET",
-        method: "GET",
-        success: function (response) {
-            appendSolutionText(response, index);
-        }
-    });
-    $.ajax(fetchSolutionText);
-
 }
 
 function fetchSolution(element, index, array) {
@@ -141,7 +126,7 @@ function fetchSolution(element, index, array) {
                                         + "<a class='accordion-toggle' data-toggle='collapse' "
                                         + "data-parent='solnaccordion' href='#soln" + index + "'>"
                                         + element.value + "</a></div>";
-    var soln_block = "<div id='soln" + index + "' class='accordion-body collapse'>"
+    var soln_block = "<div id='soln" + index + "' class='accordion-body collapse in'>"
                      + "<div id='soln" + index + "-inner' class='accordion-inner'></div></div></div>"
 
     if (document.getElementById('solution') !== null) {
@@ -162,6 +147,7 @@ function fetchSolution(element, index, array) {
         }
     });
     $('#solutions').append(accordion_header);
+    $(".collapse").collapse('hide');
     $.ajax(fetchSolutionText);
 }
 
