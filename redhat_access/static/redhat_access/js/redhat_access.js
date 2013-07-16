@@ -16,10 +16,6 @@
         contentType : 'application/json',
         data : {}, 
         dataType : 'jsonp'
-        /*beforeSend: function (request) {
-            request.setRequestHeader("Authorization", sessionStorage.authToken);
-            request.setRequestHeader("X-Omit", "WWW-Authenticate");
-        }*/
     };  
 
 var loggedIn = false;
@@ -51,13 +47,6 @@ horizon.addInitFunction(function () {
         evt.preventDefault();
     });
 
-    /*$(document).on('submit', '#loginForm', function (evt) {
-        evt.stopImmediatePropagation();
-        doLogin();
-        return false;
-        evt.preventDefault();
-    });*/
-
     $(document).on('submit', '#rh-search', function (evt) {
         doSearch($('#rhSearchStr').val());
         evt.preventDefault();
@@ -65,7 +54,7 @@ horizon.addInitFunction(function () {
 });
 
 function doSearch(searchStr) {
-    getSolutionsFromText(searchStr);
+    getSolutionsFromText(searchStr, searchResults);
 }
 
 function getSelectedText() {
@@ -93,10 +82,11 @@ function analyzeLogData() {
  $('pre.logs').css('width', '50%');
  $('pre.logs').css('float', 'left');
  $('pre.logs').after("<div id='solutions' style='width: 47%; float: right;'><div id='diag-inprog' style='position: relative; left: 50%;'><img src='/static/redhat_access/img/spinner.gif'></div></div>");
- getSolutionsFromText(data);
+ $('#solutions').append("<div class='accordion' id='solnaccordion'></div>");
+ getSolutionsFromText(data, fetchSolutions);
 }
 
-function getSolutionsFromText(data) {
+function getSolutionsFromText(data, handleSuggestions) {
     var getSolutionsFromTextParms = $.extend( {}, baseAjaxParams, {
       url: 'https://' + strata_hostname + '/rs/problems?limit=10',
       data: data,
@@ -105,10 +95,10 @@ function getSolutionsFromText(data) {
       dataType: 'json',
       contentType: 'application/json',
       success: function(response_body) {
+        //Get the array of suggestions
         var suggestions = response_body.source_or_link_or_problem[2].source_or_link;
-        $('#solutions').append("<div class='accordion' id='solnaccordion'></div>");
         $('#diag-inprog').hide();
-        suggestions.forEach(fetchSolutions);
+        handleSuggestions(suggestions);
     },
     error: function(response) {
       horizon.clearErrorMessages();
@@ -119,15 +109,49 @@ function getSolutionsFromText(data) {
     $.ajax(getSolutionsFromTextParms);
 }
 
-function fetchSolutions(element, index, array) {
+function fetchSolutions(suggestions) {
+    suggestions.forEach(fetchSolution);
+}
+
+function searchResults(suggestions) {
+    $("#solutions").on("click", function () {
+        $(".collapse").collapse('hide'); 
+    });
+    suggestions.forEach(fetchSolution);
+}
+
+function searchResult(element, index, array) {
+    var fetchSolutionText = $.extend({}, baseAjaxParams, {
+        dataType: 'json',
+        contentType: 'application/json',
+        url: element.uri,
+        type: "GET",
+        method: "GET",
+        success: function (response) {
+            appendSolutionText(response, index);
+        }
+    });
+    $.ajax(fetchSolutionText);
+
+}
+
+function fetchSolution(element, index, array) {
     var accordion_header = "<div class='accordion-group'>"
                                         + "<div class='accordion-heading'>"
                                         + "<a class='accordion-toggle' data-toggle='collapse' "
                                         + "data-parent='solnaccordion' href='#soln" + index + "'>"
-                                        + element.value + "</a></div>"
-                                        + "<div id='soln" + index + "' class='accordion-body collapse'>"
-                                        + "<div id='soln" + index + "-inner' class='accordion-inner'></div></div></div>"
-    var fetchSolution = $.extend({}, baseAjaxParams, {
+                                        + element.value + "</a></div>";
+    var soln_block = "<div id='soln" + index + "' class='accordion-body collapse'>"
+                     + "<div id='soln" + index + "-inner' class='accordion-inner'></div></div></div>"
+
+    if (document.getElementById('solution') !== null) {
+        $('#solution').append(soln_block);
+    }
+    else {
+        accordion_header = accordion_header + soln_block;
+    }
+
+    var fetchSolutionText = $.extend({}, baseAjaxParams, {
         dataType: 'json',
         contentType: 'application/json',
         url: element.uri,
@@ -138,7 +162,7 @@ function fetchSolutions(element, index, array) {
         }
     });
     $('#solutions').append(accordion_header);
-    $.ajax(fetchSolution);
+    $.ajax(fetchSolutionText);
 }
 
 function appendSolutionText(response, index) {
