@@ -18,7 +18,6 @@
         dataType : 'jsonp'
     };  
 
-var loggedIn = false;
 
 horizon.addInitFunction(function () {
     // Set up stuff for RHN/Strata queries
@@ -29,11 +28,9 @@ horizon.addInitFunction(function () {
         success : function (auth) {
             'use strict';
             if (auth.authorized) {
-                $('#logged-in').html("<h5><a style='color: green' href='http://access.redhat.com'>Logged in to RHN as " + auth.name + "</a></h5>");
-                loggedIn = true;
+                $('#logged-in').html("<h5><a style='color: #51a351;' href='http://access.redhat.com'>Logged in to RHN as " + auth.name + "</a></h5>");
             } else {
-                $('#logged-in').html("<h4><a style='color: red' href='https://access.redhat.com'>Not logged in to RHN, please login and refresh this page</a></h4>");
-                loggedIn = false;
+                $('#logged-in').html("<h4><a style='color: #bd362f;' href='https://access.redhat.com'>Not logged in to RHN, please login and refresh this page</a></h4>");
             }
         }
     }, baseAjaxParams);
