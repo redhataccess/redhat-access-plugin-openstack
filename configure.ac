@@ -33,7 +33,7 @@ AC_CONFIG_AUX_DIR([.])
 dnl AC_CONFIG_SRCDIR([src/engine-image-uploader.8])
 AC_CONFIG_MACRO_DIR([m4])
 AC_USE_SYSTEM_EXTENSIONS
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([1.9 tar-pax])
 AM_GNU_GETTEXT_VERSION([0.17])
 AM_GNU_GETTEXT([external])
 
@@ -75,6 +75,9 @@ AC_CONFIG_FILES([
 	redhat-support-plugin-openstack.spec
 	src/Makefile
 	src/redhat_support_plugin_openstack/Makefile
+	src/redhat_support_plugin_openstack/log/Makefile
+	src/redhat_support_plugin_openstack/log/workflows/Makefile
+	src/redhat_support_plugin_openstack/search/Makefile
 ])
 AC_OUTPUT
 

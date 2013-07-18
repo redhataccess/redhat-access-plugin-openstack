@@ -67,6 +67,7 @@ clean-local:
 	rm -fr "$(TMPREPOS)"
 
 maintainer-clean-local:
+	rm -f redhat-support*.tar.gz
 	sed '/^$$/d' "$(srcdir)/m4/.gitignore" | while read f; do \
 		rm -f $(srcdir)/m4/$$f; \
 	done

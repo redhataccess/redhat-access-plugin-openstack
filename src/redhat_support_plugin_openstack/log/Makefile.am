@@ -22,13 +22,13 @@ MAINTAINERCLEANFILES = \
 	$(NULL)
 
 EXTRA_DIST = \
-	static\
 	templates
 	$(NULL)
 
-SUBDIRS = log search 
+SUBDIRS = workflows
 
-dist_rhsupporttoollib_PYTHON = \
+logdir=$(rhsupporttoollibdir)/log
+dist_log_PYTHON = \
 	*.py \
 	$(NULL)
 

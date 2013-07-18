@@ -208,8 +208,8 @@ class SetInstanceDetailsAction(workflows.Action):
                                               "source and should contain "
                                               "the operating system."))
         else:  # Boot from image / image_snapshot
-            if source == 'image_id' and not \
-                 filter(lambda x: x[0] != '', self.fields['image_id'].choices):
+            if source == 'image_id' and not filter(
+                    lambda x: x[0] != '', self.fields['image_id'].choices):
                 raise forms.ValidationError(_("There are no image sources "
                                               "available; you must first "
                                               "create an image before "
@@ -276,8 +276,8 @@ class SetInstanceDetailsAction(workflows.Action):
         try:
             extra['usages'] = quotas.tenant_quota_usages(self.request)
             extra['usages_json'] = json.dumps(extra['usages'])
-            flavors = json.dumps([f._info for f in
-                                       api.nova.flavor_list(self.request)])
+            flavors = json.dumps(
+                [f._info for f in api.nova.flavor_list(self.request)])
             extra['flavors'] = flavors
         except:
             exceptions.handle(self.request,
@@ -318,15 +318,15 @@ class SetAccessControlsAction(workflows.Action):
                                                    "authentication."),
                                        add_item_link=KEYPAIR_IMPORT_URL)
     admin_pass = forms.RegexField(
-            label=_("Admin Pass"),
-            required=False,
-            widget=forms.PasswordInput(render_value=False),
-            regex=validators.password_validator(),
-            error_messages={'invalid': validators.password_validator_msg()})
+        label=_("Admin Pass"),
+        required=False,
+        widget=forms.PasswordInput(render_value=False),
+        regex=validators.password_validator(),
+        error_messages={'invalid': validators.password_validator_msg()})
     confirm_admin_pass = forms.CharField(
-            label=_("Confirm Admin Pass"),
-            required=False,
-            widget=forms.PasswordInput(render_value=False))
+        label=_("Confirm Admin Pass"),
+        required=False,
+        widget=forms.PasswordInput(render_value=False))
     groups = forms.MultipleChoiceField(label=_("Security Groups"),
                                        required=True,
                                        initial=["default"],
@@ -378,8 +378,11 @@ class SetAccessControlsAction(workflows.Action):
 class SetAccessControls(workflows.Step):
     action_class = SetAccessControlsAction
     depends_on = ("project_id", "user_id")
-    contributes = ("keypair_id", "security_group_ids",
-            "admin_pass", "confirm_admin_pass")
+    contributes = (
+        "keypair_id",
+        "security_group_ids",
+        "admin_pass",
+        "confirm_admin_pass")
 
     def contribute(self, data, context):
         if data:

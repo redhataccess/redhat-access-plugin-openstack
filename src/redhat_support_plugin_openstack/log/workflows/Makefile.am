@@ -21,14 +21,10 @@ MAINTAINERCLEANFILES = \
 	$(srcdir)/Makefile.in \
 	$(NULL)
 
-EXTRA_DIST = \
-	static\
-	templates
-	$(NULL)
+SUBDIRS =
 
-SUBDIRS = log search 
-
-dist_rhsupporttoollib_PYTHON = \
+workflowsdir=$(rhsupporttoollibdir)/log/workflows
+dist_workflows_PYTHON = \
 	*.py \
 	$(NULL)
 

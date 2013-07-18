@@ -32,7 +32,7 @@ from horizon.utils.filters import replace_underscores
 
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.access_and_security \
-        .floating_ips.workflows import IPAssociationWorkflow
+    .floating_ips.workflows import IPAssociationWorkflow
 from .tabs import InstanceDetailTabs, LogTab, ConsoleTab
 
 

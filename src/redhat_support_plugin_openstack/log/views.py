@@ -31,13 +31,14 @@ class IndexView(tables.DataTableView):
 
     def get_data(self):
         marker = self.request.GET.get(
-                        InstancesTable._meta.pagination_param, None)
+            InstancesTable._meta.pagination_param,
+            None)
         # Gather our instances
         try:
             instances, self._more = api.nova.server_list(
-                                        self.request,
-                                        search_opts={'marker': marker,
-                                                     'paginate': True})
+                self.request,
+                search_opts={'marker': marker,
+                             'paginate': True})
         except:
             self._more = False
             instances = []
@@ -51,8 +52,8 @@ class IndexView(tables.DataTableView):
                 flavors = []
                 exceptions.handle(self.request, ignore=True)
 
-            full_flavors = SortedDict([(str(flavor.id), flavor)
-                                        for flavor in flavors])
+            full_flavors = SortedDict(
+                [(str(flavor.id), flavor) for flavor in flavors])
             # Loop through instances to get flavor info.
             for instance in instances:
                 try:
@@ -69,6 +70,7 @@ class IndexView(tables.DataTableView):
                     exceptions.handle(self.request, msg)
         return instances
 
+
 class LogView(views.APIView):
     template_name = 'redhat_support_plugin_openstack/log/view.html'
 
@@ -83,4 +85,3 @@ class LogView(views.APIView):
             data = _('Unable to get log for instance "%s".') % instance_id
             exceptions.handle(request, ignore=True)
         return {"console_log": data}
-
