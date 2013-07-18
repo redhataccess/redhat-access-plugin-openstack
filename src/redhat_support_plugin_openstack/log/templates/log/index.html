@@ -1,0 +1,13 @@
+{% extends 'redhat_support_plugin_openstack/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Log" %}{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("Log") %}
+{% endblock page_header %}
+
+{% block redhat_support_plugin_openstack_main %}
+{{ table.render }}
+{% endblock %}
+
+
