@@ -77,7 +77,17 @@ AC_CONFIG_FILES([
 	src/redhat_support_plugin_openstack/Makefile
 	src/redhat_support_plugin_openstack/log/Makefile
 	src/redhat_support_plugin_openstack/log/workflows/Makefile
+	src/redhat_support_plugin_openstack/log/templates/Makefile
+	src/redhat_support_plugin_openstack/log/templates/log/Makefile
 	src/redhat_support_plugin_openstack/search/Makefile
+	src/redhat_support_plugin_openstack/search/templates/Makefile
+	src/redhat_support_plugin_openstack/search/templates/search/Makefile
+	src/redhat_support_plugin_openstack/static/Makefile
+	src/redhat_support_plugin_openstack/static/redhat_support_plugin_openstack/Makefile
+	src/redhat_support_plugin_openstack/static/redhat_support_plugin_openstack/img/Makefile
+	src/redhat_support_plugin_openstack/static/redhat_support_plugin_openstack/js/Makefile
+	src/redhat_support_plugin_openstack/templates/Makefile
+	src/redhat_support_plugin_openstack/templates/redhat_support_plugin_openstack/Makefile
 ])
 AC_OUTPUT
 

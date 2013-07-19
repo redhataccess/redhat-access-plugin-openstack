@@ -24,16 +24,15 @@ MAINTAINERCLEANFILES = \
 EXTRA_DIST = \
 	$(NULL)
 
-SUBDIRS = log search static templates
+SUBDIRS =
 
-dist_rhsupporttoollib_PYTHON = \
-	*.py \
+jsdir=$(rhsupporttoollibdir)/static/redhat_support_plugin_openstack/js
+dist_js_DATA = \
+	*.js \
 	$(NULL)
 
 all-local: \
-	python-syntax-check \
 	$(NULL)
 
 clean-local: \
-	python-clean \
 	$(NULL)

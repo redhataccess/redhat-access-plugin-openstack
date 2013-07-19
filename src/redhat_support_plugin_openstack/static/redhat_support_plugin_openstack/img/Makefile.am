@@ -24,16 +24,15 @@ MAINTAINERCLEANFILES = \
 EXTRA_DIST = \
 	$(NULL)
 
-SUBDIRS = log search static templates
+SUBDIRS =
 
-dist_rhsupporttoollib_PYTHON = \
-	*.py \
+imgdir=$(rhsupporttoollibdir)/static/redhat_support_plugin_openstack/img
+dist_img_DATA = \
+	*.gif \
 	$(NULL)
 
 all-local: \
-	python-syntax-check \
 	$(NULL)
 
 clean-local: \
-	python-clean \
 	$(NULL)

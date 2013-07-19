@@ -24,16 +24,15 @@ MAINTAINERCLEANFILES = \
 EXTRA_DIST = \
 	$(NULL)
 
-SUBDIRS = log search static templates
+SUBDIRS =
 
-dist_rhsupporttoollib_PYTHON = \
-	*.py \
+htmldir=$(rhsupporttoollibdir)/log/templates/log
+dist_html_DATA = \
+	*.html \
 	$(NULL)
 
 all-local: \
-	python-syntax-check \
 	$(NULL)
 
 clean-local: \
-	python-clean \
 	$(NULL)
