@@ -22,9 +22,9 @@ MAINTAINERCLEANFILES = \
 	$(NULL)
 
 EXTRA_DIST = \
+	templates
 	$(NULL)
 
-SUBDIRS = #workflows templates
 
 searchdir=$(rhsupporttoollibdir)/search
 dist_search_PYTHON = \
