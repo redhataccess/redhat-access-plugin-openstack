@@ -10,7 +10,6 @@ from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.core.context_processors import csrf
-from redhat_access_lib.api import API
 
 from horizon import exceptions
 from horizon import forms
