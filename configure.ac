@@ -23,7 +23,7 @@ define([VERSION_FIX], [0])
 define([VERSION_NUMBER], VERSION_MAJOR[.]VERSION_MINOR[.]VERSION_FIX)
 define([VERSION_SUFFIX], [_master])
 
-AC_INIT([redhat-support-plugin-openstack], VERSION_NUMBER[]VERSION_SUFFIX)
+AC_INIT([redhat-access-plugin-openstack], VERSION_NUMBER[]VERSION_SUFFIX)
 PACKAGE_RPM_VERSION="VERSION_NUMBER"
 PACKAGE_RPM_RELEASE="3"
 AC_SUBST([PACKAGE_RPM_VERSION])
@@ -66,28 +66,28 @@ esac
 AX_PYTHON_MODULE([lxml])
 AX_PYTHON_MODULE([dateutil])
 
-rhsupporttoollibdir="\$(pythondir)/redhat_support_plugin_openstack"
+rhsupporttoollibdir="\$(pythondir)/redhat_access_plugin_openstack"
 AC_SUBST([rhsupporttoollibdir])
 AM_CONDITIONAL([PYTHON_SYNTAX_CHECK], [test "${enable_python_syntax_check}" = "yes"])
 
 AC_CONFIG_FILES([
 	Makefile
-	redhat-support-plugin-openstack.spec
+	redhat-access-plugin-openstack.spec
 	src/Makefile
-	src/redhat_support_plugin_openstack/Makefile
-	src/redhat_support_plugin_openstack/log/Makefile
-	src/redhat_support_plugin_openstack/log/workflows/Makefile
-	src/redhat_support_plugin_openstack/log/templates/Makefile
-	src/redhat_support_plugin_openstack/log/templates/log/Makefile
-	src/redhat_support_plugin_openstack/search/Makefile
-	src/redhat_support_plugin_openstack/search/templates/Makefile
-	src/redhat_support_plugin_openstack/search/templates/search/Makefile
-	src/redhat_support_plugin_openstack/static/Makefile
-	src/redhat_support_plugin_openstack/static/redhat_support_plugin_openstack/Makefile
-	src/redhat_support_plugin_openstack/static/redhat_support_plugin_openstack/img/Makefile
-	src/redhat_support_plugin_openstack/static/redhat_support_plugin_openstack/js/Makefile
-	src/redhat_support_plugin_openstack/templates/Makefile
-	src/redhat_support_plugin_openstack/templates/redhat_support_plugin_openstack/Makefile
+	src/redhat_access_plugin_openstack/Makefile
+	src/redhat_access_plugin_openstack/log/Makefile
+	src/redhat_access_plugin_openstack/log/workflows/Makefile
+	src/redhat_access_plugin_openstack/log/templates/Makefile
+	src/redhat_access_plugin_openstack/log/templates/log/Makefile
+	src/redhat_access_plugin_openstack/search/Makefile
+	src/redhat_access_plugin_openstack/search/templates/Makefile
+	src/redhat_access_plugin_openstack/search/templates/search/Makefile
+	src/redhat_access_plugin_openstack/static/Makefile
+	src/redhat_access_plugin_openstack/static/redhat_access_plugin_openstack/Makefile
+	src/redhat_access_plugin_openstack/static/redhat_access_plugin_openstack/img/Makefile
+	src/redhat_access_plugin_openstack/static/redhat_access_plugin_openstack/js/Makefile
+	src/redhat_access_plugin_openstack/templates/Makefile
+	src/redhat_access_plugin_openstack/templates/redhat_access_plugin_openstack/Makefile
 ])
 AC_OUTPUT
 

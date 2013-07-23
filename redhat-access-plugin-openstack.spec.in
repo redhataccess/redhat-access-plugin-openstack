@@ -26,7 +26,7 @@ Vendor:         Red Hat, Inc.
 Group:          Development/Libraries
 License:        ASL 2.0
 URL:            https://api.access.redhat.com
-Source0:        http://people.redhat.com/kroberts/projects/redhat-support-plugin-openstack/%{package_name}-%{package_version}.tar.gz
+Source0:        http://people.redhat.com/kroberts/projects/redhat-access-plugin-openstack/%{package_name}-%{package_version}.tar.gz
 
 BuildRequires: python2-devel
 BuildRequires: python-setuptools
@@ -43,8 +43,8 @@ BuildRoot: %{_topdir}/BUILDROOT/%{name}-%{version}-%{release}.%{_arch}
 %endif
 
 %description
-This package contains the Red Hat Support OpenStack Horizon Plugin.  
-The Red Hat Support OpenStack Plugin provides web based access to Red Hat's subscriber services.  
+This package contains the Red Hat Access OpenStack Horizon Plugin.
+The Red Hat Access OpenStack Plugin provides web based access to Red Hat's subscriber services.
 These services include, but are not limited to, access to knowledge-base solutions, 
 case management, automated diagnostic services, etc.
 
@@ -63,7 +63,7 @@ make %{?_smp_mflags} install DESTDIR="%{buildroot}"
 
 %files
 %doc AUTHORS 
-%{python_sitelib}/redhat_support_plugin_openstack/
+%{python_sitelib}/redhat_access_plugin_openstack/
 
 %changelog
 

@@ -26,9 +26,9 @@ EXTRA_DIST = \
 
 SUBDIRS =
 
-imgdir=$(rhsupporttoollibdir)/static/redhat_support_plugin_openstack/img
-dist_img_DATA = \
-	*.gif \
+jsdir=$(rhsupporttoollibdir)/static/redhat_access_plugin_openstack/js
+dist_js_DATA = \
+	*.js \
 	$(NULL)
 
 all-local: \

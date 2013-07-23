@@ -24,4 +24,4 @@ MAINTAINERCLEANFILES = \
 EXTRA_DIST = \
 	$(NULL)
 
-SUBDIRS = redhat_support_plugin_openstack
+SUBDIRS = redhat_access_plugin_openstack

@@ -78,7 +78,7 @@ function analyzeLogData() {
 
  $('pre.logs').css('width', '50%');
  $('pre.logs').css('float', 'left');
- $('pre.logs').after("<div id='solutions' style='width: 47%; float: right;'><div id='diag-inprog' style='position: relative; left: 50%;'><img src='/static/redhat_support_plugin_openstack/img/spinner.gif'></div></div>");
+ $('pre.logs').after("<div id='solutions' style='width: 47%; float: right;'><div id='diag-inprog' style='position: relative; left: 50%;'><img src='/static/redhat_access_plugin_openstack/img/spinner.gif'></div></div>");
  $('#solutions').append("<div class='accordion' id='solnaccordion'></div>");
  getSolutionsFromText(data, fetchSolutions);
 }

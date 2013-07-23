@@ -41,7 +41,7 @@ SUBDIRS = \
 	$(NULL)
 
 dist_noinst_DATA = \
-	redhat-support-plugin-openstack.spec \
+	redhat-access-plugin-openstack.spec \
 	$(NULL)
 
 dist_noinst_SCRIPTS = \
@@ -67,7 +67,7 @@ clean-local:
 	rm -fr "$(TMPREPOS)"
 
 maintainer-clean-local:
-	rm -f redhat-support*.tar.gz
+	rm -f redhat-access*.tar.gz
 	sed '/^$$/d' "$(srcdir)/m4/.gitignore" | while read f; do \
 		rm -f $(srcdir)/m4/$$f; \
 	done

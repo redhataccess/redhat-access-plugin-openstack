@@ -1,4 +1,4 @@
-{% extends 'redhat_support_plugin_openstack/base.html' %}
+{% extends 'redhat_access_plugin_openstack/base.html' %}
 {% load i18n %}
 {% block title %}{% trans "Search" %}{% endblock %}
 
@@ -6,7 +6,7 @@
   {% include "horizon/common/_page_header.html" with title=_("Search") %}
 {% endblock page_header %}
 
-{% block redhat_support_plugin_openstack_main %}
+{% block redhat_access_plugin_openstack_main %}
 <form id="rh-search">
     <fieldset>
         <label>Red Hat Access: Search</label>

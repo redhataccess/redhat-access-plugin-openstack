@@ -10,7 +10,7 @@ from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.core.context_processors import csrf
-from redhat_support_lib.api import API
+from redhat_access_lib.api import API
 
 from horizon import exceptions
 from horizon import forms
@@ -24,7 +24,7 @@ from .tables import InstancesTable
 
 class IndexView(tables.DataTableView):
     table_class = InstancesTable
-    template_name = 'redhat_support_plugin_openstack/log/index.html'
+    template_name = 'redhat_access_plugin_openstack/log/index.html'
 
     def has_more_data(self, table):
         return self._more
@@ -72,7 +72,7 @@ class IndexView(tables.DataTableView):
 
 
 class LogView(views.APIView):
-    template_name = 'redhat_support_plugin_openstack/log/view.html'
+    template_name = 'redhat_access_plugin_openstack/log/view.html'
 
     def get_data(self, request, *args, **kwargs):
         instance_id = request.GET.get('id', None)
