@@ -28,9 +28,9 @@ horizon.addInitFunction(function () {
         success : function (auth) {
             'use strict';
             if (auth.authorized) {
-                $('#logged-in').html("<h5><a style='color: #51a351;' href='http://access.redhat.com'>Logged in to RHN as " + auth.name + "</a></h5>");
+                $('#logged-in').html("<h5><a style='color: #51a351;' href='http://access.redhat.com'>Logged in to the Red Hat Customer Portal as " + auth.name + "</a></h5>");
             } else {
-                $('#logged-in').html("<h4><a style='color: #bd362f;' href='https://access.redhat.com'>Not logged in to RHN, please login and refresh this page</a></h4>");
+                $('#logged-in').html("<h4><a style='color: #bd362f;' href='https://access.redhat.com'>Not logged in to the Red Hat Customer Portal, please login and refresh this page</a></h4>");
             }
         }
     }, baseAjaxParams);
