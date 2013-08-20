@@ -15,8 +15,8 @@
 # limitations under the License.
 #
 
-%global	        package_version @PACKAGE_VERSION@
-%global	        package_name @PACKAGE_NAME@
+%global         package_version @PACKAGE_VERSION@
+%global         package_name @PACKAGE_NAME@
 
 Name:           %{package_name}
 Version:        @PACKAGE_RPM_VERSION@
@@ -73,6 +73,9 @@ make %{?_smp_mflags} install DESTDIR="%{buildroot}"
 #Remove ourselves from the INSTALLED_APPS section for openstack_dashboard
 #TODO: Need to make this discoverable, or at least what real rhos will do
 sed "/^.*redhat_access_plugin_openstack.*$/ d" /opt/stack/horizon/openstack_dashboard/settings.py
+
+%triggerin -- openstack-dashboard
+sed -e "s/INSTALLED_APPS = (/INSTALLED_APPS = ( \n    \'redhat_access_plugin_openstack\'\,/" /opt/stack/horizon/openstack_dashboard/settings.py
 
 %files
 %doc AUTHORS 
