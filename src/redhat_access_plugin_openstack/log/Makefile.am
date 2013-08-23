@@ -24,7 +24,7 @@ MAINTAINERCLEANFILES = \
 EXTRA_DIST = \
 	$(NULL)
 
-SUBDIRS = templates workflows
+SUBDIRS = templates
 
 logdir=$(rhsupporttoollibdir)/log
 dist_log_PYTHON = \

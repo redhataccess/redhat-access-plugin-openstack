@@ -76,7 +76,6 @@ AC_CONFIG_FILES([
 	src/Makefile
 	src/redhat_access_plugin_openstack/Makefile
 	src/redhat_access_plugin_openstack/log/Makefile
-	src/redhat_access_plugin_openstack/log/workflows/Makefile
 	src/redhat_access_plugin_openstack/log/templates/Makefile
 	src/redhat_access_plugin_openstack/log/templates/log/Makefile
 	src/redhat_access_plugin_openstack/search/Makefile
