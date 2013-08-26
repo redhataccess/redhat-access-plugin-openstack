@@ -32,7 +32,6 @@ class LogLink(tables.LinkAction):
     classes = ("btn-log",)
 
     def allowed(self, request, instance=None):
-        print instance.id
         self.instance_id = instance.id
         return instance.status in tableFile.ACTIVE_STATES \
             and not tableFile.is_deleting(instance)
@@ -62,7 +61,6 @@ class LogView(views.APIView):
 
     def get_data(self, request, *args, **kwargs):
         instance_id = request.GET.get('id', None)
-        print getpass.getuser()
         try:
             data = api.nova.server_console_output(request,
                                                   instance_id,
