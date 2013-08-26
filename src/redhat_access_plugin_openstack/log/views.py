@@ -13,61 +13,48 @@ from django.core.context_processors import csrf
 
 from horizon import exceptions
 from horizon import forms
-from horizon import tabs
 from horizon import tables
 
 from openstack_dashboard import api
-from .tabs import InstanceDetailTabs
-from .tables import InstancesTable
+from openstack_dashboard.dashboards.project.instances \
+    import tables as tableFile
+from openstack_dashboard.dashboards.project.instances.tables \
+    import InstancesTable
+from openstack_dashboard.dashboards.project.instances.views \
+    import IndexView as InstanceView
 
 
-class IndexView(tables.DataTableView):
-    table_class = InstancesTable
+class LogLink(tables.LinkAction):
+    name = "log"
+    verbose_name = _("View Log")
+    url = "view"
+    instance_id = None
+    classes = ("btn-log",)
+
+    def allowed(self, request, instance=None):
+        print instance.id
+        self.instance_id = instance.id
+        return instance.status in tableFile.ACTIVE_STATES \
+            and not tableFile.is_deleting(instance)
+
+    def get_link_url(self, datum):
+        base_url = super(LogLink, self).get_link_url(datum)
+        return "?id=".join([base_url, self.instance_id])
+
+
+class ListTable(InstancesTable):
+    pass
+
+    class Meta:
+        name = "instances"
+        verbose_name = "Instances"
+        table_actions = (tableFile.InstancesFilterAction,)
+        row_actions = (LogLink,)
+
+
+class IndexView(InstanceView):
+    table_class = ListTable
     template_name = 'redhat_access_plugin_openstack/log/index.html'
-
-    def has_more_data(self, table):
-        return self._more
-
-    def get_data(self):
-        marker = self.request.GET.get(
-            InstancesTable._meta.pagination_param,
-            None)
-        # Gather our instances
-        try:
-            instances, self._more = api.nova.server_list(
-                self.request,
-                search_opts={'marker': marker,
-                             'paginate': True})
-        except:
-            self._more = False
-            instances = []
-            exceptions.handle(self.request,
-                              _('Unable to retrieve instances.'))
-        # Gather our flavors and correlate our instances to them
-        if instances:
-            try:
-                flavors = api.nova.flavor_list(self.request)
-            except:
-                flavors = []
-                exceptions.handle(self.request, ignore=True)
-
-            full_flavors = SortedDict(
-                [(str(flavor.id), flavor) for flavor in flavors])
-            # Loop through instances to get flavor info.
-            for instance in instances:
-                try:
-                    flavor_id = instance.flavor["id"]
-                    if flavor_id in full_flavors:
-                        instance.full_flavor = full_flavors[flavor_id]
-                    else:
-                        # If the flavor_id is not in full_flavors list,
-                        # get it via nova api.
-                        instance.full_flavor = api.nova.flavor_get(
-                            self.request, flavor_id)
-                except:
-                    msg = _('Unable to retrieve instance size information.')
-                    exceptions.handle(self.request, msg)
-        return instances
 
 
 class LogView(views.APIView):
