@@ -68,6 +68,9 @@ make %{?_smp_mflags} install DESTDIR="%{buildroot}"
 %{python_sitelib}/redhat_access_plugin_openstack/
 
 %changelog
+* Wed Aug 28 2013 Dan Varga <dvarga@redhat.com> - 1.2.0-1
+- Minor bug fixes
+- Resolves: bz999082
 
 * Thu Jul 18 2013 Dan Varga <dvarga@redhat.com> - 1.2.0-0
 - Initial build
