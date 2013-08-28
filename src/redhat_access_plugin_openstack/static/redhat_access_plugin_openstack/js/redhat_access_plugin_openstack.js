@@ -148,7 +148,7 @@ function fetchSolution(element, index, array) {
         },
         error: function (response) {
             var solnNumber = this.url.substr(this.url.lastIndexOf('/') + 1);
-            $('#soln' + index + '-inner').append("Please view this Solution on the Red Hat Customer Portal <a href='https://access.redhat.com/site/solutions/" + solnNumber + "'>View on Customer Portal</a>");
+            $('#soln' + index + '-inner').append("Please view this Solution on the Red Hat Customer Portal <a href='https://access.redhat.com/site/solutions/" + solnNumber + "' target='_blank'>View on Customer Portal</a>");
         }
     });
     $('#solutions').append(accordion_header);
