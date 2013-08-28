@@ -145,6 +145,10 @@ function fetchSolution(element, index, array) {
         method: "GET",
         success: function (response) {
             appendSolutionText(response, index);
+        },
+        error: function (response) {
+            var solnNumber = this.url.substr(this.url.lastIndexOf('/') + 1);
+            $('#soln' + index + '-inner').append("Please view this Solution on the Red Hat Customer Portal <a href='https://access.redhat.com/site/solutions/" + solnNumber + "'>View on Customer Portal</a>");
         }
     });
     $('#solutions').append(accordion_header);
@@ -153,14 +157,21 @@ function fetchSolution(element, index, array) {
 }
 
 function appendSolutionText(response, index) {
-    var environment_html = response.environment.html;
-    var issue_html = response.issue.html;
+    var solution_html = '';
+    var environment_html = '';
+    if (response.environment !== undefined) {
+        environment_html = response.environment.html;
+        solution_html = "<h3>Environment</h3>" + environment_html;
+    }
+    var issue_html = '';
+    if (response.issue !== undefined) {
+        issue_html = response.issue.html;
+        solution_html = solution_html + "<h3>Issue</h3>" + issue_html;
+    }
     var resolution_html = '';
     if (response.resolution !== undefined) {
         resolution_html = response.resolution.html;
+        solution_html = solution_html + "<h3>Resolution</h3>" + resolution_html;
     }
-    var solution_html = "<h3>Environment</h3>" + environment_html
-                                + "<h3>Issue</h3>" + issue_html
-                                + "<h3>Resolution</h3>" + resolution_html;
     $('#soln' + index + '-inner').append(solution_html);
 }

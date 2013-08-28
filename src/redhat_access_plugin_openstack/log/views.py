@@ -1,19 +1,8 @@
-from horizon import views
-import logging
-import string
-import getpass
-
-from django import http
-from django import shortcuts
-from django.core.urlresolvers import reverse, reverse_lazy
-from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext_lazy as _
-from django.views.decorators.csrf import csrf_exempt
-from django.core.context_processors import csrf
 
 from horizon import exceptions
-from horizon import forms
 from horizon import tables
+from horizon import views
 
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.instances \
@@ -22,19 +11,17 @@ from openstack_dashboard.dashboards.project.instances.tables \
     import InstancesTable
 from openstack_dashboard.dashboards.project.instances.views \
     import IndexView as InstanceView
+from openstack_dashboard.dashboards.project.instances.tables \
+    import LogLink
 
 
-class LogLink(tables.LinkAction):
-    name = "log"
-    verbose_name = _("View Log")
+class LogViewLink(LogLink):
     url = "view"
     instance_id = None
-    classes = ("btn-log",)
 
     def allowed(self, request, instance=None):
         self.instance_id = instance.id
-        return instance.status in tableFile.ACTIVE_STATES \
-            and not tableFile.is_deleting(instance)
+        return True
 
     def get_link_url(self, datum):
         base_url = super(LogLink, self).get_link_url(datum)
@@ -42,13 +29,12 @@ class LogLink(tables.LinkAction):
 
 
 class ListTable(InstancesTable):
-    pass
 
     class Meta:
         name = "instances"
         verbose_name = "Instances"
         table_actions = (tableFile.InstancesFilterAction,)
-        row_actions = (LogLink,)
+        row_actions = (LogViewLink,)
 
 
 class IndexView(InstanceView):
