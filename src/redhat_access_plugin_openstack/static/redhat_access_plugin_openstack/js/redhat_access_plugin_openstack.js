@@ -85,7 +85,7 @@ function analyzeLogData() {
 
 function getSolutionsFromText(data, handleSuggestions) {
     var getSolutionsFromTextParms = $.extend( {}, baseAjaxParams, {
-      url: 'https://' + strata_hostname + '/rs/problems?limit=10',
+      url: 'https://' + strata_hostname + '/rs/problems?limit=10&redhat_client=redhat-access-plugin-openstack_1.2.0-2',
       data: data,
       type: 'POST',
       method: 'POST',
@@ -140,7 +140,7 @@ function fetchSolution(element, index, array) {
     var fetchSolutionText = $.extend({}, baseAjaxParams, {
         dataType: 'json',
         contentType: 'application/json',
-        url: element.uri,
+        url: element.uri + "?redhat_client=redhat-access-plugin-openstack_1.2.0-2",
         type: "GET",
         method: "GET",
         success: function (response) {
@@ -148,7 +148,7 @@ function fetchSolution(element, index, array) {
         },
         error: function (response) {
             var solnNumber = this.url.substr(this.url.lastIndexOf('/') + 1);
-            $('#soln' + index + '-inner').append("Please view this Solution on the Red Hat Customer Portal <a href='https://access.redhat.com/site/solutions/" + solnNumber + "' target='_blank'>View on Customer Portal</a>");
+            $('#soln' + index + '-inner').append("Please view this Solution on the Red Hat Customer Portal <a href='https://access.redhat.com/site/solutions/" + solnNumber + "?redhat_client=redhat-access-plugin-openstack_1.2.0-2' target='_blank'>View on Customer Portal</a>");
         }
     });
     $('#solutions').append(accordion_header);

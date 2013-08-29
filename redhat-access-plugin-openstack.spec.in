@@ -63,11 +63,17 @@ make %{?_smp_mflags}
 rm -rf "%{buildroot}"
 make %{?_smp_mflags} install DESTDIR="%{buildroot}"
 
+%post
+python /usr/share/openstack-dashboard/manage.py collectstatic --noinput
+
 %files
 %doc AUTHORS 
 %{python_sitelib}/redhat_access_plugin_openstack/
 
 %changelog
+* Wed Aug 28 2013 Dan Varga <dvarga@redhat.com> - 1.2.0-2
+- Bug fixes
+- Resolves: bz999082
 * Wed Aug 28 2013 Dan Varga <dvarga@redhat.com> - 1.2.0-1
 - Minor bug fixes
 - Resolves: bz999082

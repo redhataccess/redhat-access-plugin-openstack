@@ -5,8 +5,6 @@ from horizon import tables
 from horizon import views
 
 from openstack_dashboard import api
-from openstack_dashboard.dashboards.project.instances \
-    import tables as tableFile
 from openstack_dashboard.dashboards.project.instances.tables \
     import InstancesTable
 from openstack_dashboard.dashboards.project.instances.views \
@@ -33,7 +31,6 @@ class ListTable(InstancesTable):
     class Meta:
         name = "instances"
         verbose_name = "Instances"
-        table_actions = (tableFile.InstancesFilterAction,)
         row_actions = (LogViewLink,)
 
 
