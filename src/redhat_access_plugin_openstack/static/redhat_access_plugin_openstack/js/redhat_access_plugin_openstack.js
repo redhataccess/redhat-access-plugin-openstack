@@ -56,7 +56,7 @@ function doSearch(searchStr) {
 
 function getSelectedText() {
     var t = '';
-    if(window.getSelection){
+  if(window.getSelection){
       t = window.getSelection();
   }else if(document.getSelection){
       t = document.getSelection();
@@ -69,8 +69,11 @@ function getSelectedText() {
 function analyzeLogData() {
     var selectedText = getSelectedText();
     var data = '';
-    if (selectedText.toString() === '') {
-      data = $('#log-text')[0].innerText;
+    if ((selectedText.toString() === '') || (selectedText.toString() === "")) {
+        data = $('#log-text')[0].innerText;
+        if (data === undefined) {
+            data = $('#log-text')[0].textContent;
+        }
   }
   else {
      data = selectedText.toString();
@@ -85,7 +88,7 @@ function analyzeLogData() {
 
 function getSolutionsFromText(data, handleSuggestions) {
     var getSolutionsFromTextParms = $.extend( {}, baseAjaxParams, {
-      url: 'https://' + strata_hostname + '/rs/problems?limit=10&redhat_client=redhat-access-plugin-openstack_1.2.0-2',
+      url: 'https://' + strata_hostname + '/rs/problems?limit=10&redhat_client=redhat-access-plugin-openstack_1.2.0-3',
       data: data,
       type: 'POST',
       method: 'POST',
@@ -140,7 +143,7 @@ function fetchSolution(element, index, array) {
     var fetchSolutionText = $.extend({}, baseAjaxParams, {
         dataType: 'json',
         contentType: 'application/json',
-        url: element.uri + "?redhat_client=redhat-access-plugin-openstack_1.2.0-2",
+        url: element.uri + "?redhat_client=redhat-access-plugin-openstack_1.2.0-3",
         type: "GET",
         method: "GET",
         success: function (response) {
@@ -148,7 +151,7 @@ function fetchSolution(element, index, array) {
         },
         error: function (response) {
             var solnNumber = this.url.substr(this.url.lastIndexOf('/') + 1);
-            $('#soln' + index + '-inner').append("Please view this Solution on the Red Hat Customer Portal <a href='https://access.redhat.com/site/solutions/" + solnNumber + "?redhat_client=redhat-access-plugin-openstack_1.2.0-2' target='_blank'>View on Customer Portal</a>");
+            $('#soln' + index + '-inner').append("Please view this Solution on the Red Hat Customer Portal <a href='https://access.redhat.com/site/solutions/" + solnNumber + "?redhat_client=redhat-access-plugin-openstack_1.2.0-3' target='_blank'>View on Customer Portal</a>");
         }
     });
     $('#solutions').append(accordion_header);
