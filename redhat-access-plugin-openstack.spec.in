@@ -71,6 +71,10 @@ python /usr/share/openstack-dashboard/manage.py collectstatic --noinput
 %{python_sitelib}/redhat_access_plugin_openstack/
 
 %changelog
+* Tue Sep 10 2013 Dan Varga <dvarga@redhat.com> - 1.2.0-4
+- JS Fix
+- Resolves: bz1006387
+
 * Tue Sep 3 2013 Dan Varga <dvarga@redhat.com> - 1.2.0-3
 - Browser Bug fix
 - Resolves: bz999082
