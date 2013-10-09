@@ -166,7 +166,7 @@ horizon.addInitFunction(function () {
         }
 
         //Set up event listeners
-        $('#analyze').on('click', function (evt) {
+        $('#analyze').on('submit', function (evt) {
             evt.preventDefault();
             evt.stopImmediatePropagation();
             $('#analyze-btn').prop('disabled', false);
@@ -175,7 +175,7 @@ horizon.addInitFunction(function () {
             analyzeLogData();
         });
 
-        $('#rh-search').on('click', function (evt) {
+        $('#rh-search').on('submit', function (evt) {
             evt.preventDefault();
             evt.stopImmediatePropagation();
             $('#rh-search-btn').prop('disabled', false);
