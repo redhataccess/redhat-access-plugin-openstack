@@ -72,6 +72,10 @@ python /usr/share/openstack-dashboard/manage.py collectstatic --noinput
 %{python_sitelib}/redhat_access_plugin_openstack/
 
 %changelog
+* Tue Oct 22 2013 Dan Varga <dvarga@redhat.com> - 4.0.0-0
+- Better handling of login issues
+- Resolves: bz1021576
+
 * Tue Oct 08 2013 Dan Varga <dvarga@redhat.com> - 1.2.0-5
 - Allow forms to be submitted multiple times
 - Resolves: bz1016737

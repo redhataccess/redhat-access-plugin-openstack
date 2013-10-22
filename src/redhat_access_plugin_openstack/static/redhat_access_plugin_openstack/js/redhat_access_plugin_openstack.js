@@ -21,21 +21,32 @@ horizon.addInitFunction(function () {
         };
         // Set up stuff for RHN/Strata queries
 
-        var authAjaxParams = $.extend({
-            url : 'https://' + portal_hostname +
-            '/services/user/status?jsoncallback=?',
-            success : function (auth) {
-                'use strict';
-                if (auth.authorized) {
-                    $('#logged-in').html("You are currently signed in to the Red Hat Customer Portal as " + auth.name + ".<a style='padding-left: 1%;' href='https://www.redhat.com/wapps/sso/logout.html' target='_blank'>Sign Out</a><a style='padding-left: 1%;' href='http://access.redhat.com' target='_blank'>Visit Customer Portal</a>");
-                } else {
-                    $('#logged-in').html("Please sign in to the Red Hat Customer Portal to access this information.     <a href='https://www.redhat.com/wapps/sso/login.html' target='_blank'>Sign In</a>");
+        function checkLogIn() {
+            var authAjaxParams = $.extend({
+                url : 'https://' + portal_hostname +
+                '/services/user/status?jsoncallback=?',
+                success : function (auth) {
+                    'use strict';
+                    if (auth.authorized) {
+                        $("#rhSearchStr").prop('disabled', false);
+                        $("#analyze-btn").prop('disabled', false);
+                        $("#rh-search-btn").prop('disabled', false);
+                        $('#logged-in').html("You are currently signed in to the Red Hat Customer Portal as " + auth.name + ".<a style='padding-left: 1%;' href='https://www.redhat.com/wapps/sso/logout.html' target='_blank'>Sign Out</a><a style='padding-left: 1%;' href='http://access.redhat.com' target='_blank'>Visit Customer Portal</a>");
+                    } else {
+                        $("#rhSearchStr").prop('disabled', true);
+                        $("#analyze-btn").prop('disabled', true);
+                        $("#rh-search-btn").prop('disabled', true);
+                        $('#logged-in').html("Please sign in to the Red Hat Customer Portal to access this information.     <a href='https://www.redhat.com/wapps/sso/login.html' target='_blank'>Sign In</a>");
+                    }
                 }
-            }
-        }, baseAjaxParams);
+            }, baseAjaxParams);
 
-        // See if we are logged in to RHN or not
-        $.ajax(authAjaxParams);
+            // See if we are logged in to RHN or not
+            $.ajax(authAjaxParams);
+        }
+
+        checkLogIn();
+        $(window).on("focus", checkLogIn);
 
         function doSearch(searchStr) {
             getSolutionsFromText(searchStr, searchResults);
@@ -181,6 +192,7 @@ horizon.addInitFunction(function () {
             $('#rh-search-btn').prop('disabled', false);
             $('#rh-search-btn').removeClass('disabled');
             $('#solutions').empty();
+            $('#solution').empty();
             doSearch($('#rhSearchStr').val());
         });
     })();
