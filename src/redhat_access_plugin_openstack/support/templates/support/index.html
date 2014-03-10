@@ -1,0 +1,24 @@
+{% extends 'redhat_access_plugin_openstack/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Support" %}{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("Support") %}
+{% endblock page_header %}
+
+{% block redhat_access_plugin_openstack_main %}
+<form id="rh-search">
+    <fieldset>
+        <label>Red Hat Access: Support</label>
+            <input type="text" id="rhSearchStr" name="searchString" class="input-xxlarge" placeholder="Search Articles and Solutions"/>
+            <button id="rh-search-btn" type="submit" class="btn btn-small btn-primary" style="vertical-align: top;">Search</button>
+    </fieldset>
+</form>
+
+<div id='solutions' style="width: 47%; float: left;">
+</div>
+<div id='solution-outer' style='height: 100%; width: 50%; float: right;'>
+<div id='solution' style="overflow: auto;">
+</div>
+</div>
+{% endblock %}

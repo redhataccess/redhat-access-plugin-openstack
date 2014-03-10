@@ -29,6 +29,7 @@ URL:            https://api.access.redhat.com
 Source0:        http://people.redhat.com/dvarga/projects/redhat-access-plugin-openstack/%{package_name}-%{package_version}.tar.gz
 
 BuildRequires: python2-devel
+BuildRequires: gettext-devel
 BuildRequires: python-setuptools
 BuildArch: noarch
 %{!?dist:BuildRequires: buildsys-macros}
@@ -72,6 +73,10 @@ python /usr/share/openstack-dashboard/manage.py collectstatic --noinput
 %{python_sitelib}/redhat_access_plugin_openstack/
 
 %changelog
+* Wed Mar 05 2014 Dan Varga <dvarga@redhat.com> - 5.0.0-0
+- RHOS 5.0 and RCUE Updates
+- Resolves:
+
 * Tue Oct 22 2013 Dan Varga <dvarga@redhat.com> - 4.0.0-0
 - Better handling of login issues
 - Resolves: bz1021576

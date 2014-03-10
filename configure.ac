@@ -17,7 +17,7 @@ dnl
 
 AC_PREREQ(2.60)
 
-define([VERSION_MAJOR], [4])
+define([VERSION_MAJOR], [5])
 define([VERSION_MINOR], [0])
 define([VERSION_FIX], [0])
 define([VERSION_NUMBER], VERSION_MAJOR[.]VERSION_MINOR[.]VERSION_FIX)
@@ -81,6 +81,9 @@ AC_CONFIG_FILES([
 	src/redhat_access_plugin_openstack/search/Makefile
 	src/redhat_access_plugin_openstack/search/templates/Makefile
 	src/redhat_access_plugin_openstack/search/templates/search/Makefile
+	src/redhat_access_plugin_openstack/support/Makefile
+	src/redhat_access_plugin_openstack/support/templates/Makefile
+	src/redhat_access_plugin_openstack/support/templates/support/Makefile
 	src/redhat_access_plugin_openstack/static/Makefile
 	src/redhat_access_plugin_openstack/static/redhat_access_plugin_openstack/Makefile
 	src/redhat_access_plugin_openstack/static/redhat_access_plugin_openstack/img/Makefile

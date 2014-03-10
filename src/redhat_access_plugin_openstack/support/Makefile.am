@@ -24,9 +24,10 @@ MAINTAINERCLEANFILES = \
 EXTRA_DIST = \
 	$(NULL)
 
-SUBDIRS = log search support static templates
+SUBDIRS = templates
 
-dist_rhsupporttoollib_PYTHON = \
+supportdir=$(rhsupporttoollibdir)/support
+dist_support_PYTHON = \
 	*.py \
 	$(NULL)
 
