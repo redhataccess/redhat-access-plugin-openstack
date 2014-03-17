@@ -26,7 +26,7 @@ EXTRA_DIST = \
 
 SUBDIRS = templates
 
-searchdir=$(rhsupporttoollibdir)/search
+searchdir=$(rhsupporttoollibdir)/dashboards/redhat_access_support_plugin_openstack/search
 dist_search_PYTHON = \
 	*.py \
 	$(NULL)

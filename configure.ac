@@ -66,7 +66,7 @@ esac
 AX_PYTHON_MODULE([lxml])
 AX_PYTHON_MODULE([dateutil])
 
-rhsupporttoollibdir="\$(pythondir)/redhat_access_plugin_openstack"
+rhsupporttoollibdir="/usr/share/openstack-dashboard/openstack_dashboard/"
 AC_SUBST([rhsupporttoollibdir])
 AM_CONDITIONAL([PYTHON_SYNTAX_CHECK], [test "${enable_python_syntax_check}" = "yes"])
 
@@ -74,6 +74,7 @@ AC_CONFIG_FILES([
 	Makefile
 	redhat-access-plugin-openstack.spec
 	src/Makefile
+	src/enabled/Makefile
 	src/redhat_access_plugin_openstack/Makefile
 	src/redhat_access_plugin_openstack/log/Makefile
 	src/redhat_access_plugin_openstack/log/templates/Makefile

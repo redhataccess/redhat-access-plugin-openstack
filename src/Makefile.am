@@ -23,7 +23,7 @@ MAINTAINERCLEANFILES = \
 
 CLEANFILES = $(bin_SCRIPTS)
 
-SUBDIRS = redhat_access_plugin_openstack
+SUBDIRS = redhat_access_plugin_openstack enabled
 
 
 all-local: \

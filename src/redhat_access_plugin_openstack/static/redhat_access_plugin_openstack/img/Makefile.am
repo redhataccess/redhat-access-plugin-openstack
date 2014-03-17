@@ -26,7 +26,7 @@ EXTRA_DIST = \
 
 SUBDIRS =
 
-imgdir=$(rhsupporttoollibdir)/static/redhat_access_plugin_openstack/img
+imgdir=$(rhsupporttoollibdir)/dashboards/redhat_access_support_plugin_openstack/static/redhat_access_plugin_openstack/img
 dist_img_DATA = \
 	*.gif \
 	$(NULL)

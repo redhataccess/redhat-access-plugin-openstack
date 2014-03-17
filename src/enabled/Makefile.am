@@ -24,15 +24,15 @@ MAINTAINERCLEANFILES = \
 EXTRA_DIST = \
 	$(NULL)
 
-SUBDIRS =
-
-htmldir=$(rhsupporttoollibdir)/dashboards/redhat_access_support_plugin_openstack/search/templates/search
-dist_html_DATA = \
-	*.html \
+enableddir=$(rhsupporttoollibdir)/enabled
+dist_enabled_PYTHON = \
+	*.py \
 	$(NULL)
 
 all-local: \
+	python-syntax-check \
 	$(NULL)
 
 clean-local: \
+	python-clean \
 	$(NULL)
