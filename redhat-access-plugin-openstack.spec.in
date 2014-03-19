@@ -66,7 +66,7 @@ rm -rf "%{buildroot}"
 make %{?_smp_mflags} install DESTDIR="%{buildroot}"
 
 %post
-#python /usr/share/openstack-dashboard/manage.py collectstatic --noinput
+python /usr/share/openstack-dashboard/manage.py collectstatic --noinput
 
 %files
 %doc AUTHORS 

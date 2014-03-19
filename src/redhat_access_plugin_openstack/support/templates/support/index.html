@@ -3,6 +3,7 @@
 {% block title %}{% trans "Support" %}{% endblock %}
 
 {% block page_header %}
+  {% include "redhat_access_plugin_openstack/_conf.html" %}
   {% include "horizon/common/_page_header.html" with title=_("Support") %}
 {% endblock page_header %}
 

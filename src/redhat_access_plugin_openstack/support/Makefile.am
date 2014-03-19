@@ -26,7 +26,7 @@ EXTRA_DIST = \
 
 SUBDIRS = templates
 
-supportdir=$(rhsupporttoollibdir)/support
+supportdir=$(rhsupporttoollibdir)/dashboards/redhat_access_plugin_openstack/support
 dist_support_PYTHON = \
 	*.py \
 	$(NULL)

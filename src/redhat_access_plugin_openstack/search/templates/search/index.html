@@ -1,8 +1,10 @@
 {% extends 'redhat_access_plugin_openstack/base.html' %}
 {% load i18n %}
+
 {% block title %}{% trans "Search" %}{% endblock %}
 
 {% block page_header %}
+  {% include "redhat_access_plugin_openstack/_conf.html" %}
   {% include "horizon/common/_page_header.html" with title=_("Search") %}
 {% endblock page_header %}
 
