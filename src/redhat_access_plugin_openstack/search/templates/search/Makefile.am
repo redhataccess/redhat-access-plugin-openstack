@@ -26,7 +26,7 @@ EXTRA_DIST = \
 
 SUBDIRS =
 
-htmldir=$(rhsupporttoollibdir)/dashboards/redhat_access_support_plugin_openstack/search/templates/search
+htmldir=$(rhsupporttoollibdir)/dashboards/redhat_access_plugin_openstack/search/templates/search
 dist_html_DATA = \
 	*.html \
 	$(NULL)

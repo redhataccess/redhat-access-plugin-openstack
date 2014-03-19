@@ -26,7 +26,7 @@ EXTRA_DIST = \
 
 SUBDIRS = templates
 
-logdir=$(rhsupporttoollibdir)/dashboards/redhat_access_support_plugin_openstack/log
+logdir=$(rhsupporttoollibdir)/dashboards/redhat_access_plugin_openstack/log
 dist_log_PYTHON = \
 	*.py \
 	$(NULL)

@@ -26,7 +26,7 @@ EXTRA_DIST = \
 
 SUBDIRS = log search support static templates
 
-dashboarddir=$(rhsupporttoollibdir)/dashboards/redhat_access_support_plugin_openstack
+dashboarddir=$(rhsupporttoollibdir)/dashboards/redhat_access_plugin_openstack
 dist_dashboard_PYTHON = \
 	*.py \
 	$(NULL)

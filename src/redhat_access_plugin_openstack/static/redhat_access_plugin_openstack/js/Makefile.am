@@ -26,7 +26,7 @@ EXTRA_DIST = \
 
 SUBDIRS =
 
-jsdir=$(rhsupporttoollibdir)/dashboards/redhat_access_support_plugin_openstack/static/redhat_access_plugin_openstack/js
+jsdir=$(rhsupporttoollibdir)/dashboards/redhat_access_plugin_openstack/static/redhat_access_plugin_openstack/js
 dist_js_DATA = \
 	*.js \
 	$(NULL)

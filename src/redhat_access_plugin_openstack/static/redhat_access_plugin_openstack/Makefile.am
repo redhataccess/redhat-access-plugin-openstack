@@ -24,4 +24,4 @@ MAINTAINERCLEANFILES = \
 EXTRA_DIST = \
 	$(NULL)
 
-SUBDIRS = img js
+SUBDIRS = img js css
