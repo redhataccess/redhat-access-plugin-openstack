@@ -15,20 +15,31 @@
 # limitations under the License.
 #
 
-include $(top_srcdir)/build/python.inc
-
 MAINTAINERCLEANFILES = \
 	$(srcdir)/Makefile.in \
 	$(NULL)
 
-CLEANFILES = $(bin_SCRIPTS)
+EXTRA_DIST = \
+	$(NULL)
 
-SUBDIRS = redhat_access_plugin_openstack enabled utils
+sbindir=/usr/sbin
+dist_sbin_SCRIPTS = \
+	rhosap-sosreport-wrapper \
+	$(NULL)
+
+pamdir=/etc/pam.d
+dist_pam_DATA = \
+	rhosap-sosreport.pam \
+	$(NULL)
+
+consoledir=/etc/security/console.apps
+dist_console_DATA = \
+	rhosap-sosreport.console-apps \
+	$(NULL)
 
 
 all-local: \
 	$(NULL)
 
 clean-local: \
-	python-clean \
 	$(NULL)

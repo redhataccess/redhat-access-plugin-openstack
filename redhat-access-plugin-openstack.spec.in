@@ -71,6 +71,9 @@ python /usr/share/openstack-dashboard/manage.py collectstatic --noinput
 %files
 %doc AUTHORS 
 /usr/share/openstack-dashboard/openstack_dashboard/
+/etc/pam.d/rhosap-sosreport.pam
+/etc/security/console.apps/rhosap-sosreport.console-apps
+/usr/sbin/rhosap-sosreport-wrapper
 
 %changelog
 * Wed Mar 05 2014 Dan Varga <dvarga@redhat.com> - 5.0.0-0

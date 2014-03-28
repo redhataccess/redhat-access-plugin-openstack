@@ -1,7 +1,7 @@
 #%PAM-1.0
 auth            sufficient      pam_rootok.so
 auth            sufficient      pam_timestamp.so
-auth            sufficient      pam_wheel.so group=ovirt trust use_uid
+auth            sufficient      pam_wheel.so group=apache trust use_uid
 auth            include         system-auth
 account         required        pam_permit.so
 session         required        pam_permit.so
