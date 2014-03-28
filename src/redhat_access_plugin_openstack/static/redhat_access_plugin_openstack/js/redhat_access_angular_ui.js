@@ -1,136 +1,147 @@
-/*! redhat_access_angular_ui - v0.0.0 - 2014-03-26
+/*! redhat_access_angular_ui - v0.0.0 - 2014-03-28
  * Copyright (c) 2014 ;
  * Licensed 
  */
 angular.module('RedhatAccess.security', ['ui.bootstrap'])
-    .constant('AUTH_EVENTS', {
-        loginSuccess: 'auth-login-success',
-        loginFailed: 'auth-login-failed',
-        logoutSuccess: 'auth-logout-success',
-        sessionTimeout: 'auth-session-timeout',
-        notAuthenticated: 'auth-not-authenticated',
-        notAuthorized: 'auth-not-authorized'
-    })
-    .directive('loginStatus', function () {
-        return {
-            restrict: 'AE',
-            scope: false,
-            templateUrl: 'security/login_status.html'
+.constant('AUTH_EVENTS', {
+  loginSuccess: 'auth-login-success',
+  loginFailed: 'auth-login-failed',
+  logoutSuccess: 'auth-logout-success',
+  sessionTimeout: 'auth-session-timeout',
+  notAuthenticated: 'auth-not-authenticated',
+  notAuthorized: 'auth-not-authorized'
+})
+.directive('loginStatus', function() {
+    return {
+        restrict: 'AE',
+        scope: false,
+        templateUrl: 'security/login_status.html'
+    };
+})
+.controller('SecurityController', ['$scope', '$rootScope', 'securityService', 'AUTH_EVENTS',
+    function($scope, $rootScope, securityService, AUTH_EVENTS) {
+
+        $scope.isLoggedIn = securityService.isLoggedIn;
+        $scope.loggedInUser = '';
+
+        function setLoginStatus(isLoggedIn, user) {
+          $scope.isLoggedIn = isLoggedIn;
+          securityService.isLoggedIn = isLoggedIn;
+
+          if (user != null) {
+            $scope.loggedInUser = user;
+            securityService.loggedInUser = user;
+          } else {
+            $scope.loggedInuser = '';
+            securityService.loggedInUser = '';
+          }
         };
-    })
-    .controller('SecurityController', ['$scope', '$rootScope', 'securityService', 'AUTH_EVENTS',
-        function ($scope, $rootScope, securityService, AUTH_EVENTS) {
 
-            $scope.isLoggedIn = false;
-            $scope.loggedInUser = '';
+        strata.checkLogin(loginHandler);
 
-            strata.checkLogin(loginHandler);
+        function loginHandler(result, authedUser) {
 
-            function loginHandler(result, authedUser) {
-
-                if (result) {
-                    console.log("Authorized!");
-                    $scope.$apply(function () {
-                        $scope.isLoggedIn = true;
-                        //$scope.loggedInUser = securityService.getLoggedInUserName();
-                        $scope.loggedInUser = authedUser.name
-                    });
-                } else {
-                    $scope.$apply(function () {
-                        $scope.isLoggedIn = false;
-                        $scope.loggedInUser = '';
-                    });
-                }
-            };
-
-            $scope.login = function () {
-                securityService.login().then(function (authedUser) {
-                    if (authedUser) {
-                        $scope.isLoggedIn = true;
-                        $scope.loggedInUser = authedUser.name;
-                    }
+            if (result) {
+                console.log("Authorized!");
+                $scope.$apply(function() {
+                    setLoginStatus(true, authedUser.name);
+                    //$scope.loggedInUser = securityService.getLoggedInUserName();
                 });
+            } else {
+                $scope.$apply(function() {
+                    setLoginStatus(false, '')
+                });
+            }
+        };
 
-            };
-
-            $scope.logout = function () {
-                strata.clearCredentials();
-                $scope.isLoggedIn = false;
-                $rootScope.$broadcast(AUTH_EVENTS.logoutSuccess);
-            };
-
-
-        }
-    ])
-    .service('securityService', ['$modal',
-        function ($modal) {
-
-            //bool isAuthed = false;
-
-            var modalDefaults = {
-                backdrop: true,
-                keyboard: true,
-                modalFade: true,
-                templateUrl: 'security/login_form.html'
-            };
-
-            var modalOptions = {
-                closeButtonText: 'Close',
-                actionButtonText: 'OK',
-                headerText: 'Proceed?',
-                bodyText: 'Perform this action?',
-                backdrop: 'static'
-            };
-
-            this.login = function () {
-                return this.showLogin(modalDefaults, modalOptions);
-            };
-
-            this.getLoggedInUserName = function () {
-                return strata.getAuthInfo().name;
-            };
-
-            this.showLogin = function (customModalDefaults, customModalOptions) {
-                //Create temp objects to work with since we're in a singleton service
-                var tempModalDefaults = {};
-                var tempModalOptions = {};
-                //Map angular-ui modal custom defaults to modal defaults defined in service
-                angular.extend(tempModalDefaults, modalDefaults, customModalDefaults);
-                //Map modal.html $scope custom properties to defaults defined in service
-                angular.extend(tempModalOptions, modalOptions, customModalOptions);
-                if (!tempModalDefaults.controller) {
-                    tempModalDefaults.controller = ['$scope', '$modalInstance',
-                        function ($scope, $modalInstance) {
-                            $scope.user = {
-                                user: null,
-                                password: null
-                            };
-                            $scope.modalOptions = tempModalOptions;
-                            $scope.modalOptions.ok = function (result) {
-                                //console.log($scope.user);
-                                strata.setCredentials($scope.user.user, $scope.user.password,
-                                    function (passed, authedUser) {
-                                        if (passed) {
-                                            $scope.user.password = '';
-                                            $modalInstance.close(authedUser);
-                                        } else {
-                                            alert("Login failed!");
-                                        }
-                                    });
-
-                            };
-                            $scope.modalOptions.close = function () {
-                                $modalInstance.dismiss();
-                            };
-                        }
-                    ];
+        $scope.login = function() {
+            securityService.login().then(function(authedUser) {
+                if (authedUser) {
+                  setLoginStatus(true, authedUser.name);
                 }
+            });
 
-                return $modal.open(tempModalDefaults).result;
-            };
+        };
+        $scope.logout = function() {
+            strata.clearCredentials();
+            setLoginStatus(false, '');
+            $rootScope.$broadcast(AUTH_EVENTS.logoutSuccess);
+            location.reload(); //TODO: probably a neater way to do this with $state
+        };
+    }
+])
+.service('securityService', ['$modal',
+    function($modal) {
 
-        }
-    ]);
+        //bool isAuthed = false;
+        this.isLoggedIn = false;
+        this.loggedInUser = '';
+
+        var modalDefaults = {
+            backdrop: true,
+            keyboard: true,
+            modalFade: true,
+            templateUrl: 'security/login_form.html'
+        };
+
+        var modalOptions = {
+            closeButtonText: 'Close',
+            actionButtonText: 'OK',
+            headerText: 'Proceed?',
+            bodyText: 'Perform this action?',
+            backdrop: 'static'
+        };
+
+        this.login = function () {
+            return this.showLogin(modalDefaults, modalOptions);
+        };
+
+        this.getLoggedInUserName = function () {
+            return strata.getAuthInfo().name;
+        };
+
+        this.showLogin = function (customModalDefaults, customModalOptions) {
+            //Create temp objects to work with since we're in a singleton service
+            var tempModalDefaults = {};
+            var tempModalOptions = {};
+            //Map angular-ui modal custom defaults to modal defaults defined in service
+            angular.extend(tempModalDefaults, modalDefaults, customModalDefaults);
+            //Map modal.html $scope custom properties to defaults defined in service
+            angular.extend(tempModalOptions, modalOptions, customModalOptions);
+            if (!tempModalDefaults.controller) {
+                tempModalDefaults.controller = ['$scope', '$modalInstance',
+                    function ($scope, $modalInstance) {
+                        $scope.user = {
+                            user: null,
+                            password: null
+                        };
+                        $scope.modalOptions = tempModalOptions;
+                        $scope.modalOptions.ok = function (result) {
+                            //console.log($scope.user);
+                            strata.setCredentials($scope.user.user, $scope.user.password,
+                                function (passed, authedUser) {
+                                    if (passed) {
+                                        $scope.user.password = '';
+                                        $modalInstance.close(authedUser);
+                                    } else {
+                                        alert("Login failed!");
+                                    }
+                                });
+
+                        };
+                        $scope.modalOptions.close = function () {
+                            $modalInstance.dismiss();
+                        };
+                    }
+                ];
+            }
+
+            return $modal.open(tempModalDefaults).result;
+        };
+
+    }
+]);
+
 /**
  * @ngdoc module
  * @name
@@ -140,10 +151,9 @@ angular.module('RedhatAccess.security', ['ui.bootstrap'])
  */
 angular.module('RedhatAccess.search', [
 	'ui.router',
-    'ngSanitize',
-	'templates.app',
 	'RedhatAccess.security',
-	'ui.bootstrap'
+	'ui.bootstrap',
+	'ngSanitize'
 ])
 	.constant('RESOURCE_TYPES', {
 		article: 'Article',
@@ -339,8 +349,9 @@ angular.module('RedhatAccess.search', [
 				setSelected: function (selection) {
 					this.currentSelection = selection;
 				},
-				search: function (searchString) {
+				search: function (searchString, limit) {
 					var that = this;
+					if ((limit === undefined) || (limit < 1)) limit = 5;
 					this.clear();
 					strata.search(
 						searchString,
@@ -353,7 +364,7 @@ angular.module('RedhatAccess.search', [
 						function (error) {
 							console.log("search failed");
 						},
-						10,
+						limit,
 						true
 					);
 				},
@@ -613,7 +624,48 @@ angular.module('RedhatAccessCases', [
         }
       }
     });
-  }]);
+  }])
+.run([
+  '$rootScope',
+  'securityService',
+  '$state',
+  function(
+    $rootScope,
+    securityService,
+    $state) {
+
+      $rootScope.$on('$stateChangeStart',
+          function(event, toState, toParams, fromState, fromParams){
+            if (!securityService.isLoggedIn) {
+              event.preventDefault();
+
+              strata.checkLogin(
+                  function(isLoggedIn, user) {
+
+                    if (!isLoggedIn) {
+                      securityService.login().then(
+                          function(authedUser) {
+                            if (authedUser) {
+                              securityService.isLoggedIn = true;
+                              $state.transitionTo(toState, toParams);
+                            } else {
+                              securityService.isLoggedIn = false;
+                              console.log('Not logged in.');
+                            }
+                          });
+                    } else {
+                      securityService.isLoggedIn = true;
+                      $state.transitionTo(toState, toParams);
+                    }
+
+                  }
+              );
+            }
+          }
+      );
+
+  }
+]);
 
 'use strict';
 
@@ -621,28 +673,11 @@ angular.module('RedhatAccessCases')
 .controller('AttachLocalFile', [
   '$scope',
   'attachments',
-  function ($scope, attachments) {
+  'securityService',
+  function ($scope, attachments, securityService) {
     $scope.NO_FILE_CHOSEN = 'No file chosen';
     $scope.fileDescription = '';
 
-//    $scope.attachments = [
-//      {
-//        uri: "https://access.redhat.com/",
-//        file_name: "first.log",
-//        description: "The first log",
-//        length: 20,
-//        created_by: "Chris Kyrouac",
-//        created_date: 1393611517000
-//      },
-//      {
-//        uri: "https://access.redhat.com/",
-//        file_name: "second.log",
-//        description: "The second log",
-//        length: 25,
-//        created_by: "Chris Kyrouac",
-//        created_date: 1393611517000
-//      }
-//    ];
     $scope.clearSelectedFile = function() {
       $scope.fileName = $scope.NO_FILE_CHOSEN;
       $scope.fileDescription = '';
@@ -657,7 +692,7 @@ angular.module('RedhatAccessCases')
         file_name: $scope.fileName,
         description: $scope.fileDescription,
         length: $scope.fileSize,
-        created_by: "Chris Kyrouac", //TODO: use Lindani's login service to get username
+        created_by: securityService.loggedInUser, //TODO: use Lindani's login service to get username
         created_date: new Date().getTime(),
         file: data
       });
@@ -685,6 +720,8 @@ angular.module('RedhatAccessCases')
 .controller('Details', [
   '$scope',
   '$stateParams',
+  '$filter',
+  '$q',
   'attachments',
   'caseJSON',
   'attachmentsJSON',
@@ -697,6 +734,8 @@ angular.module('RedhatAccessCases')
   function(
       $scope,
       $stateParams,
+      $filter,
+      $q,
       attachments,
       caseJSON,
       attachmentsJSON,
@@ -741,9 +780,11 @@ angular.module('RedhatAccessCases')
       }
     }
 
-    if (attachmentsJSON) {
+    if (angular.isArray(attachmentsJSON)) {
       attachments.items = attachmentsJSON;
       $scope.attachments = attachmentsJSON;
+    } else {
+      attachments.items = [];
     }
 
     if (commentsJSON) {
@@ -769,6 +810,68 @@ angular.module('RedhatAccessCases')
     if (statusesJSON) {
       $scope.statuses = statusesJSON;
     }
+
+    $scope.originalAttachments = angular.copy(attachments.items);
+    $scope.updatingAttachments = false;
+    $scope.disableUpdateAttachmentsButton = false;
+//
+//    $scope.$watch('attachments', function(newValue, oldValue) {
+//      if (!angular.equals($scope.originalAttachments, $scope.attachments)) {
+//        $scope.disableUpdateAttachmentsButton = false;
+//      } else {
+//        $scope.disableUpdateAttachmentsButton = true;
+//      }
+//    });
+
+    $scope.updateAttachments = function() {
+      if (!angular.equals($scope.originalAttachments, attachments.items)) {
+        var promises = [];
+
+        //find new attachments
+        for (var i in attachments.items) {
+          if (!attachments.items[i].hasOwnProperty('uuid')) {
+            var promise = attachments.post(
+                attachments.items[i].file,
+                $scope.details.caseId
+            )
+
+            promise.then(function(uri) {
+              attachments.items[i].uri = uri;
+            });
+
+            promises.push(promise);
+          }
+        }
+
+        //find removed attachments
+        jQuery.grep($scope.originalAttachments, function(origAttachment) {
+          var attachment =
+              $filter('filter')(attachments.items, {'uuid': origAttachment.uuid});
+
+          if (attachment.length == 0) {
+            promises.push(
+                attachments.delete(
+                    origAttachment.uuid,
+                    $scope.details.caseId
+                )
+            );
+          }
+        });
+
+        $scope.updatingAttachments = true;
+        var parentPromise = $q.all(promises);
+        parentPromise.then(
+            function() {
+              $scope.originalAttachments = angular.copy(attachments.items);
+              $scope.updatingAttachments = false;
+            },
+            function(error) {
+              console.log("Problem creating attachments");
+              console.log(error);
+            }
+        );
+      }
+    };
 
     $scope.updatingDetails = false;
 
@@ -982,11 +1085,11 @@ angular.module('RedhatAccessCases')
 
               var parentPromise = $q.all(promises);
               parentPromise.then(
-                function(results) {
+                function() {
                   $scope.submitProgress = '100';
                   $state.go('case', {id: caseNumber});
                 },
-                function(error, error2, error3, error4) {
+                function(error) {
                   console.log("Problem creating attachment: " + error);
                 }
               );
@@ -1088,9 +1191,46 @@ angular.module('RedhatAccessCases')
 'use strict';
 
 angular.module('RedhatAccessCases')
-.factory('attachments', function () {
-  return {items: []};
-});
+.factory('attachments', ['$q', function ($q) {
+  return {
+    items: [],
+    post: function(attachment, caseNumber) {
+
+      var deferred = $q.defer();
+
+      strata.cases.attachments.post(
+          attachment,
+          caseNumber,
+          function(response, code, xhr) {
+            deferred.resolve(xhr.getResponseHeader('Location'));
+          },
+          function(error) {
+            console.log(error);
+            deferred.reject(error);
+          }
+      );
+
+      return deferred.promise;
+    },
+    delete: function(id, caseNumber) {
+
+      var deferred = $q.defer();
+
+      strata.cases.attachments.delete(
+          id,
+          caseNumber,
+          function(response) {
+            deferred.resolve(response);
+          },
+          function(error) {
+            deferred.reject(error);
+          }
+      );
+
+      return deferred.promise;
+    }
+  };
+}]);
 
 // angular module
 var logViewer = angular.module('logViewer', ['angularTreeview',
@@ -1266,7 +1406,7 @@ logViewer.controller('AccordionDemoCtrl', function ($scope, accordian) {
 	$scope.oneAtATime = true;
 	$scope.groups = accordian.getGroups();
 });
-angular.module('templates.app', ['security/login_form.html', 'security/login_status.html', 'search/views/accordion_search.html', 'search/views/accordion_search_results.html', 'search/views/list_search_results.html', 'search/views/resultDetail.html', 'search/views/search.html', 'search/views/search_form.html', 'search/views/standard_search.html', 'cases/views/attachLocalFile.html', 'cases/views/attachProductLogs.html', 'cases/views/details.html', 'cases/views/listAttachments.html', 'cases/views/new.html', 'log_viewer/views/log_viewer-lindani.html', 'log_viewer/views/log_viewer.html']);
+angular.module('templates.app', ['security/login_form.html', 'security/login_status.html', 'search/views/accordion_search.html', 'search/views/accordion_search_results.html', 'search/views/list_search_results.html', 'search/views/resultDetail.html', 'search/views/search.html', 'search/views/search_form.html', 'search/views/standard_search.html', 'cases/views/attachLocalFile.html', 'cases/views/attachProductLogs.html', 'cases/views/details.html', 'cases/views/listAttachments.html', 'cases/views/new.html', 'log_viewer/views/log_viewer.html']);
 
 angular.module("security/login_form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("security/login_form.html",
@@ -1297,7 +1437,7 @@ angular.module("security/login_form.html", []).run(["$templateCache", function($
 
 angular.module("security/login_status.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("security/login_status.html",
-    "<div id='security-div' ng-controller = 'SecurityController'>\n" +
+    "<div ng-controller = 'SecurityController'>\n" +
     "<span ng-show=\"isLoggedIn\" class=\"pull-right\"> Logged into the customer portal as {{loggedInUser}} &nbsp;|&nbsp;\n" +
     "  <a href=\"\" ng-click=\"logout()\"> Log out</a>\n" +
     "</span>\n" +
@@ -1404,11 +1544,11 @@ angular.module("search/views/search_form.html", []).run(["$templateCache", funct
 angular.module("search/views/standard_search.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("search/views/standard_search.html",
     "<div class=\"container-fluid side-padding\">\n" +
-    "	<div class=\"row\">\n" +
+    "	<!--div class=\"row\">\n" +
     "		<div class=\"col-xs-12\">\n" +
     "			<h3>Red Hat Access: Search</h3>\n" +
     "		</div>\n" +
-    "	</div>\n" +
+    "	</div-->\n" +
     "	<div x-login-status style=\"padding: 10px;\"/>\n" +
     "	<div class=\"bottom-border\" style=\"padding-top: 10px;\"></div>\n" +
     "	<div class=\"row\" x-search-form ng-controller='SearchController'></div>\n" +
@@ -1432,12 +1572,12 @@ angular.module("cases/views/attachProductLogs.html", []).run(["$templateCache", 
 
 angular.module("cases/views/details.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/details.html",
-    "<!DOCTYPE html><div id=\"redhat-access-case\"><div><h1 style=\"font-weight: bold\">Red Hat Access: Case {{caseId}}</h1></div><div x-login-status></div><div style=\"padding-top: 20px;\" class=\"bottom-border\"></div><div class=\"container-fluid\"><div class=\"row\"><div class=\"col-xs-12 col-no-padding\"><form name=\"caseDetails\"><div style=\"padding-bottom: 10px;\" class=\"has-feedback\"><span ng-show=\"caseDetails.summary.$dirty\" style=\"right: 50%; top: 0px;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span><input style=\"width: 50%;\" ng-model=\"details.summary\" name=\"summary\" class=\"form-control\"></div><div class=\"container-fluid side-padding\"><div class=\"row\"><h4 class=\"col-xs-12 section-header\">Case Details</h4><div class=\"container-fluid side-padding\"><div class=\"row\"><div class=\"col-xs-4\"><table class=\"table details-table\"><tr><th class=\"details-table-header\"><div style=\"vertical-align: 50%\">Case Type:</div></th><td><div class=\"form-group has-feedback\"><span ng-show=\"caseDetails.type.$dirty\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span><select name=\"type\" style=\"width: 100%;\" ng-model=\"details.type\" ng-options=\"c.name for c in caseTypes track by c.name\" class=\"form-control\"></select></div></td></tr><tr><th class=\"details-table-header\">Severity:</th><td><div class=\"form-group has-feedback\"><span ng-show=\"caseDetails.severity.$dirty\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span><select name=\"severity\" style=\"width: 100%;\" ng-model=\"details.severity\" ng-options=\"s.name for s in severities track by s.name\" class=\"form-control\"></select></div></td></tr><tr><th class=\"details-table-header\">Status:</th><td><div class=\"form-group has-feedback\"><span ng-show=\"caseDetails.status.$dirty\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span><select name=\"status\" style=\"width: 100%;\" ng-model=\"details.status\" ng-options=\"s.name for s in statuses track by s.name\" class=\"form-control\"></select></div></td></tr><tr><th class=\"details-table-header\">Alternate ID:</th><td><div class=\"form-group has-feedback\"><span ng-show=\"caseDetails.alternate_id.$dirty\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span><input style=\"width: 100%\" ng-model=\"details.alternate_id\" name=\"alternate_id\" class=\"form-control\"></div></td></tr></table></div><div class=\"col-xs-4\"><table class=\"table details-table\"><tr><th>Product:</th><td><div class=\"form-group has-feedback\"><span ng-show=\"caseDetails.product.$dirty\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span><select name=\"product\" style=\"width: 100%;\" ng-model=\"details.product\" ng-change=\"getProductVersions(details.product)\" ng-options=\"s.name for s in products track by s.name\" required class=\"form-control\"></select></div></td></tr><tr><th class=\"details-table-header\">Product Version:</th><td><div class=\"form-group has-feedback\"><span ng-show=\"caseDetails.version.$dirty\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span><select name=\"version\" style=\"width: 100%;\" ng-options=\"v for v in versions track by v\" ng-model=\"details.version\" required class=\"form-control\"></select></div></td></tr><tr><th class=\"details-table-header\">Support Level:</th><td>{{details.sla}}</td></tr><tr><th class=\"details-table-header\">Owner:</th><td>{{details.contact_name}}</td></tr><tr><th class=\"details-table-header\">Red Hat Owner:</th><td>{{details.owner}}</td></tr></table></div><div class=\"col-xs-4\"><table class=\"table details-table\"><tr><th class=\"details-table-header\">Group:</th><td><div class=\"form-group has-feedback\"><span ng-show=\"caseDetails.group.$dirty\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span><select name=\"group\" style=\"width: 100%;\" ng-options=\"g.name for g in groups track by g.number\" ng-model=\"details.group\" class=\"form-control\"></select></div></td></tr><tr><th class=\"details-table-header\">Opened:</th><td><div>{{details.created_date | date:'medium'}}</div><div>{{details.created_by}}</div></td></tr><tr><th class=\"details-table-header\">Last Updated:</th><td><div>{{details.last_modified_date | date:'medium'}}</div><div>{{details.last_modified_by}}</div></td></tr><tr><th class=\"details-table-header\">Account Number:</th><td>{{details.account_number}}</td></tr><tr><th class=\"details-table-header\">Account Name:</th><td>{{details.account_name}}</td></tr></table></div></div><div class=\"row\"><div class=\"col-xs-12\"><div style=\"float: right;\"><button name=\"updateButton\" ng-disabled=\"!caseDetails.$dirty\" ng-hide=\"updatingDetails\" ng-click=\"updateCase()\" class=\"btn btn-primary\">Update</button><div ng-show=\"updatingDetails\">Updating Case...</div></div></div></div></div></div></div></form></div></div><div class=\"row\"><h4 class=\"col-xs-12 section-header\">Description</h4><div class=\"container-fluid side-padding\"><div class=\"row\"><div class=\"col-xs-3\"><strong>{{details.created_by}}</strong></div><div class=\"col-xs-9\">{{details.description}}</div></div></div></div><div class=\"row\"><h4 class=\"col-xs-12 section-header\">Bugzilla Tickets</h4><div class=\"container-fluid side-padding\"><div class=\"row\"><div ng-if=\"!hasBugzillas\"><div class=\"col-xs-12\">No Bugzillas linked to case.</div></div><div ng-if=\"hasBugzillas\"><div class=\"col-xs-12\">Yes Bugzillas</div></div></div></div></div><div class=\"row\"><h4 class=\"col-xs-12 section-header\">Attachments</h4><div class=\"container-fluid side-padding\"><div class=\"row side-padding\"><div class=\"col-xs-12 bottom-border col-no-padding\"><rha-list-attachments></rha-list-attachments></div></div><div class=\"row\"><div class=\"col-xs-6\"><rha-attach-product-logs></rha-attach-product-logs></div><div class=\"col-xs-6\"><rha-attach-local-file></rha-attach-local-file></div></div></div></div><div ng-controller=\"Recommendations\" class=\"row\"><h4 class=\"col-xs-12 section-header\">Recommendations</h4><div class=\"container-fluid side-padding\"><div class=\"row\"><div ng-repeat=\"recommendation in recommendationsOnScreen\"><div class=\"col-xs-3\"><div class=\"bold\">{{recommendation.title}}</div><div style=\"padding: 8px 0;\">{{recommendation.solution_abstract}}</div><a href=\"{{recommendation.resource_view_uri}}\" target=\"_blank\">View full article in new window</a></div></div></div><div class=\"row\"><div class=\"col-xs-12\"><pagination boundary-links=\"true\" total-items=\"recommendations.length\" on-select-page=\"selectPage(page)\" items-per-page=\"itemsPerPage\" page=\"currentPage\" max-size=\"maxSize\" previous-text=\"&lt;\" next-text=\"&gt;\" first-text=\"&lt;&lt;\" last-text=\"&gt;&gt;\" class=\"pagination-sm\"></pagination></div></div></div></div><div class=\"row\"><h4 class=\"col-xs-12 section-header\">Case Discussion</h4><div class=\"container-fluid side-padding\"><div class=\"row create-field\"><div class=\"col-xs-12\"><textarea rows=\"5\" class=\"form-control\"></textarea></div></div><div style=\"margin-left: 0px; margin-right: 0px;\" class=\"row create-field bottom-border\"><div class=\"col-xs-12 col-no-padding\"><button ng-disabled=\"true\" style=\"float: right;\" class=\"btn\">Add comment</button></div></div><div class=\"row\"><div ng-repeat=\"comment in comments\"><div class=\"col-xs-2\"><div class=\"bold\">{{comment.created_by}}</div><div>{{comment.created_date | date:'mediumDate'}}</div><div>{{comment.created_date | date:'mediumTime'}}</div></div><div class=\"col-xs-10\"><pre>{{comment.text}}</pre></div></div></div></div></div></div></div>");
+    "<!DOCTYPE html><div id=\"redhat-access-case\"><div><h1 style=\"font-weight: bold\">Red Hat Access: Case {{caseId}}</h1></div><div x-login-status></div><div style=\"padding-top: 20px;\" class=\"bottom-border\"></div><div class=\"container-fluid\"><div class=\"row\"><div class=\"col-xs-12 col-no-padding\"><form name=\"caseDetails\"><div style=\"padding-bottom: 10px;\" class=\"has-feedback\"><span ng-show=\"caseDetails.summary.$dirty\" style=\"right: 50%; top: 0px;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span><input style=\"width: 50%;\" ng-model=\"details.summary\" name=\"summary\" class=\"form-control\"></div><div class=\"container-fluid side-padding\"><div class=\"row\"><h4 class=\"col-xs-12 section-header\">Case Details</h4><div class=\"container-fluid side-padding\"><div class=\"row\"><div class=\"col-xs-4\"><table class=\"table details-table\"><tr><th class=\"details-table-header\"><div style=\"vertical-align: 50%\">Case Type:</div></th><td><div class=\"form-group has-feedback\"><span ng-show=\"caseDetails.type.$dirty\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span><select name=\"type\" style=\"width: 100%;\" ng-model=\"details.type\" ng-options=\"c.name for c in caseTypes track by c.name\" class=\"form-control\"></select></div></td></tr><tr><th class=\"details-table-header\">Severity:</th><td><div class=\"form-group has-feedback\"><span ng-show=\"caseDetails.severity.$dirty\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span><select name=\"severity\" style=\"width: 100%;\" ng-model=\"details.severity\" ng-options=\"s.name for s in severities track by s.name\" class=\"form-control\"></select></div></td></tr><tr><th class=\"details-table-header\">Status:</th><td><div class=\"form-group has-feedback\"><span ng-show=\"caseDetails.status.$dirty\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span><select name=\"status\" style=\"width: 100%;\" ng-model=\"details.status\" ng-options=\"s.name for s in statuses track by s.name\" class=\"form-control\"></select></div></td></tr><tr><th class=\"details-table-header\">Alternate ID:</th><td><div class=\"form-group has-feedback\"><span ng-show=\"caseDetails.alternate_id.$dirty\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span><input style=\"width: 100%\" ng-model=\"details.alternate_id\" name=\"alternate_id\" class=\"form-control\"></div></td></tr></table></div><div class=\"col-xs-4\"><table class=\"table details-table\"><tr><th>Product:</th><td><div class=\"form-group has-feedback\"><span ng-show=\"caseDetails.product.$dirty\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span><select name=\"product\" style=\"width: 100%;\" ng-model=\"details.product\" ng-change=\"getProductVersions(details.product)\" ng-options=\"s.name for s in products track by s.name\" required class=\"form-control\"></select></div></td></tr><tr><th class=\"details-table-header\">Product Version:</th><td><div class=\"form-group has-feedback\"><span ng-show=\"caseDetails.version.$dirty\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span><select name=\"version\" style=\"width: 100%;\" ng-options=\"v for v in versions track by v\" ng-model=\"details.version\" required class=\"form-control\"></select></div></td></tr><tr><th class=\"details-table-header\">Support Level:</th><td>{{details.sla}}</td></tr><tr><th class=\"details-table-header\">Owner:</th><td>{{details.contact_name}}</td></tr><tr><th class=\"details-table-header\">Red Hat Owner:</th><td>{{details.owner}}</td></tr></table></div><div class=\"col-xs-4\"><table class=\"table details-table\"><tr><th class=\"details-table-header\">Group:</th><td><div class=\"form-group has-feedback\"><span ng-show=\"caseDetails.group.$dirty\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span><select name=\"group\" style=\"width: 100%;\" ng-options=\"g.name for g in groups track by g.number\" ng-model=\"details.group\" class=\"form-control\"></select></div></td></tr><tr><th class=\"details-table-header\">Opened:</th><td><div>{{details.created_date | date:'medium'}}</div><div>{{details.created_by}}</div></td></tr><tr><th class=\"details-table-header\">Last Updated:</th><td><div>{{details.last_modified_date | date:'medium'}}</div><div>{{details.last_modified_by}}</div></td></tr><tr><th class=\"details-table-header\">Account Number:</th><td>{{details.account_number}}</td></tr><tr><th class=\"details-table-header\">Account Name:</th><td>{{details.account_name}}</td></tr></table></div></div><div class=\"row\"><div class=\"col-xs-12\"><div style=\"float: right;\"><button name=\"updateButton\" ng-disabled=\"!caseDetails.$dirty\" ng-hide=\"updatingDetails\" ng-click=\"updateCase()\" class=\"btn btn-primary\">Update Details</button><div ng-show=\"updatingDetails\">Updating Case...</div></div></div></div></div></div></div></form></div></div><div class=\"row\"><h4 class=\"col-xs-12 section-header\">Description</h4><div class=\"container-fluid side-padding\"><div class=\"row\"><div class=\"col-xs-3\"><strong>{{details.created_by}}</strong></div><div class=\"col-xs-9\">{{details.description}}</div></div></div></div><div class=\"row\"><h4 class=\"col-xs-12 section-header\">Bugzilla Tickets</h4><div class=\"container-fluid side-padding\"><div class=\"row\"><div ng-if=\"!hasBugzillas\"><div class=\"col-xs-12\">No Bugzillas linked to case.</div></div><div ng-if=\"hasBugzillas\"><div class=\"col-xs-12\">Yes Bugzillas</div></div></div></div></div><div class=\"row\"><h4 class=\"col-xs-12 section-header\">Attachments</h4><div class=\"container-fluid side-padding\"><div class=\"row side-padding\"><div class=\"col-xs-12 col-no-padding\"><rha-list-attachments></rha-list-attachments></div></div><div class=\"row side-padding\"><div style=\"padding-bottom: 14px;\" class=\"col-xs-12 col-no-padding bottom-border\"><div style=\"float: right\"><div ng-hide=\"!updatingAttachments\">Updating Attachments...</div><button ng-disabled=\"disableUpdateAttachmentsButton\" ng-hide=\"updatingAttachments\" ng-click=\"updateAttachments()\" class=\"btn btn-primary\">Update Attachments</button></div></div></div><div class=\"row\"><div class=\"col-xs-12 col-no-padding\"><rha-attach-local-file></rha-attach-local-file></div></div></div></div><div ng-controller=\"Recommendations\" class=\"row\"><h4 class=\"col-xs-12 section-header\">Recommendations</h4><div class=\"container-fluid side-padding\"><div class=\"row\"><div ng-repeat=\"recommendation in recommendationsOnScreen\"><div class=\"col-xs-3\"><div class=\"bold\">{{recommendation.title}}</div><div style=\"padding: 8px 0;\">{{recommendation.solution_abstract}}</div><a href=\"{{recommendation.resource_view_uri}}\" target=\"_blank\">View full article in new window</a></div></div></div><div class=\"row\"><div class=\"col-xs-12\"><pagination boundary-links=\"true\" total-items=\"recommendations.length\" on-select-page=\"selectPage(page)\" items-per-page=\"itemsPerPage\" page=\"currentPage\" max-size=\"maxSize\" previous-text=\"&lt;\" next-text=\"&gt;\" first-text=\"&lt;&lt;\" last-text=\"&gt;&gt;\" class=\"pagination-sm\"></pagination></div></div></div></div><div class=\"row\"><h4 class=\"col-xs-12 section-header\">Case Discussion</h4><div class=\"container-fluid side-padding\"><div class=\"row create-field\"><div class=\"col-xs-12\"><textarea rows=\"5\" class=\"form-control\"></textarea></div></div><div style=\"margin-left: 0px; margin-right: 0px;\" class=\"row create-field bottom-border\"><div class=\"col-xs-12 col-no-padding\"><button ng-disabled=\"true\" style=\"float: right;\" class=\"btn btn-primary\">Add comment</button></div></div><div class=\"row\"><div ng-repeat=\"comment in comments\"><div class=\"col-xs-2\"><div class=\"bold\">{{comment.created_by}}</div><div>{{comment.created_date | date:'mediumDate'}}</div><div>{{comment.created_date | date:'mediumTime'}}</div></div><div class=\"col-xs-10\"><pre>{{comment.text}}</pre></div></div></div></div></div></div></div>");
 }]);
 
 angular.module("cases/views/listAttachments.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/listAttachments.html",
-    "<div ng-show=\"attachments.length == 0\">No attachments added</div><table ng-show=\"attachments.length &gt; 0\" class=\"table table-hover table-bordered\"><thead><th>Filename</th><th>Description</th><th>Size</th><th>Attached</th><th>Attached By</th><th></th></thead><tbody><tr ng-repeat=\"attachment in attachments\"><td><a ng-hide=\"attachment.uri == null\" href=\"{{attachment.uri}}\">{{attachment.file_name}}</a><div ng-show=\"attachment.uri == null\">{{attachment.file_name}}</div></td><td>{{attachment.description}}</td><td>{{attachment.length | bytes}}</td><td>{{attachment.created_date | date:'medium'}}</td><td>{{attachment.created_by}}</td><td><a ng-click=\"removeAttachment()\"><span popover=\"Remove\" popover-trigger=\"mouseenter\" popover-placement=\"right\" ng-click=\"removeAttachment\" style=\"width: 100%; height: 100%;\" class=\"glyphicon glyphicon-remove-circle\"></span></a></td></tr></tbody></table>");
+    "<div ng-show=\"attachments.length == 0\">No attachments added</div><table ng-show=\"attachments.length &gt; 0\" class=\"table table-hover table-bordered\"><thead><th>Filename</th><th>Description</th><th>Size</th><th>Attached</th><th>Attached By</th><th>Delete</th></thead><tbody><tr ng-repeat=\"attachment in attachments\"><td><a ng-hide=\"attachment.uri == null\" href=\"{{attachment.uri}}\">{{attachment.file_name}}</a><div ng-show=\"attachment.uri == null\">{{attachment.file_name}}</div></td><td>{{attachment.description}}</td><td>{{attachment.length | bytes}}</td><td>{{attachment.created_date | date:'medium'}}</td><td>{{attachment.created_by}}</td><td><a ng-click=\"removeAttachment()\">Delete</a></td></tr></tbody></table>");
 }]);
 
 angular.module("cases/views/new.html", []).run(["$templateCache", function($templateCache) {
@@ -1445,92 +1585,14 @@ angular.module("cases/views/new.html", []).run(["$templateCache", function($temp
     "<!DOCTYPE html><div class=\"container-fluid side-padding\"><div class=\"row\"><div class=\"col-xs-12\"><h3>Red Hat Access: Open a New Support Case</h3></div></div><div style=\"padding: 10px;\" x-login-status></div><div style=\"padding-top: 10px;\" class=\"bottom-border\"></div><div ng-hide=\"submitProgress == 0\" class=\"row\"><div class=\"col-xs-12\"><progressbar animate=\"true\" type=\"success\" value=\"submitProgress\" max=\"100\"></progressbar></div></div><div class=\"row\"><div style=\"border-right: 1px solid; border-color: #cccccc;\" class=\"col-xs-6\"><div class=\"container-fluid side-padding\"><div ng-class=\"{&quot;hidden&quot;: isPage2}\" id=\"rha-case-wizard-page-1\" class=\"create-case-section\"><div class=\"row create-field\"><div class=\"col-xs-4\"><div>Product:</div></div><div class=\"col-xs-8\"><select style=\"width: 100%;\" ng-model=\"product\" ng-change=\"getProductVersions(product)\" ng-options=\"p.name for p in products track by p.code\" class=\"form-control\"></select></div></div><div class=\"row create-field\"><div class=\"col-xs-4\"><div>Product Version:</div></div><div class=\"col-xs-8\"><div><progressbar ng-hide=\"!versionLoading\" max=\"1\" value=\"1\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select style=\"width: 100%;\" ng-model=\"version\" ng-options=\"v for v in versions\" ng-change=\"validateForm()\" ng-disabled=\"versionDisabled\" ng-hide=\"versionLoading\" class=\"form-control\"></select></div></div></div><div class=\"row create-field\"><div class=\"col-xs-4\"><div>Summary:</div></div><div class=\"col-xs-8\"><input id=\"rha-case-summary\" style=\"width: 100%;\" ng-change=\"validateForm()\" ng-model=\"summary\" class=\"form-control\"></div></div><div class=\"row create-field\"><div class=\"col-xs-4\"><div>Description:</div></div><div class=\"col-xs-8\"><textarea style=\"width: 100%; height: 200px;\" ng-model=\"description\" ng-change=\"validateForm()\" class=\"form-control\"></textarea></div></div><div class=\"row\"><div ng-class=\"{&quot;hidden&quot;: isPage2}\" class=\"col-xs-12\"><button style=\"float: right\" ng-click=\"doNext()\" ng-disabled=\"incomplete\" class=\"btn btn-primary\">Next</button></div></div></div><div ng-class=\"{&quot;hidden&quot;: isPage1}\" id=\"rha-case-wizard-page-1\" class=\"create-case-section\"><div class=\"bottom-border\"><div class=\"row\"><div class=\"col-xs-12\"><div style=\"margin-bottom: 10px;\" class=\"bold\">{{product.name}} {{version}}</div></div></div><div class=\"row\"><div class=\"col-xs-12\"><div style=\"font-size: 90%; margin-bottom: 4px;\" class=\"bold\">{{summary}}</div></div></div><div class=\"row\"><div class=\"col-xs-12\"><div style=\"font-size: 85%\">{{description}}</div></div></div></div><div class=\"row create-field\"><div class=\"col-xs-4\">Severity:</div><div class=\"col-xs-8\"><select style=\"width: 100%;\" ng-model=\"severity\" ng-change=\"validatePage2()\" ng-options=\"s.name for s in severities track by s.name\" class=\"form-control\"></select></div></div><div class=\"row create-field\"><div class=\"col-xs-4\">Case Group:</div><div class=\"col-xs-8\"><select style=\"width: 100%;\" ng-model=\"caseGroup\" ng-change=\"validatePage2()\" ng-options=\"g.name for g in groups track by g.number\" class=\"form-control\"></select></div></div><div class=\"row create-field\"><div class=\"col-xs-12\"><div>Attachments:</div></div></div><div class=\"bottom-border\"><div class=\"row create-field\"><div class=\"col-xs-12\"><rha-list-attachments></rha-list-attachments></div></div></div><div class=\"bottom-border\"><div class=\"row create-field\"><div class=\"col-xs-12\"><rha-attach-product-logs></rha-attach-product-logs></div></div></div><div class=\"bottom-border\"><div class=\"row create-field\"><div class=\"col-xs-12\"><rha-attach-local-file></rha-attach-local-file></div></div></div><div style=\"margin-top: 20px;\" class=\"row\"><div class=\"col-xs-6\"><button style=\"float: left\" ng-click=\"doPrevious()\" class=\"btn btn-primary\">Previous</button></div><div class=\"col-xs-6\"><button style=\"float: right\" //ng-disabled=\"submitProgress &gt; 0\" ng-click=\"doSubmit()\" class=\"btn btn-primary\">Submit</button></div></div></div></div></div><div class=\"col-xs-6\"><div class=\"container-fluid side-padding\"><div class=\"row\"><div class=\"col-xs-12\"><h4 style=\"padding-left: 10px;\" class=\"bottom-border\">Recommendations</h4><div x-accordion-search-results ng-controller=\"SearchController\"></div></div></div></div></div></div></div>");
 }]);
 
-angular.module("log_viewer/views/log_viewer-lindani.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("log_viewer/views/log_viewer-lindani.html",
-    "<div id=\"main\" >\n" +
-    "	<div class=\"row\">\n" +
-    "		<div class=\"col-xs-12\">\n" +
-    "			<h3>Red Hat Access: Diagnose</h3>\n" +
-    "		</div>\n" +
-    "	</div>\n" +
-    "	<div x-login-status style=\"padding: 10px;\"/>\n" +
-    "	<div class=\"bottom-border\" style=\"padding-top: 10px;\"></div>\n" +
-    "	<div class=\"row\">\n" +
-    "		<div id=\"log-viewer-left\" class=\"col-lg-4\"> \n" +
-    "			<div class=\"btn-group\" ng-controller=\"DropdownCtrl\" ng-init=\"init()\">\n" +
-    "				<button type=\"button\" class=\"btn btn-default dropdown-toggle\"\n" +
-    "				data-toggle=\"dropdown\">\n" +
-    "				{{blah}} <span class=\"caret\"></span>\n" +
-    "			</button>\n" +
-    "			<ul class=\"dropdown-menu\">\n" +
-    "				<li ng-repeat=\"choice in items\" ng-click=\"machineSelected()\"><a>{{choice}}</a></li>\n" +
-    "			</ul>\n" +
-    "		</div>\n" +
-    "		<div ng-controller=\"fileController\" ng-click=\"updateSelected()\">\n" +
-    "			<div data-angular-treeview=\"true\" data-tree-id=\"mytree\"\n" +
-    "			data-tree-model=\"roleList\" data-node-id=\"roleId\"\n" +
-    "			data-node-label=\"roleName\" data-node-children=\"children\"></div>\n" +
-    "		</div>\n" +
-    "		<button type=\"button\" class=\"btn btn-primary\"\n" +
-    "		ng-controller=\"selectFileButton\" ng-click=\"fileSelected()\">\n" +
-    "		Select File</button>\n" +
-    "	</div>\n" +
-    "	<div id=\"log-viewer-right\"class=\"col-lg-8\"> \n" +
-    "		<div class= \"row\" ng-show=>\n" +
-    "			<div ng-controller=\"TabsDemoCtrl\">\n" +
-    "			<tabset > \n" +
-    "				<tab ng-repeat=\"tab in tabs\"\n" +
-    "				> <tab-heading>{{tab.shortTitle}}\n" +
-    "				<a ng-click=\"removeTab($index)\" href=''> <span\n" +
-    "					class=\"glyphicon glyphicon-remove\"></span>\n" +
-    "				</a> </tab-heading>\n" +
-    "				<div active=\"tab.active\" disabled=\"tab.disabled\" >\n" +
-    "					<div class=\"panel panel-default\">\n" +
-    "						<div class=\"panel-heading\">\n" +
-    "							<h3 class=\"panel-title\" style=\"display: inline\">{{tab.longTitle}}</h3>\n" +
-    "							<button id=\"diagnoseButton\" type=\"button\" class=\"btn btn-primary\"\n" +
-    "							ng-click=\"diagnoseText()\">Red Hat Diagnose</button>\n" +
-    "							<br> <br>\n" +
-    "						</div>\n" +
-    "						<div class=\"panel-body\">\n" +
-    "							<pre>{{tab.content}}</pre>\n" +
-    "						</div>\n" +
-    "					</div>\n" +
-    "\n" +
-    "				</div>\n" +
-    "			</tab> \n" +
-    "		</tabset>\n" +
-    "		</div>\n" +
-    "	</div>\n" +
-    "	<div class= \"row\">\n" +
-    "     <div class=\"panel panel-default\">\n" +
-    "    <div class=\"panel-heading\">\n" +
-    "      <h4 class=\"panel-title\">\n" +
-    "        <a data-toggle=\"collapse\"  data-target=\"#collapseTwo\">\n" +
-    "          Suggested Solutions\n" +
-    "        </a>\n" +
-    "      </h4>\n" +
-    "    </div>\n" +
-    "    <div id=\"collapseTwo\" class=\"panel-collapse collapse\">\n" +
-    "      <div class=\"panel-body\">\n" +
-    "        <div  x-accordion-search-results='' ng-controller='SearchController'/>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "  </div>\n" +
-    "</div>\n" +
-    "</div>			\n" +
-    "</div>\n" +
-    "</div>");
-}]);
-
 angular.module("log_viewer/views/log_viewer.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("log_viewer/views/log_viewer.html",
     "<div id=\"log_view_main\" class=\"container\" style=\"max-height: 500px;\" >\n" +
-    "	<div class=\"row\">\n" +
+    "	<!--div class=\"row\">\n" +
     "		<div class=\"col-xs-12\">\n" +
     "			<h3>Red Hat Access: Diagnose</h3>\n" +
     "		</div>\n" +
-    "	</div>\n" +
+    "	</div-->\n" +
     "	<div x-login-status style=\"padding: 10px;\"/>\n" +
     "	<div class=\"bottom-border\" style=\"padding-top: 10px;\"></div>\n" +
     "	<div ng-class=\"{ showMe: opens }\" class=\"left\" >\n" +
