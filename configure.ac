@@ -76,6 +76,8 @@ AC_CONFIG_FILES([
 	src/Makefile
 	src/enabled/Makefile
 	src/utils/Makefile
+	src/utils/pam.d/Makefile
+	src/utils/console.apps/Makefile
 	src/redhat_access_plugin_openstack/Makefile
 	src/redhat_access_plugin_openstack/log/Makefile
 	src/redhat_access_plugin_openstack/log/templates/Makefile

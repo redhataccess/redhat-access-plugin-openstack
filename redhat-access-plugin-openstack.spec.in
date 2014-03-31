@@ -72,8 +72,8 @@ ln -s /usr/bin/consolehelper /usr/bin/rhosap-sosreport
 %files
 %doc AUTHORS 
 /usr/share/openstack-dashboard/openstack_dashboard/
-/etc/pam.d/rhosap-sosreport.pam
-/etc/security/console.apps/rhosap-sosreport.console-apps
+/etc/pam.d/rhosap-sosreport
+/etc/security/console.apps/rhosap-sosreport
 /usr/sbin/rhosap-sosreport-wrapper
 
 %changelog

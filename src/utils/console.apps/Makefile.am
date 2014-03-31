@@ -22,12 +22,11 @@ MAINTAINERCLEANFILES = \
 EXTRA_DIST = \
 	$(NULL)
 
-SUBDIRS = console.apps pam.d
-
-sbindir=/usr/sbin
-dist_sbin_SCRIPTS = \
-	rhosap-sosreport-wrapper \
+consoledir=/etc/security/console.apps
+dist_console_DATA = \
+	rhosap-sosreport \
 	$(NULL)
+
 
 all-local: \
 	$(NULL)

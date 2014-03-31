@@ -38,7 +38,7 @@ if __name__ == '__main__':
     filelist = os.listdir(newtmpdir)
     filelist.append('')
 
-    ovirt_uid = -1  # Ensures chown no-op if something weird happens in pwd.
+    apache_uid = -1  # Ensures chown no-op if something weird happens in pwd.
 
     try:
         # get uid, this may raise KeyError if it can't lookup
