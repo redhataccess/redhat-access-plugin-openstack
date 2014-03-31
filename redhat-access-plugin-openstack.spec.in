@@ -67,6 +67,7 @@ make %{?_smp_mflags} install DESTDIR="%{buildroot}"
 
 %post
 python /usr/share/openstack-dashboard/manage.py collectstatic --noinput
+ln -s /usr/bin/consolehelper /usr/bin/rhosap-sosreport
 
 %files
 %doc AUTHORS 
