@@ -39,6 +39,21 @@ class IndexView(InstanceView):
     template_name = 'redhat_access_plugin_openstack/log/index.html'
 
 
+class LocalLogView(views.APIView):
+    template_name = 'redhat_access_plugin_openstack/log/viewlocal.html'
+
+    def get_data(self, request, *args, **kwargs):
+        instance_id = request.GET.get('id', None)
+        try:
+            data = api.nova.server_console_output(request,
+                                                  instance_id,
+                                                  tail_length=150)
+        except:
+            data = _('Unable to get log for instance "%s".') % instance_id
+            exceptions.handle(request, ignore=True)
+        return {"console_log": data}
+
+
 class LogView(views.APIView):
     template_name = 'redhat_access_plugin_openstack/log/view.html'
 
