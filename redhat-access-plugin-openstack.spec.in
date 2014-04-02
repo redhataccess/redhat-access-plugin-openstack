@@ -37,7 +37,6 @@ BuildArch: noarch
 Requires: python
 Requires: python-lxml
 Requires: python-dateutil
-Requires: redhat-support-lib-python
 Requires: openstack-dashboard
 
 %if 0%{?rhel} && 0%{?rhel} <= 5

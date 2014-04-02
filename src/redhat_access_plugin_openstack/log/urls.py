@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import patterns, url
 
-from .views import IndexView, LogView
+from .views import IndexView, LogView, LocalLogView
 
 urlpatterns = patterns(
     '',
