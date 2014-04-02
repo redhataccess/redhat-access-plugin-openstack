@@ -1,4 +1,5 @@
 from django.utils.translation import ugettext_lazy as _
+from django import http
 
 from horizon import exceptions
 from horizon import tables
@@ -55,8 +56,10 @@ class LocalLogView(views.APIView):
 
 
 def logs(request):
-    data = "test"
-    return {"log": data}
+    response = http.HttpResponse(content_type='text/plain')
+    response.write("test")
+    response.flush()
+    return response
 
 
 class LogView(views.APIView):
