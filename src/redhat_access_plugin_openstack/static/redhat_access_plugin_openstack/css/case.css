@@ -1,0 +1,78 @@
+th {
+    font-weight: normal;
+    color: #777;
+}
+
+.details-table > tbody > tr > th,
+.details-table > tbody > tr > td {
+    padding: 8px 0;
+    border-top: none;
+}
+
+.section-header {
+    padding: 0;
+    border-bottom: solid 1px;
+    border-color: grey;
+}
+
+.container-fluid {
+    /*padding: 0 15px;*/
+}
+
+.comment-creator {
+    font-weight: bold;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.create-field {
+    padding-bottom: 8px;
+}
+
+.bottom-border {
+    margin-bottom: 14px;
+    padding-bottom: 7px;
+    border-bottom: 1px solid #cccccc;
+}
+
+.create-case-section {
+    padding: 10px 0;
+}
+
+.col-no-padding {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.details-table-header {
+    width: 40%;
+}
+
+.side-padding {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.select-feedback {
+    left: -34px !important;
+    top: 0px !important;
+}
+
+div#redhat-access-case .has-feedback .form-control-feedback {
+    right: 10px;
+    top: 0px;
+}
+
+div#redhat-access-case .form-group {
+    margin-bottom: 0px;
+}
+
+div#redhat-access-case .table > tbody > tr > th {
+    vertical-align: middle;
+}
+
+div#redhat-access-case .glyphicon-asterisk {
+    color: #428bca;
+}
