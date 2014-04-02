@@ -14,7 +14,14 @@
     </div>
 </div>
 <script>
-angular.module('logViewer').config(function ($urlRouterProvider) {$urlRouterProvider.otherwise('/logviewer')});
+angular.module('logViewer').config(function($urlRouterProvider) {
+	$urlRouterProvider.otherwise('/logviewer')
+}).config([ '$stateProvider', function($stateProvider) {
+	$stateProvider.state('logviewer', {
+		url : "/logviewer",
+		templateUrl : 'log_viewer/views/log_viewer.html'
+	})
+} ]);
 angular.bootstrap(document.getElementById("redhat-access-logs"), ['logViewer']);
 </script>
 {% endblock %}
