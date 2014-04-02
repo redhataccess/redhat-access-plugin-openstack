@@ -13,8 +13,7 @@
     </div>
 </div>
 <script>
-angular.module('RedhatAccessCases').config(function ($urlRouterProvider) {$urlRouterProvider.otherwise('/list')});
+angular.module('RedhatAccessCases').config(function ($urlRouterProvider) {$urlRouterProvider.otherwise('case/list')});
 angular.bootstrap(document.getElementById("redhat-access-cases"), ['RedhatAccessCases']);
 </script>
-{% endblock %}
 {% endblock %}
