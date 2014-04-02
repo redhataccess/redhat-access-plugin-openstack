@@ -8,18 +8,13 @@
 {% endblock page_header %}
 
 {% block redhat_access_plugin_openstack_main %}
-<form id="rh-search">
-    <fieldset>
-        <label>Red Hat Access: Support</label>
-            <input type="text" id="rhSearchStr" name="searchString" class="input-xxlarge" placeholder="Search Articles and Solutions"/>
-            <button id="rh-search-btn" type="submit" class="btn btn-small btn-primary" style="vertical-align: top;">Search</button>
-    </fieldset>
-</form>
-
-<div id='solutions' style="width: 47%; float: left;">
+<div id='redhat-access-cases'>
+    <div ui-view>
+    </div>
 </div>
-<div id='solution-outer' style='height: 100%; width: 50%; float: right;'>
-<div id='solution' style="overflow: auto;">
-</div>
-</div>
+<script>
+angular.module('RedhatAccessCases').config(function ($urlRouterProvider) {$urlRouterProvider.otherwise('/list')});
+angular.bootstrap(document.getElementById("redhat-access-cases"), ['RedhatAccessCases']);
+</script>
+{% endblock %}
 {% endblock %}
