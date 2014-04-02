@@ -54,6 +54,11 @@ class LocalLogView(views.APIView):
         return {"console_log": data}
 
 
+def logs(request):
+    data = "test"
+    return {"log": data}
+
+
 class LogView(views.APIView):
     template_name = 'redhat_access_plugin_openstack/log/view.html'
 
