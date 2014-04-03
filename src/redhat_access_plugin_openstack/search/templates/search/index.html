@@ -17,5 +17,6 @@
 angular.module('RedhatAccess.search').config(function ($urlRouterProvider) {$urlRouterProvider.otherwise('/search')});
 angular.bootstrap(document.getElementById("redhat-access-search"), ['RedhatAccess.search']);
 angular.bootstrap(document.getElementById("security-div"), ['RedhatAccess.security']);
+strata.setRedhatClientID("redhat_access_plugin_openstack-5.0");
 </script>
 {% endblock %}
