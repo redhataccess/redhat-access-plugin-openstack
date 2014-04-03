@@ -24,4 +24,15 @@ MAINTAINERCLEANFILES = \
 EXTRA_DIST = \
 	$(NULL)
 
-SUBDIRS = img js css fonts
+SUBDIRS =
+
+cssdir=$(rhsupporttoollibdir)/dashboards/redhat_access_plugin_openstack/static/redhat_access_plugin_openstack/fonts
+dist_css_DATA = \
+	*.* \
+	$(NULL)
+
+all-local: \
+	$(NULL)
+
+clean-local: \
+	$(NULL)

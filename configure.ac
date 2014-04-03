@@ -93,6 +93,7 @@ AC_CONFIG_FILES([
 	src/redhat_access_plugin_openstack/static/redhat_access_plugin_openstack/css/Makefile
 	src/redhat_access_plugin_openstack/static/redhat_access_plugin_openstack/img/Makefile
 	src/redhat_access_plugin_openstack/static/redhat_access_plugin_openstack/js/Makefile
+	src/redhat_access_plugin_openstack/static/redhat_access_plugin_openstack/fonts/Makefile
 	src/redhat_access_plugin_openstack/templates/Makefile
 	src/redhat_access_plugin_openstack/templates/redhat_access_plugin_openstack/Makefile
 ])
