@@ -1507,18 +1507,18 @@ angular.module('RedhatAccessCases')
 
  // var testURL = 'http://localhost:8080/LogCollector/';
 // angular module
-var logViewer = angular.module('RedhatAccess.logViewer',
-		[ 'angularTreeview', 'ui.bootstrap', 'RedhatAccess.search']);
+angular.module('RedhatAccess.logViewer',
+		[ 'angularTreeview', 'ui.bootstrap', 'RedhatAccess.search'])
 
-logViewer.config(function($urlRouterProvider) {
+.config(function($urlRouterProvider) {
 		}).config([ '$stateProvider', function($stateProvider) {
 			$stateProvider.state('logviewer', {
 				url : "/logviewer",
 				templateUrl : 'log_viewer/views/log_viewer.html'
 			})
-		} ]);
+		} ])
 
-logViewer.factory('files', function() {
+.factory('files', function() {
 	var fileList = '';
 	var selectedFile = '';
 	var selectedHost = '';
@@ -1546,9 +1546,9 @@ logViewer.factory('files', function() {
 			this.file = file;
 		}
 	};
-});
+})
 
-logViewer.service('accordian', function() {
+.service('accordian', function() {
 	var groups = new Array();
 	return {
 		getGroups : function() {
@@ -1561,14 +1561,8 @@ logViewer.service('accordian', function() {
 			groups = '';
 		}
 	};
-});
-
-angular.element(document).ready(function() {
-
-	c = angular.element(document.querySelector('#controller-demo')).scope();
-});
-
-logViewer.controller('fileController', function($scope, files) {
+})
+.controller('fileController', function($scope, files) {
 	$scope.roleList = '';
 	$scope.updateSelected = function() {
 		if ($scope.mytree.currentNode != null
@@ -1582,9 +1576,8 @@ logViewer.controller('fileController', function($scope, files) {
 	}, function() {
 		$scope.roleList = files.fileList;
 	});
-});
-
-logViewer.controller('DropdownCtrl', function($scope, $http, $location, files) {
+})
+.controller('DropdownCtrl', function($scope, $http, $location, files) {
 	$scope.blah = "Please Select the Machine";
 	$scope.items = [];
 	var sessionId = $location.search().sessionId;
@@ -1620,9 +1613,8 @@ logViewer.controller('DropdownCtrl', function($scope, $http, $location, files) {
 			// or server returns response with an error status.
 		});
 	};
-});
-
-logViewer.controller('selectFileButton', function($scope, $http, $location,
+})
+.controller('selectFileButton', function($scope, $http, $location,
 		files) {
 	$scope.fileSelected = function() {
 		var sessionId = $location.search().sessionId;
@@ -1643,9 +1635,8 @@ logViewer.controller('selectFileButton', function($scope, $http, $location,
 			// or server returns response with an error status.
 		});
 	};
-});
-
-logViewer.controller('TabsDemoCtrl', [
+})
+.controller('TabsDemoCtrl', [
 		'$scope',
 		'files',
 		'accordian',
@@ -1707,11 +1698,58 @@ logViewer.controller('TabsDemoCtrl', [
 					// }, 5);
 				}
 			};
-		} ]);
+		} ])
 
-logViewer.controller('AccordionDemoCtrl', function($scope, accordian) {
+.controller('AccordionDemoCtrl', function($scope, accordian) {
 	$scope.oneAtATime = true;
 	$scope.groups = accordian.getGroups();
+})
+.directive('resizeableFileView', function($window) {
+  return function($scope) {
+    $scope.initializeWindowSize = function() {
+      return $scope.windowHeight = $window.innerHeight - 225;
+    };
+    $scope.initializeWindowSize();
+    return angular.element($window).bind('resize', function() {
+      $scope.initializeWindowSize();
+      return $scope.$apply();
+    });
+  };
+})
+
+.directive('resizeableSolutionView', function($window) {
+  return function($scope) {
+    $scope.initializeWindowSize = function() {
+      return $scope.windowHeight = $window.innerHeight - 140;
+
+    };
+    $scope.initializeWindowSize();
+    return angular.element($window).bind('resize', function() {
+      $scope.initializeWindowSize();
+      return $scope.$apply();
+    });
+  };
+})
+
+.directive('resizeableDemoLeftView', function($window) {
+  return function($scope) {
+    $scope.initializeWindowSize = function() {
+      return $scope.windowHeight = $window.innerHeight - 35;
+
+    };
+    $scope.initializeWindowSize();
+    return angular.element($window).bind('resize', function() {
+      $scope.initializeWindowSize();
+      return $scope.$apply();
+    });
+  };
+});
+
+
+
+angular.element(document).ready(function() {
+
+	c = angular.element(document.querySelector('#controller-demo')).scope();
 });
 
 function parseList(tree, data) {
@@ -1756,49 +1794,6 @@ function returnNode(splitPath, tree, fullFilePath) {
 		}
 	}
 }
-
-logViewer.directive('resizeableFileView', function($window) {
-  return function($scope) {
-    $scope.initializeWindowSize = function() {
-      return $scope.windowHeight = $window.innerHeight - 225;
-    };
-    $scope.initializeWindowSize();
-    return angular.element($window).bind('resize', function() {
-      $scope.initializeWindowSize();
-      return $scope.$apply();
-    });
-  };
-});
-
-logViewer.directive('resizeableSolutionView', function($window) {
-  return function($scope) {
-    $scope.initializeWindowSize = function() {
-      return $scope.windowHeight = $window.innerHeight - 140;
-
-    };
-    $scope.initializeWindowSize();
-    return angular.element($window).bind('resize', function() {
-      $scope.initializeWindowSize();
-      return $scope.$apply();
-    });
-  };
-});
-
-logViewer.directive('resizeableDemoLeftView', function($window) {
-  return function($scope) {
-    $scope.initializeWindowSize = function() {
-      return $scope.windowHeight = $window.innerHeight - 35;
-
-    };
-    $scope.initializeWindowSize();
-    return angular.element($window).bind('resize', function() {
-      $scope.initializeWindowSize();
-      return $scope.$apply();
-    });
-  };
-});
-
-
 angular.module('templates.app', ['security/login_form.html', 'security/login_status.html', 'search/views/accordion_search.html', 'search/views/accordion_search_results.html', 'search/views/list_search_results.html', 'search/views/resultDetail.html', 'search/views/search.html', 'search/views/search_form.html', 'search/views/standard_search.html', 'cases/views/attachLocalFile.html', 'cases/views/attachProductLogs.html', 'cases/views/details.html', 'cases/views/list.html', 'cases/views/listAttachments.html', 'cases/views/new.html', 'cases/views/pageHeader.html', 'log_viewer/views/log_viewer.html']);
 
 angular.module("security/login_form.html", []).run(["$templateCache", function($templateCache) {

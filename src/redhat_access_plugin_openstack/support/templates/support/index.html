@@ -15,5 +15,6 @@
 <script>
 angular.module('RedhatAccessCases').config(function ($urlRouterProvider) {$urlRouterProvider.otherwise('case/list')});
 angular.bootstrap(document.getElementById("redhat-access-cases"), ['RedhatAccessCases']);
+strata.setRedhatClientID("redhat_access_plugin_openstack-5.0");
 </script>
 {% endblock %}
