@@ -1141,7 +1141,7 @@ angular.module('RedhatAccessCases')
      *
      * @param page
      */
-    $scope.setPage = function(page) {
+    $scope.gotoPage = function(page) {
       $scope.isPage1 = page == 1 ? true : false;
       $scope.isPage2 = page == 2 ? true : false;
     };
@@ -1150,14 +1150,14 @@ angular.module('RedhatAccessCases')
      * Navigate forward in the wizard
      */
     $scope.doNext = function() {
-      $scope.setPage(2);
+      $scope.gotoPage(2);
     };
 
     /**
      * Navigate back in the wizard
      */
     $scope.doPrevious = function() {
-      $scope.setPage(1);
+      $scope.gotoPage(1);
     };
 
     /**
@@ -1240,7 +1240,7 @@ angular.module('RedhatAccessCases')
 
     };
 
-    $scope.setPage(1);
+    $scope.gotoPage(1);
   }]);
 
 
@@ -1863,27 +1863,29 @@ angular.module("security/login_form.html", []).run(["$templateCache", function($
     "    Sign into the Red Hat Customer Portal\n" +
     "    </h5>\n" +
     "</div>\n" +
-    "<div class=\"modal-body form-horizontal\" id=\"rha-login-modal-body\" role=\"form\">\n" +
-    "    <div class=\"alert alert-error\" ng-show=\"authError\">\n" +
-    "        {{authError}}\n" +
-    "    </div>\n" +
-    "    <div class=\"form-group\" id=\"rha-login-modal-user-id\">\n" +
-    "        <label for=\"user-id\" class=\" control-label\">User ID</label>\n" +
-    "        <div >\n" +
-    "            <input type=\"text\" class=\"form-control\" id=\"user-id\" placeholder=\"User ID\" ng-model=\"user.user\" required autofocus >\n" +
+    "<div class=\"modal-body form-horizontal\" id=\"rha-login-modal-body\" >\n" +
+    "    <form ng-submit=\"modalOptions.ok()\">\n" +
+    "        <div class=\"alert alert-info\" ng-show=\"authError\">\n" +
+    "            {{authError}}\n" +
     "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"form-group\" id=\"rha-login-modal-user-pass\">\n" +
-    "        <label for=\"password\" class=\"control-label\">Password</label>\n" +
-    "        <div >\n" +
-    "            <input type=\"password\" class=\"form-control\" id=\"password\" placeholder=\"Password\" ng-model=\"user.password\" required>\n" +
+    "        <div class=\"form-group\" id=\"rha-login-modal-user-id\">\n" +
+    "            <label for=\"user-id\" class=\" control-label\">User ID</label>\n" +
+    "            <div >\n" +
+    "                <input type=\"text\" class=\"form-control\" id=\"user-id\" placeholder=\"User ID\" ng-model=\"user.user\" required autofocus >\n" +
+    "            </div>\n" +
     "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"form-group\" id=\"rha-login-modal-buttons\">\n" +
-    "        <div>\n" +
-    "            <button class=\"btn btn-primary btn-md login\" ng-click=\"modalOptions.ok()\">Sign in</button> <button class=\"btn btn-primary btn-md cancel\" ng-click=\"modalOptions.close()\" type=\"submit\">Cancel</button>\n" +
+    "        <div class=\"form-group\" id=\"rha-login-modal-user-pass\">\n" +
+    "            <label for=\"password\" class=\"control-label\">Password</label>\n" +
+    "            <div >\n" +
+    "                <input type=\"password\" class=\"form-control\" id=\"password\" placeholder=\"Password\" ng-model=\"user.password\" required>\n" +
+    "            </div>\n" +
     "        </div>\n" +
-    "    </div>\n" +
+    "        <div class=\"form-group\" id=\"rha-login-modal-buttons\">\n" +
+    "            <div>\n" +
+    "                <button class=\"btn btn-primary btn-md login\" ng-click=\"modalOptions.ok()\" type=\"submit\">Sign in</button> <button class=\"btn btn-primary btn-md cancel\" ng-click=\"modalOptions.close()\" type=\"submit\">Cancel</button>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </form>\n" +
     "</div>");
 }]);
 
