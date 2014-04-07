@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 from django import http
 
-import subprocess, shlex
+import subprocess
 import shlex
 
 from horizon import exceptions
@@ -59,18 +59,24 @@ class LocalLogView(views.APIView):
 
 
 def logs(request):
-    cmd_line = "find /var/log -group apache -type f"
-    args = shlex.split(cmd_line)
-    p = subprocess.Popen(args
-                         shell=True,
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
-    out, err = p.communicate()
-    rc = process.returncode
-    response = http.HttpResponse(content_type='text/plain')
-    response.write(out)
-    response.flush()
-    return response
+    if request.method == 'GET':
+        cmd_line = "find /var/log/ -group apache -type f"
+        args = shlex.split(cmd_line)
+        p = subprocess.Popen(args,
+                             shell=False,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+        out, err = p.communicate()
+        rc = p.returncode
+        response = http.HttpResponse(content_type='text/plain')
+        response.write(out)
+        response.flush()
+        return response
+    elif request.method == 'POST':
+        response = http.HttpResponse(content_type='application/json')
+        response.write("test")
+        response.flush()
+        return response
 
 
 class LogView(views.APIView):
