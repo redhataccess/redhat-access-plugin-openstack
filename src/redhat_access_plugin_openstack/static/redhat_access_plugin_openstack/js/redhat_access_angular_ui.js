@@ -81,7 +81,8 @@ angular.module('RedhatAccess.security', ['ui.bootstrap', 'templates.app'])
                 backdrop: true,
                 keyboard: true,
                 modalFade: true,
-                templateUrl: 'security/login_form.html'
+                templateUrl: 'security/login_form.html',
+                windowClass: 'rha-login-modal'
             };
 
             var modalOptions = {
@@ -89,8 +90,8 @@ angular.module('RedhatAccess.security', ['ui.bootstrap', 'templates.app'])
                 actionButtonText: 'OK',
                 headerText: 'Proceed?',
                 bodyText: 'Perform this action?',
-                backdrop: 'static',
-                windowClass: 'rha-login-modal'
+                backdrop: 'static'
+                
             };
 
             this.login = function () {
@@ -1826,9 +1827,9 @@ angular.module('templates.app', ['security/login_form.html', 'security/login_sta
 angular.module("security/login_form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("security/login_form.html",
     "<div class=\"modal-header\" id=\"rha-login-modal-header\">\n" +
-    "    <h4>\n" +
+    "    <h5>\n" +
     "    Sign into the Red Hat Customer Portal\n" +
-    "    </h4>\n" +
+    "    </h5>\n" +
     "</div>\n" +
     "<div class=\"modal-body form-horizontal\" id=\"rha-login-modal-body\" role=\"form\">\n" +
     "    <div class=\"alert alert-error\" ng-show=\"authError\">\n" +
