@@ -60,23 +60,28 @@ class LocalLogView(views.APIView):
 
 def logs(request):
     if request.method == 'GET':
-        cmd_line = "find /var/log/ -group apache -type f"
-        args = shlex.split(cmd_line)
-        p = subprocess.Popen(args,
-                             shell=False,
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE)
-        out, err = p.communicate()
-        rc = p.returncode
-        response = http.HttpResponse(content_type='text/plain')
-        response.write(out)
-        response.flush()
-        return response
-    elif request.method == 'POST':
-        response = http.HttpResponse(content_type='application/json')
-        response.write("test")
-        response.flush()
-        return response
+        try:
+            path = request.GET.get('path')
+            f = open(path, 'r')
+            response = http.HttpResponse(content_type='text/plain')
+            response.write(f.read())
+            response.flush()
+            return response
+        except(KeyError):
+            cmd_line = "find /var/log/ -group apache -type f"
+            args = shlex.split(cmd_line)
+            p = subprocess.Popen(args,
+                                 shell=False,
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE)
+            out, err = p.communicate()
+            rc = p.returncode
+            response = http.HttpResponse(content_type='text/plain')
+            response.write(out.strip())
+            response.flush()
+            return response
+    else:
+        return http.HttpResponseBadRequest()
 
 
 class LogView(views.APIView):

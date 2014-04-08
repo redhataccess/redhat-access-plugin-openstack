@@ -14,7 +14,7 @@ class IndexView(views.APIView):
 
 def attachments(request):
     if request.method == 'GET':
-        cmd_line = "/usr/bin/rhosap-sosreport --batch"
+        cmd_line = "find /var/log/ -group apache -type f"
         args = shlex.split(cmd_line)
         p = subprocess.Popen(args,
                              shell=False,
