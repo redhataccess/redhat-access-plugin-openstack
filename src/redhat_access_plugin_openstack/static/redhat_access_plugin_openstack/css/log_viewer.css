@@ -1,72 +1,25 @@
-div[data-angular-treeview] {
-  /* prevent user selection */
-  -moz-user-select: -moz-none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-
-  /* default */
-  font-family: Tahoma;
-  font-size:13px;
-  color: #555;
-  text-decoration: none;
+.col-fluid {
+    position: relative;
+    min-height: 1px;
+    margin-left: 15px;
+    margin-right: 15px;
+/*    display: table;*/
+    overflow: auto;
 }
 
-div[data-tree-model] ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border: none;
-  overflow: hidden;
-}
-
-div[data-tree-model] li {
-  position: relative;
-  padding: 0 0 0 20px;
-  line-height: 20px;
-}
-
-div[data-tree-model] li .expanded {
-  padding: 1px 10px;
-  background-image: url("../img/folder.png");
-  background-repeat: no-repeat;
-}
-
-div[data-tree-model] li .collapsed {
-  padding: 1px 10px;
-  background-image: url("../img/folder-closed.png");
-  background-repeat: no-repeat;
-}
-
-div[data-tree-model] li .normal {
-  padding: 1px 10px;
-  background-image: url("../img/file.png");
-  background-repeat: no-repeat;
-}
-
-div[data-tree-model] li i, div[data-tree-model] li span {
-  cursor: pointer;
-}
-
-div[data-tree-model] li .selected {
-  background-color: #aaddff;
-  font-weight: bold;
-  padding: 1px 5px;
-}
 
 #log_view_main {
-	height: 100%;
+/*	height: 100%;*/
 /*	background: #eee;*/
 }
 
 #right-side {
-	height: 90%;
+/*	height: 90%;*/
 	overflow: scroll;
 }
 
 #right {
-	height: 100%;
+	/*height: 100%;*/
 	overflow: hidden;
 }
 
@@ -74,20 +27,34 @@ div[data-tree-model] li .selected {
 	float: left;
 	width: 15px;
 /* 	background: #eee; */
-	height: 100%;
+	/*height: 100%;*/
 	display: none;
 }
 
 .left.showMe {
 	display: block;
 }
+.nav_tree {
+	display: block;
+}
+.nav_tree.showMe {
+	display: none;
+}
 
+.solutions{
+	display: none;
+}
+
+.solutions.showMe{
+	display: block;
+}
 .demo-left {
 	float: left;
-	width: 275px;
+/*	width: 25%;*/
 /* 	background: #eee; */
-	height: 100%;
 	display: block;
+	overflow-y: scroll;
+	padding: 5px
 }
 
 .demo-left.showMe {
@@ -99,12 +66,10 @@ div[data-tree-model] li .selected {
 /* } */
 
 .custom-glyphicon-left {
-/* 	font-size: 30px; */
-	top: 50%;
 	position: absolute;
+	top: 50%;
+	left: 95%;
 	margin-top: -7px;
-	text-align: right;
-	left: 254px;
 }
 
 .custom-glyphicon-right {
@@ -116,19 +81,19 @@ div[data-tree-model] li .selected {
 
 }
 #height {
-	height: 100%;
+	/*height: 100%;*/
 }
 
 .height {
-	height: 100%;
+	/*height: 100%;*/
 }
 
 .tab-content {
-	height: 100%;
+	/*height: 100%;*/
 }
 
 .tab-pane {
-	height: 90%;
+	/*height: 90%;*/
 }
 
 .panel-body {
@@ -141,7 +106,7 @@ div[data-tree-model] li .selected {
 
 .height-width {
 	width: 100%;
-	height: 100%;
+	/*height: 100%;*/
 }
 
 .panel-body {
@@ -151,7 +116,7 @@ div[data-tree-model] li .selected {
 .collapsable {
 	display: inline-block;
 	overflow: hidden;
-	height: 100%;
+	/*height: 100%;*/
 	width: 100%;
 	transition: height 1s;
 	-webkit-transition: height 1s;
@@ -170,26 +135,26 @@ div[data-tree-model] li .selected {
 
 .demo-right.showMe {
 	display: block;
-	padding: 30px;
+	/*padding: 30px;*/
 }
 
 .main-right {
 	width: 100%;	
 	float: left;
-	padding: 0 15px 0 0;
+	padding: 0 15px;
 }
 
 .main-right.showMe {
-	width: 50%;
+/*	width: 50%;*/
 	float: left;
-	padding: 0 0 0 0;
+	padding: 0 15px;
 }
 
 .controller-demo {
 /* 	margin-left: 97%; */
-	float: right;
-	width: 50%;
-	height: 100%;
+/*	float: right;
+*//*	width: 50%;*/
+	/*height: 100%;*/
 	display: none;
 }
 
@@ -199,7 +164,7 @@ div[data-tree-model] li .selected {
 .collapser{
 	float: right;
 	width: 15px;
-	height: 100%;
+	/*height: 100%;*/
 	display: block;
 }
 .collapser.showMe{
@@ -209,5 +174,26 @@ div[data-tree-model] li .selected {
 .bigger-button {
 	top: 50%;
 	position: absolute;
-/* 	float: left; */
+/*	right: 95%;
+	margin-top: -7px;*/
+}
+.right-side-button{
+	top: 50%;
+	position: absolute;
+	right: 95%;
+	margin-top: -7px;
+}
+.fileList {
+	overflow: scroll;
+}
+.no-line-wrap {
+	word-wrap: normal;
+	white-space: pre;
+	/*overflow: auto;*/
+	overflow: scroll;
+	/*height: 70vh;*/
+}
+.resizeable-solution-view {
+	overflow-y: scroll;
+	padding: 0px 15px;
 }

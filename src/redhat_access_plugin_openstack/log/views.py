@@ -60,14 +60,14 @@ class LocalLogView(views.APIView):
 
 def logs(request):
     if request.method == 'GET':
-        try:
-            path = request.GET.get('path')
+        path = request.GET.get('path')
+        if path:
             f = open(path, 'r')
             response = http.HttpResponse(content_type='text/plain')
             response.write(f.read())
             response.flush()
             return response
-        except(KeyError):
+        else:
             cmd_line = "find /var/log/ -group apache -type f"
             args = shlex.split(cmd_line)
             p = subprocess.Popen(args,
