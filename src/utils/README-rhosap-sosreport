@@ -1,5 +1,0 @@
-rhosap-sosreport is a wrapper for 'sosreport' distributed in Red Hat Enterprise
-Linux.  It allows for the Red Hat Access Plugin for OpenStack to generate sosreport files on demand
-without requiring root credentials, using the usermode/consolehelper
-implementation.  A migration to polkit will be made when simple authentication
-agents are available.
