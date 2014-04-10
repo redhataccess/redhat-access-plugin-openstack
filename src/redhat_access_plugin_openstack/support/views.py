@@ -3,6 +3,8 @@ from horizon import views
 
 import shlex
 import subprocess
+import requests
+import json
 
 
 class IndexView(views.APIView):
@@ -14,20 +16,34 @@ class IndexView(views.APIView):
 
 def attachments(request):
     if request.method == 'GET':
-        cmd_line = "find /var/log/ -group apache -type f"
-        args = shlex.split(cmd_line)
-        p = subprocess.Popen(args,
-                             shell=False,
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE)
-        out, err = p.communicate()
-        rc = p.returncode
         response = http.HttpResponse(content_type='text/plain')
-        response.write(out)
+        response.write("Horizon Log")
         response.flush()
         return response
     elif request.method == 'POST':
-        response = http.HttpResponse(content_type='application/json')
-        response.write("test")
-        response.flush()
-        return response
+        requestObj = json.loads(request.body)
+
+        caseNum = requestObj['caseNum']
+        authToken = 'Basic ' + requestObj['auth']
+        #Need to return if request is bad
+        if (caseNum is None) or (authToken is None):
+            return http.HttpResponseBadRequest()
+
+        authToken = 'Basic ' + authToken
+        portalUrl = 'https://api.devgssci.devlab.phx1.access.redhat.com/rs/cases/' + caseNum \
+            + '/attachments'
+        headers = {'Authorization': authToken}
+
+        files = {'file': open('/var/log/horizon/horizon.log', 'rb')}
+
+        r = requests.post(portalUrl, files=files, headers=headers)
+
+        if r.status_code == requests.codes.ok:
+            return http.HttpResponse()
+        elif r.status_code == 401:
+            #Auth was bad pass it up, use 409 Conflict?
+            response = HttpResponse()
+            response.status_code = 409
+            return response
+        else:
+            return http.HttpResponseServerError()

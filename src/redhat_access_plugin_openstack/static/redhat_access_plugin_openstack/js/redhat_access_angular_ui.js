@@ -1,7 +1,128 @@
-/*! redhat_access_angular_ui - v0.0.0 - 2014-04-08
+/*! redhat_access_angular_ui - v0.0.0 - 2014-04-10
  * Copyright (c) 2014 ;
  * Licensed 
  */
+var app = angular.module('RedhatAccess.tree-selector', []);
+
+//http://plnkr.co/edit/S7Cmsq?p=preview
+
+
+app.controller('TreeViewSelectorCtrl', function ($scope, $http) {
+  $scope.name = 'Attachments';
+  $scope.attachmentTree = [];
+  $scope.init = function () {
+    $http({
+      method: 'GET',
+      url: 'attachments'
+    }).success(function (data, status, headers, config) {
+      //$scope.attachmentTree = data;
+      var tree = new Array();
+      parseAttachList(tree, data);
+      $scope.attachmentTree =  tree;
+    }).error(function (data, status, headers, config) {
+      // called asynchronously if an error occurs
+      // or server returns response with an error status.
+    });
+  };
+  $scope.init();
+});
+
+app.directive('rhaChoiceTree', function () {
+  return {
+    template: '<ul><rha-choice ng-repeat="choice in tree"></rha-choice></ul>',
+    replace: true,
+    transclude: true,
+    restrict: 'E',
+    scope: {
+      tree: '=ngModel'
+    }
+  };
+});
+
+app.directive('rhaChoice', function ($compile) {
+  return {
+    restrict: 'E',
+    //In the template, we do the thing with the span so you can click the 
+    //text or the checkbox itself to toggle the check
+    template: '<li>' +
+      '<span ng-click="choiceClicked(choice)">' +
+      '<input type="checkbox" ng-checked="choice.checked"> {{choice.name}}' +
+      '</span>' +
+      '</li>',
+    link: function (scope, elm, attrs) {
+      scope.choiceClicked = function (choice) {
+        choice.checked = !choice.checked;
+
+        function checkChildren(c) {
+          angular.forEach(c.children, function (c) {
+            c.checked = choice.checked;
+            checkChildren(c);
+          });
+        }
+        checkChildren(choice);
+      };
+
+      //Add children by $compiling and doing a new choice directive
+      if (scope.choice.children.length > 0) {
+        var childChoice = $compile('<rha-choice-tree ng-model="choice.children"></rha-choice-tree>')(scope)
+        elm.append(childChoice);
+      }
+    }
+  };
+});
+
+app.config(function ($urlRouterProvider) {}).config(['$stateProvider',
+  function ($stateProvider) {
+    $stateProvider.state('choiceSelector', {
+      url: "/treeselector",
+      templateUrl: 'common/views/treeview-selector.html'
+    })
+  }
+]);
+
+
+//Copied from log viewer needs refactoring
+function parseAttachList(tree, data) {
+  var files = data.split("\n");
+  for (var i=0; i < files.length ; i++) {
+    var file = files[i];
+    var splitPath = file.split("/");
+    returnAttachNode(splitPath, tree, file);
+  }
+}
+
+function returnAttachNode(splitPath, tree, fullFilePath) {
+  if (splitPath[0] != null) {
+    if (splitPath[0] != "") {
+      var node = splitPath[0];
+      var match = false;
+      var index = 0;
+      for (var i=0; i < tree.length; i++) {
+        if (tree[i].name === node) {
+          match = true;
+          index = i;
+          break;
+        }
+      }
+      if (!match) {
+        var blah = new Object();
+        blah.name = node;
+        //blah.roleId = node;
+        if (splitPath.length == 1) {
+          blah.fullPath = fullFilePath;
+        }
+        blah.children = new Array();
+        tree.push(blah);
+        index = tree.length - 1;
+      }
+      splitPath.shift();
+      returnAttachNode(splitPath, tree[index].children, fullFilePath);
+    } else {
+      splitPath.shift();
+      returnAttachNode(splitPath, tree, fullFilePath);
+    }
+  }
+}
 angular.module('RedhatAccess.security', ['ui.bootstrap', 'templates.app'])
     .constant('AUTH_EVENTS', {
         loginSuccess: 'auth-login-success',
@@ -1708,7 +1829,7 @@ angular.module('RedhatAccessCases')
   };
 }]);
 
- var testURL = 'http://localhost:8080/LogCollector/';
+//var testURL = 'http://localhost:8080/LogCollector/';
 // angular module
 angular.module('RedhatAccess.logViewer',
 		[ 'angularTreeview', 'ui.bootstrap', 'RedhatAccess.search'])
@@ -1787,7 +1908,7 @@ angular.module('RedhatAccess.logViewer',
 	$scope.init = function() {
 		$http({
 			method : 'GET',
-			url : testURL + 'GetMachineList?sessionId=' + encodeURIComponent(sessionId)
+			url : 'machines?sessionId=' + encodeURIComponent(sessionId)
 		}).success(function(data, status, headers, config) {
 			$scope.items = data;
 		}).error(function(data, status, headers, config) {
@@ -1804,7 +1925,7 @@ angular.module('RedhatAccess.logViewer',
 		$http(
 				{
 					method : 'GET',
-					url : testURL + 'GetFileList?hostName=' + files.selectedHost
+					url : 'logs?machine=' + files.selectedHost
 							+ '&sessionId=' + encodeURIComponent(sessionId)
 							+ '&userId=' + encodeURIComponent(userId)
 				}).success(function(data, status, headers, config) {
@@ -1826,10 +1947,10 @@ angular.module('RedhatAccess.logViewer',
 		$http(
 				{
 					method : 'GET',
-					url : testURL + 'GetLogFile?sessionId='
+					url : 'logs?sessionId='
 							+ encodeURIComponent(sessionId) + '&userId='
-							+ encodeURIComponent(userId) + '&filePath='
-							+ files.selectedFile + '&hostName='
+							+ encodeURIComponent(userId) + '&path='
+							+ files.selectedFile + '&machine='
 							+ files.selectedHost
 				}).success(function(data, status, headers, config) {
 			files.file = data;
@@ -1841,10 +1962,12 @@ angular.module('RedhatAccess.logViewer',
 })
 .controller('TabsDemoCtrl', [
 		'$scope',
+		'$http',
+		'$location',
 		'files',
 		'accordian',
 		'SearchResultsService',
-		function($scope, files, accordian, SearchResultsService) {
+		function($scope, $http, $location, files, accordian, SearchResultsService) {
 			$scope.tabs = [ {
 				shortTitle : "Short Sample Log File",
 				longTitle : "Long Log File",
@@ -1878,19 +2001,34 @@ angular.module('RedhatAccess.logViewer',
 				if (!$scope.$parent.open) {
 					$scope.$parent.open = !$scope.$parent.open;
 				}
-				var text = "";
-				if (window.getSelection) {
-					text = window.getSelection().toString();
-				} else if (document.selection
-						&& document.selection.type != "Control") {
-					text = document.selection.createRange().text;
-				}
+				var text = strata.utils.getSelectedText();
 				if (text != "") {
 					$scope.checked = !$scope.checked;
 					SearchResultsService.diagnose(text, 5);
 				}
 			};
-		} ])
+
+			$scope.refreshTab = function(index){
+				var sessionId = $location.search().sessionId;
+				var userId = $location.search().userId;
+				// $scope.tabs[index].content = '';
+				//TODO reuse this code from above
+				$http(
+						{
+							method : 'GET',
+							url : 'logs?sessionId='
+									+ encodeURIComponent(sessionId) + '&userId='
+									+ encodeURIComponent(userId) + 'path='
+									+ files.selectedFile + '&machine='
+									+ files.selectedHost
+						}).success(function(data, status, headers, config) {
+					$scope.tabs[index].content = data;
+				}).error(function(data, status, headers, config) {
+			// called asynchronously if an error occurs
+			// or server returns response with an error status.
+				});
+			}
+		}])
 
 .controller('AccordionDemoCtrl', function($scope, accordian) {
 	$scope.oneAtATime = true;
@@ -1972,7 +2110,15 @@ function returnNode(splitPath, tree, fullFilePath) {
 		}
 	}
 }
-angular.module('templates.app', ['security/login_form.html', 'security/login_status.html', 'search/views/accordion_search.html', 'search/views/accordion_search_results.html', 'search/views/list_search_results.html', 'search/views/resultDetail.html', 'search/views/search.html', 'search/views/search_form.html', 'search/views/standard_search.html', 'cases/views/attachLocalFile.html', 'cases/views/attachProductLogs.html', 'cases/views/attachmentsSection.html', 'cases/views/commentsSection.html', 'cases/views/compact.edit.html', 'cases/views/compact.html', 'cases/views/descriptionSection.html', 'cases/views/detailsSection.html', 'cases/views/edit.html', 'cases/views/list.html', 'cases/views/listAttachments.html', 'cases/views/new.html', 'cases/views/pageHeader.html', 'log_viewer/views/log_viewer.html']);
+angular.module('templates.app', ['common/views/treeview-selector.html', 'security/login_form.html', 'security/login_status.html', 'search/views/accordion_search.html', 'search/views/accordion_search_results.html', 'search/views/list_search_results.html', 'search/views/resultDetail.html', 'search/views/search.html', 'search/views/search_form.html', 'search/views/standard_search.html', 'cases/views/attachLocalFile.html', 'cases/views/attachProductLogs.html', 'cases/views/attachmentsSection.html', 'cases/views/commentsSection.html', 'cases/views/compact.edit.html', 'cases/views/compact.html', 'cases/views/descriptionSection.html', 'cases/views/detailsSection.html', 'cases/views/edit.html', 'cases/views/list.html', 'cases/views/listAttachments.html', 'cases/views/new.html', 'cases/views/pageHeader.html', 'log_viewer/views/log_viewer.html']);
+
+angular.module("common/views/treeview-selector.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("common/views/treeview-selector.html",
+    "<div ng-controller=\"TreeViewSelectorCtrl\">\n" +
+    "	<div> Choose File(s) To Attach: </div>\n" +
+    "  <rha-choice-tree ng-model=\"attachmentTree\"></rha-choice-tree>\n" +
+    "</div>");
+}]);
 
 angular.module("security/login_form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("security/login_form.html",
@@ -2240,44 +2386,47 @@ angular.module("log_viewer/views/log_viewer.html", []).run(["$templateCache", fu
     "				</div>\n" +
     "			</div>\n" +
     "		</div>\n" +
-    "		<div class=\"col-xs-4 pull-right solutions\" ng-class=\"{ showMe: open }\">\n" +
-    "			<div id=\"controller-demo\" ng-class=\"{ showMe: open }\"\n" +
-    "				class=\"controller-demo\">\n" +
-    "				<div class=\"collapsable\">\n" +
-    "					<a ng-click=\"open = !open\"><span ng-class=\"{ showMe: open }\"\n" +
-    "						class=\"glyphicon glyphicon-chevron-right right-side-button\"></span></a>\n" +
-    "					<div ng-class=\"{ showMe: open }\" class=\"demo-right\">\n" +
-    "						<div id=\"resizeable-solution-view\" fill-down class=\"resizeable-solution-view\" ng-style=\"{height: windowHeight }\" x-accordion-search-results=''\n" +
-    "							ng-controller='SearchController' >\n" +
+    "		<div class=col-fluid> \n" +
+    "			<div class=\"col-xs-6 pull-right solutions\" ng-class=\"{ showMe: open }\">\n" +
+    "				<div id=\"controller-demo\" ng-class=\"{ showMe: open }\"\n" +
+    "					class=\"controller-demo\">\n" +
+    "					<div class=\"collapsable\">\n" +
+    "						<a ng-click=\"open = !open\"><span ng-class=\"{ showMe: open }\"\n" +
+    "							class=\"glyphicon glyphicon-chevron-right right-side-button\"></span></a>\n" +
+    "						<div ng-class=\"{ showMe: open }\" class=\"demo-right\">\n" +
+    "							<div id=\"resizeable-solution-view\" fill-down class=\"resizeable-solution-view\" ng-style=\"{height: windowHeight }\" x-accordion-search-results=''\n" +
+    "								ng-controller='SearchController' >\n" +
+    "							</div>\n" +
     "						</div>\n" +
     "					</div>\n" +
     "				</div>\n" +
     "			</div>\n" +
-    "		</div>\n" +
-    "		<div class=\"col-fluid\">\n" +
-    "			<div id=\"right\"demo-left>\n" +
-    "				<div class=\"row\">\n" +
-    "					<div ng-controller=\"TabsDemoCtrl\" ng-class=\"{ showMe: open }\"\n" +
-    "						class=\"main-right height\">\n" +
-    "						<tabset class=\"height\"> <tab ng-repeat=\"tab in tabs\"\n" +
-    "							class=\"height\"> <tab-heading>{{tab.shortTitle}}\n" +
-    "						<a ng-click=\"removeTab($index)\" href=''> <span\n" +
-    "							class=\"glyphicon glyphicon-remove\"></span>\n" +
-    "						</a> </tab-heading>\n" +
-    "						<div active=\"tab.active\" disabled=\"tab.disabled\" class=\"height\">\n" +
-    "							<div class=\"panel panel-default height\">\n" +
-    "								<div class=\"panel-heading\">\n" +
-    "									<h3 class=\"panel-title\" style=\"display: inline\">{{tab.longTitle}}</h3>\n" +
-    "									<button id=\"diagnoseButton\" type=\"button\" class=\"btn btn-primary\"\n" +
-    "										ng-click=\"diagnoseText()\">Red Hat Diagnose</button>\n" +
-    "									<br> <br>\n" +
-    "								</div>\n" +
-    "								<div  class=\"panel-body height\" fill-down ng-style=\"{ height: windowHeight }\" id=\"right-side\">\n" +
-    "									<pre id=\"resizeable-file-view\" class=\"no-line-wrap\">{{tab.content}}</pre>\n" +
+    "			<div class=\"col-fluid-no-margin\">\n" +
+    "				<div id=\"right\"demo-left>\n" +
+    "					<div class=\"row\">\n" +
+    "						<div ng-controller=\"TabsDemoCtrl\" ng-class=\"{ showMe: open }\"\n" +
+    "							class=\"main-right height\">\n" +
+    "							<tabset class=\"height\"> <tab ng-repeat=\"tab in tabs\"\n" +
+    "								class=\"height\"> <tab-heading>{{tab.shortTitle}}\n" +
+    "							<a ng-click=\"removeTab($index)\" href=''> <span\n" +
+    "								class=\"glyphicon glyphicon-remove\"></span>\n" +
+    "							</a> </tab-heading>\n" +
+    "							<div active=\"tab.active\" disabled=\"tab.disabled\" class=\"height\">\n" +
+    "								<div class=\"panel panel-default height\">\n" +
+    "									<div class=\"panel-heading\">\n" +
+    "										<a ng-click=\"refreshTab($index)\"><span class=\"glyphicon glyphicon-refresh\"></span></a>\n" +
+    "										<h3 class=\"panel-title\" style=\"display: inline\">{{tab.longTitle}}</h3>\n" +
+    "										<button popover=\"Select text and click to perform Red Hat Diagnose\" popover-trigger=\"mouseenter\" popover-placement=\"bottom\" id=\"diagnoseButton\" type=\"button\" class=\"btn btn-primary diagnoseButton\"\n" +
+    "											ng-click=\"diagnoseText()\">Red Hat Diagnose</button>\n" +
+    "										<br> <br>\n" +
+    "									</div>\n" +
+    "									<div  class=\"panel-body height\" fill-down ng-style=\"{ height: windowHeight }\" id=\"right-side\">\n" +
+    "										<pre id=\"resizeable-file-view\" class=\"no-line-wrap\">{{tab.content}}</pre>\n" +
+    "									</div>\n" +
     "								</div>\n" +
     "							</div>\n" +
+    "							</tab> </tabset>\n" +
     "						</div>\n" +
-    "						</tab> </tabset>\n" +
     "					</div>\n" +
     "				</div>\n" +
     "			</div>\n" +
