@@ -29,6 +29,7 @@ SUBDIRS =
 imgdir=$(rhsupporttoollibdir)/dashboards/redhat_access_plugin_openstack/static/redhat_access_plugin_openstack/img
 dist_img_DATA = \
 	*.gif \
+	*.png \
 	$(NULL)
 
 all-local: \
