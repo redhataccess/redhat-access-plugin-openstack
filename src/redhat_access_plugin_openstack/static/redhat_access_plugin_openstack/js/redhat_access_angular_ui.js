@@ -2142,13 +2142,10 @@ angular.module('RedhatAccess.logViewer',
 .controller('DropdownCtrl', function($scope, $http, $location, files, hideMachinesDropdown) {
 	$scope.machinesDropdownText = "Please Select the Machine";
 	$scope.items = [];
-	$scope.hideDropdown = false;
-	if(hideMachinesDropdown){
-		$scope.hideDropdown = config.hideMachinesDropdown;
-	}
+	$scope.hideDropdown = hideMachinesDropdown;
 	var sessionId = $location.search().sessionId;
 
-	$scope.init = function() {
+	$scope.getMachines = function() {
 		$http({
 			method : 'GET',
 			url : 'machines?sessionId=' + encodeURIComponent(sessionId)
@@ -2180,8 +2177,10 @@ angular.module('RedhatAccess.logViewer',
 			// or server returns response with an error status.
 		});
 	};
-	if($scope.hideDropdown){
+	if(hideMachinesDropdown){
 		$scope.machineSelected();
+	} else{
+		$scope.getMachines();
 	}
 })
 .controller('selectFileButton', function($scope, $http, $location,
@@ -2225,14 +2224,19 @@ angular.module('RedhatAccess.logViewer',
 		}, function() {
 			if (files.file != null && files.selectedFile != null) {
 				file = new Object();
-				if(selectedHost != null){
-					file.longTitle = files.selectedHost + " : "
+				if(files.selectedHost != null){
+					file.longTitle = files.selectedHost + ":"
+				} else {
+					file.longTitle = new String();
 				}
 				file.longTitle = file.longTitle.concat(files.selectedFile);
 				var splitFileName = files.selectedFile.split("/");
 				var fileName = splitFileName[splitFileName.length - 1];
-				if(selectedHost != null){
-					file.shortTitle = files.selectedHost + " : "
+				
+				if(files.selectedHost != null){
+					file.shortTitle = files.selectedHost + ":"
+				} else {
+					file.shortTitle = new String();
 				}
 				file.shortTitle = file.shortTitle.concat(fileName);
 				file.content = files.file;
