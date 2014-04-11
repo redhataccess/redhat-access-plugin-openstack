@@ -19,7 +19,7 @@
 angular.module('RedhatAccess.logViewer').config(function($urlRouterProvider) {
 	$urlRouterProvider.otherwise('/logviewer')
 }).constant('config', {
-    showMachinesDropdown: true
+    hideMachinesDropdown: true
 });
 angular.element(document).ready(function() {
 	angular.bootstrap(document.getElementById("redhat-access-logs"), ['RedhatAccess.logViewer']);
