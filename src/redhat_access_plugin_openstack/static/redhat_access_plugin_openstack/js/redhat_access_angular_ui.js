@@ -1,4 +1,4 @@
-/*! redhat_access_angular_ui - v0.0.0 - 2014-04-14
+/*! redhat_access_angular_ui - v0.0.0 - 2014-04-15
  * Copyright (c) 2014 ;
  * Licensed 
  */
@@ -136,7 +136,7 @@ function isLeafChecked(path) {
   }
   return false;
 }
-angular.module('RedhatAccess.security', ['ui.bootstrap', 'templates.app'])
+angular.module('RedhatAccess.security', ['ui.bootstrap', 'templates.app', 'ui.router'])
     .constant('AUTH_EVENTS', {
         loginSuccess: 'auth-login-success',
         loginFailed: 'auth-login-failed',
@@ -225,7 +225,7 @@ angular.module('RedhatAccess.security', ['ui.bootstrap', 'templates.app'])
                 headerText: 'Proceed?',
                 bodyText: 'Perform this action?',
                 backdrop: 'static'
-                
+
             };
 
             this.login = function () {
@@ -281,6 +281,7 @@ angular.module('RedhatAccess.security', ['ui.bootstrap', 'templates.app'])
 
         }
     ]);
+
 /**
  * @ngdoc module
  * @name
@@ -300,6 +301,10 @@ angular.module('RedhatAccess.search', [
 		solution: 'Solution',
 
 	})
+	.constant('SEARCH_PARAMS', {
+		limit: 10
+
+	})
 	.config(['$stateProvider',
 		function ($stateProvider) {
 			$stateProvider.state('search', {
@@ -315,41 +320,15 @@ angular.module('RedhatAccess.search', [
 		}
 	])
 	.controller('SearchController', ['$scope',
-		'SearchResultsService',
+		'SearchResultsService', 'SEARCH_PARAMS',
 		function ($scope, SearchResultsService) {
 			$scope.results = SearchResultsService.results;
 			$scope.selectedSolution = SearchResultsService.currentSelection;
-			//////////////////////
-			$scope.totalItems = $scope.results.length;
-			$scope.currentPage = 1;
-			$scope.maxSize = 5;
 
-			$scope.setPage = function (pageNo) {
-				$scope.currentPage = pageNo;
-			};
-
-			//$scope.bigTotalItems = 175;
-			//$scope.bigCurrentPage = 1;
-			$scope.pageChanged = function (page) {
-				$scope.currentPage = page;
-				console.log("selected page is " + page);
-				console.log("currentpage is " + $scope.currentPage);
-
-				//$scope.watchPage = newPage;
-			};
-			///////////////////////////////////////////
 			clearResults = function () {
-				//SearchResultsService.setSelected({});
 				SearchResultsService.clear();
 			};
 
-
-			// addResult = function(result) {
-			// 	$scope.$apply(function() {
-			// 		SearchResultsService.add(result);
-			// 	});
-
-			// };
 
 			$scope.solutionSelected = function (index) {
 				var response = $scope.results[index];
@@ -359,19 +338,12 @@ angular.module('RedhatAccess.search', [
 
 			$scope.search = function (searchStr, limit) {
 				SearchResultsService.search(searchStr, limit);
-				/*clearResults();
-				strata.search($scope.searchStr,
-					function(resourceType, response) {
-						//console.log(response);
-						response.resource_type = resourceType; //do this only for chained
-						addResult(response);
-					},
-					onFailure,
-					10,
-					true
-				);*/
-
 			};
+
+			$scope.diagnose = function (data, limit) {
+				SearchResultsService.diagnose(data, limit);
+			};
+
 
 			$scope.$watch(function () {
 					return SearchResultsService.currentSelection
@@ -380,15 +352,6 @@ angular.module('RedhatAccess.search', [
 					$scope.selectedSolution = newVal;
 				}
 			);
-			// $scope.$watch(function () {
-			// 		return SearchResultsService.results
-			// 	},
-			// 	function (newVal) {
-			// 		console.log("set new result");
-			// 		$scope.results = newVal;
-			// 		$scope.totalItems = SearchResultsService.results.length;
-			// 	}
-			// );
 
 
 		}
@@ -473,9 +436,9 @@ angular.module('RedhatAccess.search', [
 			};
 		}
 	])
-	.factory('SearchResultsService', ['$rootScope', 'AUTH_EVENTS', 'RESOURCE_TYPES',
+	.factory('SearchResultsService', ['$rootScope', 'AUTH_EVENTS', 'RESOURCE_TYPES', 'SEARCH_PARAMS',
 
-		function ($rootScope, AUTH_EVENTS, RESOURCE_TYPES) {
+		function ($rootScope, AUTH_EVENTS, RESOURCE_TYPES, SEARCH_PARAMS) {
 			var service = {
 				results: [],
 				currentSelection: {},
@@ -491,7 +454,7 @@ angular.module('RedhatAccess.search', [
 				},
 				search: function (searchString, limit) {
 					var that = this;
-					if ((limit === undefined) || (limit < 1)) limit = 5;
+					if ((limit === undefined) || (limit < 1)) limit = SEARCH_PARAMS.limit;
 					this.clear();
 					strata.search(
 						searchString,
@@ -510,7 +473,7 @@ angular.module('RedhatAccess.search', [
 				},
 				searchSolutions: function (searchString, limit) {
 					var that = this;
-					if ((limit === undefined) || (limit < 1)) limit = 5;
+					if ((limit === undefined) || (limit < 1)) limit = SEARCH_PARAMS.limit;
 					this.clear();
 					strata.solutions.search(
 						searchString,
@@ -534,7 +497,7 @@ angular.module('RedhatAccess.search', [
 				},
 				searchArticles: function (searchString, limit) {
 					var that = this;
-					if ((limit === undefined) || (limit < 1)) limit = 5;
+					if ((limit === undefined) || (limit < 1)) limit = SEARCH_PARAMS.limit;
 					this.clear();
 					strata.articles.search(
 						searchString,
@@ -553,7 +516,7 @@ angular.module('RedhatAccess.search', [
 				},
 				diagnose: function (searchString, limit) {
 					var that = this;
-					if ((limit === undefined) || (limit < 1)) limit = 5;
+					if ((limit === undefined) || (limit < 1)) limit = SEARCH_PARAMS.limit;
 					this.clear();
 					strata.diagnose(
 						searchString,
@@ -815,34 +778,21 @@ angular.module('RedhatAccessCases')
     $scope.CaseService = CaseService;
     $scope.CaseListService = CaseListService;
     $scope.loadingCaseList = true;
-    $scope.itemsPerPage = 5;
-    $scope.maxSize = 3;
-
-    $scope.selectPage = function(pageNum) {
-      var start = $scope.itemsPerPage * (pageNum - 1);
-      var end = start + $scope.itemsPerPage;
-      end = end > CaseListService.cases.length ?
-          CaseListService.cases.length : end;
-
-      $scope.casesOnScreen =
-          CaseListService.cases.slice(start, end);
-    };
-
     $scope.selectedCaseIndex = -1;
 
     $scope.selectCase = function($index) {
-      $scope.selectedCasePage = $scope.currentPage;
       $scope.selectedCaseIndex = $index;
 
       CaseService.clearCase();
     };
 
+    $scope.domReady = false; //used to notify resizable directive that the page has loaded
     $scope.filterCases = function() {
       strataService.cases.filter().then(
           function(cases) {
             $scope.loadingCaseList = false;
             CaseListService.defineCases(cases);
-            $scope.selectPage(1);
+            $scope.domReady = true;
           },
           function(error) {
             console.log(error);
@@ -851,10 +801,9 @@ angular.module('RedhatAccessCases')
     };
 
     /**
-     * Passed as a param to rha-list-filter as a callback after filtering
+     * Passed to rha-list-filter as a callback after filtering
      */
     $scope.filterCallback = function() {
-      $scope.selectPage(1);
       $scope.loadingCaseList = false;
     };
 
@@ -885,6 +834,7 @@ angular.module('RedhatAccessCases')
       AttachmentsService) {
 
     $scope.caseLoading = true;
+    $scope.domReady = false;
 
     strataService.cases.get($stateParams.id).then(
       function(caseJSON) {
@@ -896,6 +846,8 @@ angular.module('RedhatAccessCases')
               CaseService.versions = versions;
             }
         );
+
+        $scope.domReady = true;
       }
     );
 
@@ -1673,6 +1625,53 @@ angular.module('RedhatAccessCases')
   };
 });
 
+'use strict';
+
+angular.module('RedhatAccessCases')
+.directive('rhaResizable', [
+  '$window',
+  '$timeout',
+  function ($window) {
+
+    var link = function(scope, element, attrs) {
+
+      scope.onResizeFunction = function() {
+        var distanceToTop = element[0].getBoundingClientRect().top;
+        var height = $window.innerHeight - distanceToTop;
+        element.css('height', height);
+      };
+
+      angular.element($window).bind(
+          'resize',
+          function() {
+            scope.onResizeFunction();
+            scope.$apply();
+          }
+      );
+
+      if (attrs.rhaDomReady !== undefined) {
+        scope.$watch('rhaDomReady', function(newValue) {
+          if (newValue) {
+            scope.onResizeFunction();
+          }
+        });
+      } else {
+        scope.onResizeFunction();
+      }
+
+
+    };
+
+    return {
+      restrict: 'A',
+      scope: {
+        rhaDomReady: '='
+      },
+      link: link
+    };
+  }
+]);
+
 angular.module('RedhatAccessCases')
 .filter('bytes', function() {
   return function(bytes, precision) {
@@ -2218,7 +2217,7 @@ angular.module('RedhatAccess.logViewer',
 			longTitle : "Long Log File",
 			content : "Sample Log Text"
 		} ];
-
+		$scope.isDisabled = true;
 		$scope.$watch(function() {
 			return files.file;
 		}, function() {
@@ -2248,40 +2247,60 @@ angular.module('RedhatAccess.logViewer',
 			$scope.tabs.splice(index, 1);
 		};
 
-			$scope.checked = false; // This will be
-			// binded using the
-			// ps-open attribute
+		$scope.checked = false; // This will be
+		// binded using the
+		// ps-open attribute
 
-			$scope.diagnoseText = function() {
-				if (!$scope.$parent.solutionsToggle) {
-					$scope.$parent.solutionsToggle = !$scope.$parent.solutionsToggle;
-				}
-				var text = strata.utils.getSelectedText();
-				if (text != "") {
-					$scope.checked = !$scope.checked;
-					SearchResultsService.diagnose(text, 5);
-				}
-			};
+		$scope.diagnoseText = function() {
+			$scope.isDisabled = true;
+			if (!$scope.$parent.solutionsToggle) {
+				$scope.$parent.solutionsToggle = !$scope.$parent.solutionsToggle;
+			}
+			var text = strata.utils.getSelectedText();
+			if (text != "") {
+				$scope.checked = !$scope.checked;
+				SearchResultsService.diagnose(text, 5);
+			}
+			$scope.sleep(5000, $scope.checkTextSelection);
+		};
 
-			$scope.refreshTab = function(index){
-				var sessionId = $location.search().sessionId;
-				var userId = $location.search().userId;
-				// $scope.tabs[index].content = '';
-				//TODO reuse this code from above
-				$http(
-				{
-					method : 'GET',
-					url : 'logs?sessionId='
-					+ encodeURIComponent(sessionId) + '&userId='
-					+ encodeURIComponent(userId) + '&path='
-					+ files.selectedFile + '&machine='
-					+ files.selectedHost
-				}).success(function(data, status, headers, config) {
-					$scope.tabs[index].content = data;
-				}).error(function(data, status, headers, config) {
-			// called asynchronously if an error occurs
-			// or server returns response with an error status.
-		});
+		$scope.refreshTab = function(index){
+			var sessionId = $location.search().sessionId;
+			var userId = $location.search().userId;
+			// $scope.tabs[index].content = '';
+			//TODO reuse this code from above
+			$http(
+			{
+				method : 'GET',
+				url : 'logs?sessionId='
+				+ encodeURIComponent(sessionId) + '&userId='
+				+ encodeURIComponent(userId) + '&path='
+				+ files.selectedFile + '&machine='
+				+ files.selectedHost
+			}).success(function(data, status, headers, config) {
+				$scope.tabs[index].content = data;
+			}).error(function(data, status, headers, config) {
+		// called asynchronously if an error occurs
+		// or server returns response with an error status.
+			});
+		};
+		$scope.enableDiagnoseButton = function(){
+			//Gotta wait for text to "unselect"
+			$scope.sleep(1, $scope.checkTextSelection);
+		};
+		$scope.checkTextSelection = function(){
+			if(strata.utils.getSelectedText()){
+				$scope.isDisabled = false;
+			} else{
+				$scope.isDisabled = true;
+			}
+			$scope.$apply();
+		}
+
+		$scope.sleep = function(millis, callback) {
+    			setTimeout(function()
+            		{ callback(); }
+    			, millis);
 			}
 		}])
 
@@ -2303,7 +2322,7 @@ angular.module('RedhatAccess.logViewer',
 				return scope.windowHeight = height;
 			};
       // This might be overkill?? 
-      scope.onResizeFunction();
+      //scope.onResizeFunction();
       angular.element($window).bind('resize', function() {
       	scope.onResizeFunction();
       	scope.$apply();
@@ -2312,11 +2331,15 @@ angular.module('RedhatAccess.logViewer',
       	scope.onResizeFunction();
       	scope.$apply();
       });
-      $timeout(scope.onResizeFunction, 0);
-      $(window).load(function(){
-      	scope.onResizeFunction();
-      	scope.$apply();
-      });
+      $timeout(scope.onResizeFunction, 100);
+      // $(window).load(function(){
+      // 	scope.onResizeFunction();
+      // 	scope.$apply();
+      // });
+      // scope.$on('$viewContentLoaded', function() {
+      // 	scope.onResizeFunction();
+      // 	//scope.$apply();
+      // });
   }
 };
 });
@@ -2425,7 +2448,7 @@ angular.module("security/login_form.html", []).run(["$templateCache", function($
 angular.module("security/login_status.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("security/login_status.html",
     "<div ng-controller = 'SecurityController'>\n" +
-    "<span ng-show=\"isLoggedIn\" class=\"pull-right\"> Logged into the customer portal as {{loggedInUser}} &nbsp;|&nbsp;\n" +
+    "<span ng-show=\"isLoggedIn\" class=\"pull-right\"> Logged into the Red Hat Customer Portal as {{loggedInUser}} &nbsp;|&nbsp;\n" +
     "  <a href=\"\" ng-click=\"logout()\"> Log out</a>\n" +
     "</span>\n" +
     "<span ng-show=\"!isLoggedIn\" class=\"pull-right\"> Not Logged in &nbsp;|&nbsp;\n" +
@@ -2465,7 +2488,7 @@ angular.module("search/views/accordion_search_results.html", []).run(["$template
 
 angular.module("search/views/list_search_results.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("search/views/list_search_results.html",
-    "<div class=\"col-lg-4\">  \n" +
+    "<div class=\"col-sm-4\">  \n" +
     "  <div class=\"panel panel-default\" ng-show='results.length > 0'>\n" +
     "    <!--pagination on-select-page=\"pageChanged(page)\" total-items=\"totalItems\" page=\"currentPage\" max-size=\"maxSize\"></pagination-->\n" +
     "    <div class=\"panel-heading\">\n" +
@@ -2480,7 +2503,7 @@ angular.module("search/views/list_search_results.html", []).run(["$templateCache
     "  </div>\n" +
     "</div>\n" +
     "</div>\n" +
-    "<div class=\"col-lg-8\">\n" +
+    "<div class=\"col-sm-8\">\n" +
     "  <x-result-detail-display result='selectedSolution'/>\n" +
     "</div>\n" +
     "\n" +
@@ -2514,17 +2537,18 @@ angular.module("search/views/search.html", []).run(["$templateCache", function($
 
 angular.module("search/views/search_form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("search/views/search_form.html",
-    "<div class='container col-lg-4 pull-left'>\n" +
+    "<div class='container col-sm-4 pull-left'>\n" +
     "    <form role=\"form\" id= \"rh-search\">\n" +
     "    <div class=\"input-group\" >\n" +
     "      <input type=\"text\" class=\"form-control\" id=\"rhSearchStr\" name=\"searchString\" ng-model=\"searchStr\" class=\"input-xxlarge\" placeholder=\"Search Articles and Solutions\">\n" +
     "      <span class=\"input-group-btn\">\n" +
-    "        <button class=\"btn btn-default\"  type='submit' ng-click=\"search(searchStr)\">Search</button>\n" +
+    "        <button class=\"btn btn-default btn-primary\"  type='submit' ng-click=\"search(searchStr)\">Search</button>\n" +
     "      </span>\n" +
     "    </div>\n" +
     "  </form>\n" +
     "</div>\n" +
-    "  ");
+    "  \n" +
+    "");
 }]);
 
 angular.module("search/views/standard_search.html", []).run(["$templateCache", function($templateCache) {
@@ -2568,7 +2592,7 @@ angular.module("cases/views/commentsSection.html", []).run(["$templateCache", fu
 
 angular.module("cases/views/compact.edit.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/compact.edit.html",
-    "<!DOCTYPE html><div id=\"redhat-access-case\"><div ng-show=\"caseLoading\" class=\"container-fluid\"><div class=\"row\"><div class=\"col-xs-12\"><div>Loading...</div></div></div></div><div ng-hide=\"caseLoading\" class=\"container-fluid\"><div class=\"row\"><div class=\"col-xs-12\"><rha-case-details compact=\"true\"></rha-case-details></div></div><div class=\"row\"><div class=\"col-xs-12\"><rha-case-description></rha-case-description></div></div><div class=\"row\"><div class=\"col-xs-12\"><rha-case-attachments></rha-case-attachments></div></div><div class=\"row\"><div class=\"col-xs-12\"><rha-case-comments comments=\"comments\"></rha-case-comments></div></div></div></div>");
+    "<!DOCTYPE html><div id=\"redhat-access-case\"><div ng-show=\"caseLoading\" class=\"container-fluid\"><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><div>Loading...</div></div></div></div><div ng-hide=\"caseLoading\" rha-resizable rha-dom-ready=\"domReady\" style=\"overflow: auto; padding-left: 15px;border-top: 1px solid #dddddd; border-left: 1px solid #dddddd;\" class=\"container-fluid\"><div style=\"margin-right: 0px; padding-top: 10px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-details compact=\"true\"></rha-case-details></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-description></rha-case-description></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-attachments></rha-case-attachments></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-comments comments=\"comments\"></rha-case-comments></div></div></div></div>");
 }]);
 
 angular.module("cases/views/compact.html", []).run(["$templateCache", function($templateCache) {
@@ -2581,10 +2605,10 @@ angular.module("cases/views/compact.html", []).run(["$templateCache", function($
     "            </div>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
-    "            <div class=\"col-xs-4\" style=\"border-right: 1px solid gray; height: 100%;\">\n" +
+    "            <div class=\"col-xs-4\" style=\"height: 100%;\">\n" +
     "                <rha-compact-case-list></rha-compact-case-list>\n" +
     "            </div>\n" +
-    "            <div class=\"col-xs-8\" style=\"overflow: auto;\">\n" +
+    "            <div class=\"col-xs-8\" style=\"padding: 0px; \">\n" +
     "                <!-- Jade can't create the ui-view attribute in the form\n" +
     "                     angular ui router requires (see next line).-->\n" +
     "                <div ui-view autoscroll=\"false\"></div>\n" +
@@ -2597,7 +2621,7 @@ angular.module("cases/views/compact.html", []).run(["$templateCache", function($
 
 angular.module("cases/views/compactCaseList.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/compactCaseList.html",
-    "<div id=\"redhat-access-case\"><div class=\"container-fluid\"><div class=\"row\"><div class=\"col-xs-12 col-no-padding\"><rha-list-filter postfilter=\"filterCallback\" prefilter=\"onFilter\"></rha-list-filter></div></div><div class=\"row\"><div class=\"col-xs-12\"><div ng-show=\"CaseListService.cases.length == 0 &amp;&amp; !loadingCaseList\">No cases found with given filters.</div><div ng-show=\"loadingCaseList\">Loading...</div><div style=\"margin-bottom: 0px;\" ng-hide=\"CaseListService.cases.length ==0 || loadingCaseList\"><ul class=\"list-group\"><a ng-repeat=\"case in casesOnScreen\" ui-sref=\".edit({id: &quot;{{case.case_number}}&quot;})\" ng-class=\"{&quot;active&quot;: $index == selectedCaseIndex &amp;&amp; selectedCasePage == currentPage}\" ng-click=\"selectCase($index)\" class=\"list-group-item\">{{case.case_number}} {{case.summary}}</a></ul></div></div></div><div ng-hide=\"itemsPerPage &gt; CaseListService.cases.length || loadingCaseList\" class=\"row\"><div class=\"col-xs-12\"><div><pagination boundary-links=\"true\" rotate=\"false\" direction-links=\"false\" total-items=\"CaseListService.cases.length\" on-select-page=\"selectPage(page, this)\" items-per-page=\"itemsPerPage\" page=\"currentPage\" max-size=\"maxSize\" previous-text=\"&lt;\" next-text=\"&gt;\" first-text=\"&lt;&lt;\" last-text=\"&gt;&gt;\" class=\"pagination-sm\"></pagination></div></div></div></div></div>");
+    "<div id=\"redhat-access-case\"><div class=\"container-fluid\"><div class=\"row\"><div class=\"col-xs-12 col-no-padding\"><rha-list-filter postfilter=\"filterCallback\" prefilter=\"onFilter\"></rha-list-filter></div></div><div class=\"row\"><div class=\"col-xs-12\"><div ng-show=\"CaseListService.cases.length == 0 &amp;&amp; !loadingCaseList\">No cases found with given filters.</div><div ng-show=\"loadingCaseList\">Loading...</div></div></div><div ng-hide=\"CaseListService.cases.length ==0 || loadingCaseList\" style=\"border-top: 1px solid #dddddd;\" class=\"row\"><div style=\"overflow: auto;\" rha-resizable=\"rha-resizable\" rha-dom-ready=\"domReady\" class=\"col-xs-12 col-no-padding\"><div style=\"margin-bottom: 0px; overflow: auto;\"><ul style=\"margin-bottom: 0px;\" class=\"list-group\"><a ng-repeat=\"case in CaseListService.cases\" ui-sref=\".edit({id: &quot;{{case.case_number}}&quot;})\" ng-class=\"{&quot;active&quot;: $index == selectedCaseIndex}\" ng-click=\"selectCase($index)\" class=\"list-group-item\">{{case.case_number}} {{case.summary}}</a></ul></div></div></div></div></div>");
 }]);
 
 angular.module("cases/views/descriptionSection.html", []).run(["$templateCache", function($templateCache) {
@@ -2607,7 +2631,7 @@ angular.module("cases/views/descriptionSection.html", []).run(["$templateCache",
 
 angular.module("cases/views/detailsSection.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/detailsSection.html",
-    "<form name=\"caseDetails\"><div style=\"padding-bottom: 10px;\"><div><h3 style=\"margin-top: 0px;\">Case {{CaseService.case.case_number}}</h3></div><input style=\"width: 50%; display: inline-block;\" ng-model=\"CaseService.case.summary\" name=\"summary\" class=\"form-control\"/><span ng-show=\"caseDetails.summary.$dirty\" style=\"display: inline-block;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></div><div class=\"container-fluid side-padding\"><div id=\"rha-case-details\" class=\"row\"><h4 class=\"col-xs-12 section-header\">Details</h4><div class=\"container-fluid side-padding\"><div class=\"row\"><div class=\"col-md-4\"><table class=\"table details-table\"><tr ng-hide=\"compact\"><th class=\"details-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\">Case Type:</div><span ng-show=\"caseDetails.type.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><div><progressbar ng-hide=\"caseTypes !== undefined\" max=\"1\" value=\"1\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"caseTypes === undefined\" name=\"type\" style=\"width: 100%;\" ng-model=\"CaseService.case.type\" ng-options=\"c.name for c in caseTypes track by c.name\" class=\"form-control\"></select></div></td></tr><tr><th class=\"details-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\">Severity:</div><span ng-show=\"caseDetails.severity.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><div><progressbar ng-hide=\"severities !== undefined\" max=\"1\" value=\"1\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"severities === undefined\" name=\"severity\" style=\"width: 100%;\" ng-model=\"CaseService.case.severity\" ng-options=\"s.name for s in severities track by s.name\" class=\"form-control\"></select></div></td></tr><tr><th class=\"details-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\">Status:</div><span ng-show=\"caseDetails.status.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><div><progressbar ng-hide=\"statuses !== undefined\" max=\"1\" value=\"1\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"statuses === undefined\" name=\"status\" style=\"width: 100%;\" ng-model=\"CaseService.case.status\" ng-options=\"s.name for s in statuses track by s.name\" class=\"form-control\"></select></div></td></tr><tr ng-hide=\"compact\"><th class=\"details-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\">Alternate ID:</div><span ng-show=\"caseDetails.alternate_id.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><input style=\"width: 100%\" ng-model=\"CaseService.case.alternate_id\" name=\"alternate_id\" class=\"form-control\"/></td></tr></table></div><div class=\"col-md-4\"><table class=\"table details-table\"><tr><th><div style=\"vertical-align: 50%; display: inline-block;\">Product:</div><span ng-show=\"caseDetails.product.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><div><progressbar ng-hide=\"products !== undefined\" max=\"1\" value=\"1\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"products === undefined\" name=\"product\" style=\"width: 100%;\" ng-model=\"CaseService.case.product\" ng-change=\"getProductVersions()\" ng-options=\"s.name for s in products track by s.name\" required=\"required\" class=\"form-control\"></select></div></td></tr><tr><th class=\"details-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\">Product Version:</div><span ng-show=\"caseDetails.version.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><div><progressbar ng-hide=\"CaseService.versions.length !== 0 || CaseService.case.product.name == null\" max=\"1\" value=\"1\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"CaseService.versions.length === 0\" name=\"version\" style=\"width: 100%;\" ng-options=\"v for v in CaseService.versions track by v\" ng-model=\"CaseService.case.version\" required=\"required\" class=\"form-control\"></select></div></td></tr><tr ng-hide=\"compact\"><th class=\"details-table-header\">Support Level:</th><td>{{CaseService.case.entitlement.sla}}</td></tr><tr ng-hide=\"compact\"><th class=\"details-table-header\">Owner:</th><td>{{CaseService.case.contact_name}}</td></tr><tr ng-hide=\"compact\"><th class=\"details-table-header\">Red Hat Owner:</th><td>{{CaseService.case.owner}}</td></tr></table></div><div class=\"col-md-4\"><table class=\"table details-table\"><tr ng-hide=\"compact\"><th class=\"details-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\">Group:</div><span ng-show=\"caseDetails.group.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><div><progressbar ng-hide=\"groups !== undefined\" max=\"1\" value=\"1\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"groups === undefined\" name=\"group\" style=\"width: 100%;\" ng-options=\"g.name for g in groups track by g.number\" ng-model=\"CaseService.case.group\" class=\"form-control\"></select></div></td></tr><tr ng-hide=\"compact\"><th class=\"details-table-header\">Opened:</th><td><div>{{CaseService.case.created_date | date:'medium'}}</div><div>{{CaseService.case.created_by}}</div></td></tr><tr ng-hide=\"compact\"><th class=\"details-table-header\">Last Updated:</th><td><div>{{CaseService.case.last_modified_date | date:'medium'}}</div><div>{{CaseService.case.last_modified_by}}</div></td></tr><tr ng-hide=\"compact\"><th class=\"details-table-header\">Account Number:</th><td>{{CaseService.case.account_number}}</td></tr><tr ng-hide=\"compact\"><th class=\"details-table-header\">Account Name:</th><td>{{CaseService.account.name}}</td></tr></table></div></div><div style=\"padding-top: 10px;\" class=\"row\"><div class=\"col-xs-12\"><div style=\"float: right;\"><button name=\"updateButton\" ng-disabled=\"!caseDetails.$dirty\" ng-hide=\"updatingDetails\" ng-click=\"updateCase()\" class=\"btn btn-primary\">Update Details</button><div ng-show=\"updatingDetails\">Updating Case...</div></div></div></div></div></div></div></form>");
+    "<form name=\"caseDetails\"><div style=\"padding-bottom: 10px;\"><div><h3 style=\"margin-top: 0px;\">Case {{CaseService.case.case_number}}</h3></div><input style=\"width: 100%; display: inline-block;\" ng-model=\"CaseService.case.summary\" name=\"summary\" class=\"form-control\"/><span ng-show=\"caseDetails.summary.$dirty\" style=\"display: inline-block;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></div><div class=\"container-fluid side-padding\"><div id=\"rha-case-details\" class=\"row\"><h4 class=\"col-xs-12 section-header\">Details</h4><div class=\"container-fluid side-padding\"><div class=\"row\"><div class=\"col-md-4\"><table class=\"table details-table\"><tr ng-hide=\"compact\"><th class=\"details-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\">Case Type:</div><span ng-show=\"caseDetails.type.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><div><progressbar ng-hide=\"caseTypes !== undefined\" max=\"1\" value=\"1\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"caseTypes === undefined\" name=\"type\" style=\"width: 100%;\" ng-model=\"CaseService.case.type\" ng-options=\"c.name for c in caseTypes track by c.name\" class=\"form-control\"></select></div></td></tr><tr><th class=\"details-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\">Severity:</div><span ng-show=\"caseDetails.severity.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><div><progressbar ng-hide=\"severities !== undefined\" max=\"1\" value=\"1\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"severities === undefined\" name=\"severity\" style=\"width: 100%;\" ng-model=\"CaseService.case.severity\" ng-options=\"s.name for s in severities track by s.name\" class=\"form-control\"></select></div></td></tr><tr><th class=\"details-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\">Status:</div><span ng-show=\"caseDetails.status.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><div><progressbar ng-hide=\"statuses !== undefined\" max=\"1\" value=\"1\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"statuses === undefined\" name=\"status\" style=\"width: 100%;\" ng-model=\"CaseService.case.status\" ng-options=\"s.name for s in statuses track by s.name\" class=\"form-control\"></select></div></td></tr><tr ng-hide=\"compact\"><th class=\"details-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\">Alternate ID:</div><span ng-show=\"caseDetails.alternate_id.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><input style=\"width: 100%\" ng-model=\"CaseService.case.alternate_id\" name=\"alternate_id\" class=\"form-control\"/></td></tr></table></div><div class=\"col-md-4\"><table class=\"table details-table\"><tr><th><div style=\"vertical-align: 50%; display: inline-block;\">Product:</div><span ng-show=\"caseDetails.product.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><div><progressbar ng-hide=\"products !== undefined\" max=\"1\" value=\"1\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"products === undefined\" name=\"product\" style=\"width: 100%;\" ng-model=\"CaseService.case.product\" ng-change=\"getProductVersions()\" ng-options=\"s.name for s in products track by s.name\" required=\"required\" class=\"form-control\"></select></div></td></tr><tr><th class=\"details-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\">Product Version:</div><span ng-show=\"caseDetails.version.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><div><progressbar ng-hide=\"CaseService.versions.length !== 0 || CaseService.case.product.name == null\" max=\"1\" value=\"1\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"CaseService.versions.length === 0\" name=\"version\" style=\"width: 100%;\" ng-options=\"v for v in CaseService.versions track by v\" ng-model=\"CaseService.case.version\" required=\"required\" class=\"form-control\"></select></div></td></tr><tr ng-hide=\"compact\"><th class=\"details-table-header\">Support Level:</th><td>{{CaseService.case.entitlement.sla}}</td></tr><tr ng-hide=\"compact\"><th class=\"details-table-header\">Owner:</th><td>{{CaseService.case.contact_name}}</td></tr><tr ng-hide=\"compact\"><th class=\"details-table-header\">Red Hat Owner:</th><td>{{CaseService.case.owner}}</td></tr></table></div><div class=\"col-md-4\"><table class=\"table details-table\"><tr ng-hide=\"compact\"><th class=\"details-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\">Group:</div><span ng-show=\"caseDetails.group.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><div><progressbar ng-hide=\"groups !== undefined\" max=\"1\" value=\"1\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"groups === undefined\" name=\"group\" style=\"width: 100%;\" ng-options=\"g.name for g in groups track by g.number\" ng-model=\"CaseService.case.group\" class=\"form-control\"></select></div></td></tr><tr ng-hide=\"compact\"><th class=\"details-table-header\">Opened:</th><td><div>{{CaseService.case.created_date | date:'medium'}}</div><div>{{CaseService.case.created_by}}</div></td></tr><tr ng-hide=\"compact\"><th class=\"details-table-header\">Last Updated:</th><td><div>{{CaseService.case.last_modified_date | date:'medium'}}</div><div>{{CaseService.case.last_modified_by}}</div></td></tr><tr ng-hide=\"compact\"><th class=\"details-table-header\">Account Number:</th><td>{{CaseService.case.account_number}}</td></tr><tr ng-hide=\"compact\"><th class=\"details-table-header\">Account Name:</th><td>{{CaseService.account.name}}</td></tr></table></div></div><div style=\"padding-top: 10px;\" class=\"row\"><div class=\"col-xs-12\"><div style=\"float: right;\"><button name=\"updateButton\" ng-disabled=\"!caseDetails.$dirty\" ng-hide=\"updatingDetails\" ng-click=\"updateCase()\" class=\"btn btn-primary\">Update Details</button><div ng-show=\"updatingDetails\">Updating Case...</div></div></div></div></div></div></div></form>");
 }]);
 
 angular.module("cases/views/edit.html", []).run(["$templateCache", function($templateCache) {
@@ -2688,17 +2712,19 @@ angular.module("log_viewer/views/log_viewer.html", []).run(["$templateCache", fu
     "								</a> \n" +
     "							</tab-heading>\n" +
     "							<div active=\"tab.active\" disabled=\"tab.disabled\">\n" +
-    "								<div class=\"panel panel-default\">\n" +
+    "								<div class=\"panel panel-default\" >\n" +
     "									<div class=\"panel-heading\">\n" +
     "										<a popover=\"Click to refresh log file.\" popover-trigger=\"mouseenter\" popover-placement=\"right\" ng-click=\"refreshTab($index)\">\n" +
     "											<span class=\"glyphicon glyphicon-refresh\"></span>\n" +
     "										</a>\n" +
     "										<h3 class=\"panel-title\" style=\"display: inline\">{{tab.longTitle}}</h3>\n" +
-    "										<button popover=\"Select text and click to perform Red Hat Diagnose\" popover-trigger=\"mouseenter\" popover-placement=\"bottom\" id=\"diagnoseButton\" type=\"button\" class=\"btn btn-primary diagnoseButton\" ng-click=\"diagnoseText()\">Red Hat Diagnose</button>\n" +
+    "										<div class=\"pull-right\" id=\"overlay\" popover=\"Select text and click to perform Red Hat Diagnose\" popover-trigger=\"mouseenter\" popover-placement=\"left\" > \n" +
+    "											<button ng-disabled=\"isDisabled\" id=\"diagnoseButton\" type=\"button\" class=\"btn btn-primary diagnoseButton\" ng-click=\"diagnoseText()\">Red Hat Diagnose</button>\n" +
+    "										</div>\n" +
     "										<br> \n" +
     "										<br>\n" +
     "									</div>\n" +
-    "									<div  class=\"panel-body\" fill-down ng-style=\"{ height: windowHeight }\">\n" +
+    "									<div  class=\"panel-body\" ng-mouseup=\"enableDiagnoseButton()\" fill-down ng-style=\"{ height: windowHeight }\">\n" +
     "										<pre id=\"resizeable-file-view\" class=\"no-line-wrap\">{{tab.content}}</pre>\n" +
     "									</div>\n" +
     "								</div>\n" +
