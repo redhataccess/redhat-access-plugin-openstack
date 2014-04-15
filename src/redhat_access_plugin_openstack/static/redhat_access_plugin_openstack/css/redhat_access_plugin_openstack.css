@@ -13,3 +13,8 @@
 .form-horizontal .control-label {
 	width: auto;
 }
+
+.popover-inner {
+	padding: 0px;
+	width: auto;
+}
