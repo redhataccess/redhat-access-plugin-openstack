@@ -119,7 +119,7 @@ app.service('TreeViewSelectorUtils',
     };
 
     var hasSelectedLeaves = function (tree) {
-      
+
       for (var i = 0; i < tree.length; i++) {
         if (tree[i] !== undefined) {
           if (tree[i].children.length === 0) {
@@ -128,14 +128,28 @@ app.service('TreeViewSelectorUtils',
               return true;
             }
           } else {
-            if ( hasSelectedLeaves(tree[i].children)){
-              return true ;
+            if (hasSelectedLeaves(tree[i].children)) {
+              return true;
             }
           }
         }
       }
       return false;
-    }
+    };
+
+    var getSelectedNames = function (tree, container) {
+      for (var i = 0; i < tree.length; i++) {
+        if (tree[i] !== undefined) {
+          if (tree[i].children.length === 0) {
+            if (tree[i].checked === true) {
+              container.push(tree[i].fullPath);
+            }
+          } else {
+            getSelectedNames(tree[i].children, container);
+          }
+        }
+      }
+    };
 
     var service = {
       parseTreeList: function (tree, data) {
@@ -148,6 +162,15 @@ app.service('TreeViewSelectorUtils',
       },
       hasSelections: function (tree) {
         return hasSelectedLeaves(tree);
+      },
+      getSelectedLeaves: function (tree) {
+        if (tree === undefined) {
+          console.log("getSelectedLeaves: Invalid tree");
+          return [];
+        }
+        var container = [];
+        getSelectedNames(tree, container);
+        return container;
       }
     };
     return service;
@@ -256,26 +279,11 @@ angular.module('RedhatAccess.security', ['ui.bootstrap', 'templates.app', 'ui.ro
 
       };
 
-      this.getAuthObject = function (base64_token) {
-        var decoded_token = atob(base64_token);
-        var data = decoded_token.split(":", 2);
-        if (data.length === 2) {
-          return {
-            username: data[0],
-            password: data[1]
-          };
-        } else {
-          console.log("Invalid login credentials");
-          return {};
-        }
-      };
-
-
       this.getBasicAuthToken = function () {
         var defer = $q.defer();
         var token = localStorage.getItem("rhAuthToken");
         if (token !== undefined && token !== '') {
-          defer.resolve(this.getAuthObject(token));
+          defer.resolve(token);
           return defer.promise;
         } else {
           var that = this;
@@ -285,11 +293,12 @@ angular.module('RedhatAccess.security', ['ui.bootstrap', 'templates.app', 'ui.ro
                 that.isLoggedIn = true;
                 that.loggedInUser = authedUser.name;
                 $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
-                defer.resolve(that.getAuthObject(localStorage.getItem("rhAuthToken")));
+                defer.resolve(localStorage.getItem("rhAuthToken"));
               }
             },
             function (error) {
-              defer.resolve({});
+              console.log("Unable to get user credentials");
+              defer.resolve("");
             });
           return defer.promise;
         }
@@ -672,7 +681,7 @@ angular.module('RedhatAccessCases', [
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .controller('AttachLocalFile', [
   '$scope',
   'AttachmentsService',
@@ -720,7 +729,7 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
   .controller('AttachmentsSection', [
     '$scope',
     'AttachmentsService',
@@ -745,7 +754,7 @@ angular.module('RedhatAccessCases')
     }
   ]);
 'use strict';
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
   .controller('BackEndAttachmentsCtrl', ['$scope',
     '$http',
     'AttachmentsService',
@@ -771,11 +780,30 @@ angular.module('RedhatAccessCases')
   ]);
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .controller('CommentsSection', [
   '$scope',
+  'CaseService',
+  'strataService',
+  '$stateParams',
   function(
-      $scope) {
+      $scope,
+      CaseService,
+      strataService,
+      $stateParams) {
+
+    strataService.cases.comments.get($stateParams.id).then(
+        function(commentsJSON) {
+          $scope.comments = commentsJSON;
+
+          if (commentsJSON != null) {
+            $scope.selectPage(1);
+          }
+        },
+        function(error) {
+          console.log(error);
+        }
+    );
 
     $scope.newComment = '';
     $scope.addingComment = false;
@@ -784,17 +812,18 @@ angular.module('RedhatAccessCases')
       $scope.addingComment = true;
 
       strata.cases.comments.post(
-          $scope.caseid,
+          CaseService.case.case_number,
           {'text': $scope.newComment},
           function(response) {
 
             //refresh the comments list
             strata.cases.comments.get(
-                $scope.caseId,
+                CaseService.case.case_number,
                 function(comments) {
                   $scope.newComment = '';
                   $scope.comments = comments;
                   $scope.addingComment = false;
+                  $scope.selectPage(1);
                   $scope.$apply();
                 },
                 function(error) {
@@ -807,12 +836,29 @@ angular.module('RedhatAccessCases')
           }
       );
     };
+
+    $scope.itemsPerPage = 4;
+    $scope.maxPagerSize = 3;
+
+    $scope.selectPage = function(pageNum) {
+      var start = $scope.itemsPerPage * (pageNum - 1);
+      var end = start + $scope.itemsPerPage;
+      end = end > $scope.comments.length ?
+          $scope.comments.length : end;
+
+      $scope.commentsOnScreen =
+          $scope.comments.slice(start, end);
+    };
+
+    if ($scope.comments != null) {
+      $scope.selectPage(1);
+    }
   }
 ]);
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .controller('Compact', [
   '$scope',
   function(
@@ -823,7 +869,7 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .controller('CompactCaseList', [
   '$scope',
   '$stateParams',
@@ -881,7 +927,7 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .controller('CompactEdit', [
   '$scope',
   'strataService',
@@ -922,21 +968,13 @@ angular.module('RedhatAccessCases')
         }
     );
 
-    strataService.cases.comments.get($stateParams.id).then(
-        function(commentsJSON) {
-          $scope.comments = commentsJSON;
-        },
-        function(error) {
-          console.log(error);
-        }
-    );
 
   }
 ]);
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .controller('DescriptionSection', [
   '$scope',
   'CaseService',
@@ -950,7 +988,7 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .controller('DetailsSection', [
   '$scope',
   'strataService',
@@ -1058,7 +1096,7 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .controller('Edit', [
   '$scope',
   '$stateParams',
@@ -1078,6 +1116,7 @@ angular.module('RedhatAccessCases')
 
     $scope.AttachmentsService = AttachmentsService;
     $scope.CaseService = CaseService;
+    CaseService.clearCase();
 
     $scope.caseLoading = true;
 
@@ -1104,9 +1143,11 @@ angular.module('RedhatAccessCases')
         }
     );
 
+    $scope.attachmentsLoading = true;
     strataService.cases.attachments.list($stateParams.id).then(
         function(attachmentsJSON) {
           AttachmentsService.defineOriginalAttachments(attachmentsJSON);
+          $scope.attachmentsLoading = false;
         },
         function(error) {
           console.log(error);
@@ -1126,7 +1167,7 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .controller('List', [
   '$scope',
   '$filter',
@@ -1181,7 +1222,7 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .controller('ListAttachments', [
   '$scope',
   'AttachmentsService',
@@ -1193,7 +1234,7 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .controller('ListFilter', [
   '$scope',
   'strataService',
@@ -1272,7 +1313,7 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
   .controller('New', [
     '$scope',
     '$state',
@@ -1504,7 +1545,7 @@ angular.module('RedhatAccessCases')
  * Child of Details controller
  **/
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .controller('Recommendations', [
   '$scope',
   function ($scope) {
@@ -1519,9 +1560,6 @@ angular.module('RedhatAccessCases')
 
       $scope.recommendationsOnScreen =
         $scope.recommendations.slice(start, end);
-
-      console.log($scope.recommendations);
-      console.log($scope.recommendationsOnScreen);
     };
 
     if ($scope.recommendations != null) {
@@ -1532,7 +1570,7 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .directive('rhaAttachLocalFile', function () {
   return {
     templateUrl: 'cases/views/attachLocalFile.html',
@@ -1545,7 +1583,7 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .directive('rhaAttachProductLogs', function () {
   return {
     templateUrl: 'cases/views/attachProductLogs.html',
@@ -1557,7 +1595,7 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .directive('rhaCaseAttachments', function () {
   return {
     templateUrl: 'cases/views/attachmentsSection.html',
@@ -1572,15 +1610,11 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .directive('rhaCaseComments', function () {
 return {
   templateUrl: 'cases/views/commentsSection.html',
   controller: 'CommentsSection',
-  scope: {
-    caseid: '=',
-    comments: '='
-  },
   restrict: 'EA',
   link: function postLink(scope, element, attrs) {
   }
@@ -1589,7 +1623,7 @@ return {
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .directive('rhaCompactCaseList', function () {
   return {
     templateUrl: 'cases/views/compactCaseList.html',
@@ -1604,7 +1638,7 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .directive('rhaCaseDescription', function () {
 return {
   templateUrl: 'cases/views/descriptionSection.html',
@@ -1617,7 +1651,7 @@ return {
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .directive('rhaCaseDetails', function () {
   return {
     templateUrl: 'cases/views/detailsSection.html',
@@ -1633,7 +1667,7 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .directive('rhaListAttachments', function () {
   return {
     templateUrl: 'cases/views/listAttachments.html',
@@ -1646,7 +1680,7 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .directive('rhaListFilter', function () {
   return {
     templateUrl: 'cases/views/listFilter.html',
@@ -1663,7 +1697,7 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .directive('rhaOnChange', function () {
   return {
     restrict: "A",
@@ -1674,7 +1708,7 @@ angular.module('RedhatAccessCases')
 });
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .directive('rhaPageHeader', function () {
   return {
     templateUrl: 'cases/views/pageHeader.html',
@@ -1689,7 +1723,7 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .directive('rhaResizable', [
   '$window',
   '$timeout',
@@ -1734,7 +1768,7 @@ angular.module('RedhatAccessCases')
   }
 ]);
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .filter('bytes', function() {
   return function(bytes, precision) {
     if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
@@ -1746,7 +1780,7 @@ angular.module('RedhatAccessCases')
 });
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
   .service('AttachmentsService', [
     '$filter',
     '$q',
@@ -1769,7 +1803,7 @@ angular.module('RedhatAccessCases')
       this.updateBackEndAttachements = function (selected) {
         this.backendAttachments = selected;
       };
-      
+
       this.hasBackEndSelections = function () {
         return TreeViewSelectorUtils.hasSelections(this.backendAttachments);
       };
@@ -1802,15 +1836,20 @@ angular.module('RedhatAccessCases')
 
 
       this.postBackEndAttachments = function (caseId) {
-        var data = this.backendAttachments;
+        var selectedFiles = TreeViewSelectorUtils.getSelectedLeaves(this.backendAttachments);
         securityService.getBasicAuthToken().then(
           function (auth) {
-            var jsonData = {
-              auth_token: auth,
-              attachments: data,
-              caseId: caseId
-            };
-            return $http.post('attachments', jsonData);
+            //we post each attachment separately
+            var promises = [];
+            for (var i = 0; i < selectedFiles.length; i++) {
+              var jsonData = {
+                authToken: auth,
+                attachment: selectedFiles[i],
+                caseNum: caseId
+              };
+              promises.push($http.post('attachments', jsonData));
+            }
+            return $q.all(promises);
           }
         )
       };
@@ -1820,40 +1859,42 @@ angular.module('RedhatAccessCases')
         var hasServerAttachments = this.hasBackEndSelections;
         if (hasLocalAttachments || hasServerAttachments) {
           var promises = [];
+          var updatedAttachments = this.updatedAttachments;
           if (hasServerAttachments) {
             promises.push(this.postBackEndAttachments(caseId));
-          };
-          var updatedAttachments = this.updatedAttachments;
-          //find new attachments
-          for (var i in updatedAttachments) {
-            if (!updatedAttachments[i].hasOwnProperty('uuid')) {
-              var promise = strataService.cases.attachments.post(
-                updatedAttachments[i].file,
-                caseId
-              )
-              promise.then(function (uri) {
-                updatedAttachments[i].uri = uri;
-              });
-
-              promises.push(promise);
-            }
           }
-          //find removed attachments
-          jQuery.grep(this.originalAttachments, function (origAttachment) {
-            var attachment =
-              $filter('filter')(updatedAttachments, {
-                'uuid': origAttachment.uuid
-              });
-
-            if (attachment.length == 0) {
-              promises.push(
-                strataService.cases.attachments.delete(
-                  origAttachment.uuid,
+          if (hasLocalAttachments) {
+            //find new attachments
+            for (var i in updatedAttachments) {
+              if (!updatedAttachments[i].hasOwnProperty('uuid')) {
+                var promise = strataService.cases.attachments.post(
+                  updatedAttachments[i].file,
                   caseId
                 )
-              );
+                promise.then(function (uri) {
+                  updatedAttachments[i].uri = uri;
+                });
+
+                promises.push(promise);
+              }
             }
-          });
+            //find removed attachments
+            jQuery.grep(this.originalAttachments, function (origAttachment) {
+              var attachment =
+                $filter('filter')(updatedAttachments, {
+                  'uuid': origAttachment.uuid
+                });
+
+              if (attachment.length == 0) {
+                promises.push(
+                  strataService.cases.attachments.delete(
+                    origAttachment.uuid,
+                    caseId
+                  )
+                );
+              }
+            });
+          }
 
           var parentPromise = $q.all(promises);
           parentPromise.then(
@@ -1873,7 +1914,7 @@ angular.module('RedhatAccessCases')
   ]);
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .service('CaseListService', [
   function () {
     this.cases = [];
@@ -1886,7 +1927,7 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .service('CaseService', [
   'strataService',
   function (strataService) {
@@ -1919,6 +1960,11 @@ angular.module('RedhatAccessCases')
 
     this.clearCase = function() {
       this.case = {};
+      this.versions = [];
+      this.products = [];
+      this.statuses = [];
+      this.severities = [];
+      this.groups = [];
       this.account = {};
     };
 
@@ -1933,7 +1979,7 @@ angular.module('RedhatAccessCases')
 
 'use strict';
 
-angular.module('RedhatAccessCases')
+angular.module('RedhatAccess.cases')
 .factory('strataService', ['$q', function ($q) {
   return {
     products: {
@@ -2173,6 +2219,7 @@ angular.module('RedhatAccess.logViewer',
 	var selectedFile = '';
 	var selectedHost = '';
 	var file = '';
+	var retrieveFileButtonIsDisabled = {check : true};
 	return {
 		getFileList : function() {
 			return fileList;
@@ -2194,6 +2241,14 @@ angular.module('RedhatAccess.logViewer',
 
 		setFile : function(file) {
 			this.file = file;
+		}, 
+
+		setRetrieveFileButtonIsDisabled : function(isDisabled){
+			retrieveFileButtonIsDisabled.check = isDisabled;
+		},
+
+		getRetrieveFileButtonIsDisabled : function() {
+			return retrieveFileButtonIsDisabled;
 		}
 	};
 })
@@ -2215,9 +2270,22 @@ angular.module('RedhatAccess.logViewer',
 .controller('fileController', function($scope, files) {
 	$scope.roleList = '';
 	$scope.updateSelected = function() {
+		$scope.sleep(1,$scope.checkTreeForChanges);
+	};
+	$scope.sleep = function(millis, callback) {
+		setTimeout(function()
+    		{ callback(); }
+		, millis);
+	};
+	$scope.checkTreeForChanges = function(){
 		if ($scope.mytree.currentNode != null
 			&& $scope.mytree.currentNode.fullPath != null) {
 			files.setSelectedFile($scope.mytree.currentNode.fullPath);
+			files.setRetrieveFileButtonIsDisabled(false);
+			$scope.$apply();
+		} else {
+			files.setRetrieveFileButtonIsDisabled(true);
+			$scope.$apply();
 		}
 	};
 	$scope.$watch(function() {
@@ -2272,6 +2340,8 @@ angular.module('RedhatAccess.logViewer',
 })
 .controller('selectFileButton', function($scope, $http, $location,
 	files) {
+	$scope.retrieveFileButtonIsDisabled = files.getRetrieveFileButtonIsDisabled();
+
 	$scope.fileSelected = function() {
 		var sessionId = $location.search().sessionId;
 		var userId = $location.search().userId;
@@ -2383,13 +2453,13 @@ angular.module('RedhatAccess.logViewer',
 				$scope.isDisabled = true;
 			}
 			$scope.$apply();
-		}
+		};
 
 		$scope.sleep = function(millis, callback) {
-    			setTimeout(function()
-            		{ callback(); }
-    			, millis);
-			}
+			setTimeout(function()
+        		{ callback(); }
+			, millis);
+		};
 		}])
 
 .controller('AccordionDemoCtrl', function($scope, accordian) {
@@ -2675,12 +2745,12 @@ angular.module("cases/views/attachmentsSection.html", []).run(["$templateCache",
 
 angular.module("cases/views/commentsSection.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/commentsSection.html",
-    "<h4 class=\"section-header\">Case Discussion</h4><div class=\"container-fluid side-padding\"><div class=\"row create-field\"><div class=\"col-xs-12\"><textarea ng-disabled=\"addingComment\" rows=\"5\" ng-model=\"newComment\" style=\"max-width: 100%\" class=\"form-control\"></textarea></div></div><div style=\"margin-left: 0px; margin-right: 0px;\" class=\"row create-field bottom-border\"><div class=\"col-xs-12 col-no-padding\"><div style=\"float: right;\"><div ng-hide=\"!addingComment\">Adding comment...</div><button ng-hide=\"addingComment\" ng-disabled=\"false\" ng-click=\"addComment()\" style=\"float: right;\" class=\"btn btn-primary\">Add Comment</button></div></div></div><div ng-repeat=\"comment in comments\"><div style=\"padding-bottom: 10px;\" class=\"row\"><div class=\"col-md-2\"><div class=\"bold\">{{comment.created_by}}</div><div>{{comment.created_date | date:'mediumDate'}}</div><div>{{comment.created_date | date:'mediumTime'}}</div></div><div class=\"col-md-10\"><pre>{{comment.text}}</pre></div></div></div></div>");
+    "<h4 class=\"section-header\">Case Discussion</h4><div class=\"container-fluid side-padding\"><div class=\"row create-field\"><div class=\"col-xs-12\"><textarea ng-disabled=\"addingComment\" rows=\"5\" ng-model=\"newComment\" style=\"max-width: 100%\" class=\"form-control\"></textarea></div></div><div style=\"margin-left: 0px; margin-right: 0px;\" class=\"row create-field\"><div class=\"col-xs-12 col-no-padding\"><div style=\"float: right;\"><div ng-hide=\"!addingComment\">Adding comment...</div><button ng-hide=\"addingComment\" ng-disabled=\"false\" ng-click=\"addComment()\" style=\"float: right;\" class=\"btn btn-primary\">Add Comment</button></div></div></div><div ng-hide=\"comments.length &lt;= 0 || comments === undefined\" style=\"border-top: 1px solid #dddddd;\"><div class=\"row\"><div class=\"col-xs-12\"><pagination style=\"float: right;\" boundary-links=\"true\" total-items=\"comments.length\" on-select-page=\"selectPage(page)\" items-per-page=\"itemsPerPage\" page=\"currentPage\" rotate=\"false\" max-size=\"maxPagerSize\" previous-text=\"&lt;\" next-text=\"&gt;\" first-text=\"&lt;&lt;\" last-text=\"&gt;&gt;\" class=\"pagination-sm\"></pagination></div></div><div ng-repeat=\"comment in commentsOnScreen\"><div style=\"padding-bottom: 10px;\" class=\"row\"><div class=\"col-md-2\"><div class=\"bold\">{{comment.created_by}}</div><div>{{comment.created_date | date:'mediumDate'}}</div><div>{{comment.created_date | date:'mediumTime'}}</div></div><div class=\"col-md-10\"><pre>{{comment.text}}</pre></div></div></div></div></div>");
 }]);
 
 angular.module("cases/views/compact.edit.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/compact.edit.html",
-    "<!DOCTYPE html><div id=\"redhat-access-case\"><div ng-show=\"caseLoading\" class=\"container-fluid\"><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><div>Loading...</div></div></div></div><div ng-hide=\"caseLoading\" rha-resizable rha-dom-ready=\"domReady\" style=\"overflow: auto; padding-left: 15px;border-top: 1px solid #dddddd; border-left: 1px solid #dddddd;\" class=\"container-fluid\"><div style=\"margin-right: 0px; padding-top: 10px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-details compact=\"true\"></rha-case-details></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-description></rha-case-description></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-attachments></rha-case-attachments></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-comments comments=\"comments\"></rha-case-comments></div></div></div></div>");
+    "<!DOCTYPE html><div id=\"redhat-access-case\"><div ng-show=\"caseLoading\" class=\"container-fluid\"><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><div>Loading...</div></div></div></div><div ng-hide=\"caseLoading\" rha-resizable rha-dom-ready=\"domReady\" style=\"overflow: auto; padding-left: 15px;border-top: 1px solid #dddddd; border-left: 1px solid #dddddd;\" class=\"container-fluid\"><div style=\"margin-right: 0px; padding-top: 10px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-details compact=\"true\"></rha-case-details></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-description></rha-case-description></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-attachments></rha-case-attachments></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-comments></rha-case-comments></div></div></div></div>");
 }]);
 
 angular.module("cases/views/compact.html", []).run(["$templateCache", function($templateCache) {
@@ -2724,7 +2794,7 @@ angular.module("cases/views/detailsSection.html", []).run(["$templateCache", fun
 
 angular.module("cases/views/edit.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/edit.html",
-    "<!DOCTYPE html><div id=\"redhat-access-case\" class=\"container-offset\"><rha-page-header></rha-page-header><div class=\"container-fluid side-padding\"><div class=\"row\"><div class=\"col-xs-12\"><rha-case-details compact=\"false\"></rha-case-details></div></div><div class=\"row\"><div class=\"col-xs-12\"><rha-case-description></rha-case-description></div></div><div class=\"row\"><div class=\"col-xs-12\"><rha-case-attachments></rha-case-attachments></div></div><div ng-controller=\"Recommendations\" class=\"row\"><div class=\"col-xs-12\"><h4 class=\"section-header\">Recommendations</h4><div class=\"container-fluid side-padding\"><div class=\"row\"><div ng-repeat=\"recommendation in recommendationsOnScreen\"><div class=\"col-xs-3\"><div class=\"bold\">{{recommendation.title}}</div><div style=\"padding: 8px 0;\">{{recommendation.solution_abstract}}</div><a href=\"{{recommendation.resource_view_uri}}\" target=\"_blank\">View full article in new window</a></div></div></div><div class=\"row\"><div class=\"col-xs-12\"><pagination boundary-links=\"true\" total-items=\"recommendations.length\" on-select-page=\"selectPage(page)\" items-per-page=\"itemsPerPage\" page=\"currentPage\" max-size=\"maxSize\" previous-text=\"&lt;\" next-text=\"&gt;\" first-text=\"&lt;&lt;\" last-text=\"&gt;&gt;\" class=\"pagination-sm\"></pagination></div></div></div></div></div><div class=\"row\"><div class=\"col-xs-12\"><rha-case-comments comments=\"comments\" caseid=\"caseJSON.case_number\"></rha-case-comments></div></div></div></div>");
+    "<!DOCTYPE html><div id=\"redhat-access-case\" class=\"container-offset\"><rha-page-header></rha-page-header><div class=\"container-fluid side-padding\"><div class=\"row\"><div ng-hide=\"caseLoading\" class=\"col-xs-12\"><rha-case-details compact=\"false\"></rha-case-details></div><div ng-show=\"caseLoading\" class=\"col-xs-12\"><div>Loading Details...</div></div></div><div class=\"row\"><div ng-hide=\"caseLoading\" class=\"col-xs-12\"><rha-case-description></rha-case-description></div></div><div class=\"row\"><div ng-hide=\"attachmentsLoading\" class=\"col-xs-12\"><rha-case-attachments></rha-case-attachments></div><div ng-show=\"attachmentsLoading\" class=\"col-xs-12\"><div>Loading Attachments...</div></div></div><div ng-controller=\"Recommendations\" class=\"row\"><div class=\"col-xs-12\"><h4 class=\"section-header\">Recommendations</h4><div class=\"container-fluid side-padding\"><div class=\"row\"><div ng-repeat=\"recommendation in recommendationsOnScreen\"><div class=\"col-xs-3\"><div class=\"bold\">{{recommendation.title}}</div><div style=\"padding: 8px 0;\">{{recommendation.solution_abstract}}</div><a href=\"{{recommendation.resource_view_uri}}\" target=\"_blank\">View full article in new window</a></div></div></div><div class=\"row\"><div class=\"col-xs-12\"><pagination boundary-links=\"true\" total-items=\"recommendations.length\" on-select-page=\"selectPage(page)\" items-per-page=\"itemsPerPage\" page=\"currentPage\" max-size=\"maxSize\" previous-text=\"&lt;\" next-text=\"&gt;\" first-text=\"&lt;&lt;\" last-text=\"&gt;&gt;\" class=\"pagination-sm\"></pagination></div></div></div></div></div><div class=\"row\"><div class=\"col-xs-12\"><rha-case-comments></rha-case-comments></div></div></div></div>");
 }]);
 
 angular.module("cases/views/list.html", []).run(["$templateCache", function($templateCache) {
@@ -2769,13 +2839,13 @@ angular.module("log_viewer/views/log_viewer.html", []).run(["$templateCache", fu
     "						<li ng-repeat=\"choice in items\" ng-click=\"machineSelected()\"><a>{{choice}}</a></li>\n" +
     "					</ul>\n" +
     "				</div>\n" +
-    "				<div id=\"fileList\" fill-down ng-style=\"{ height: windowHeight }\" class=\"fileList\" ng-controller=\"fileController\" ng-click=\"updateSelected()\">\n" +
+    "				<div id=\"fileList\" fill-down ng-style=\"{ height: windowHeight }\" class=\"fileList\" ng-controller=\"fileController\" ng-mouseup=\"updateSelected()\">\n" +
     "					<div data-angular-treeview=\"true\" data-tree-id=\"mytree\"\n" +
     "					data-tree-model=\"roleList\" data-node-id=\"roleId\"\n" +
     "					data-node-label=\"roleName\" data-node-children=\"children\">\n" +
     "					</div>\n" +
     "				</div>\n" +
-    "				<button type=\"button\" class=\"pull-right btn btn-primary\"\n" +
+    "				<button ng-disabled=\"retrieveFileButtonIsDisabled.check\" type=\"button\" class=\"pull-right btn btn-primary\"\n" +
     "				ng-controller=\"selectFileButton\" ng-click=\"fileSelected()\">\n" +
     "				Select File</button>\n" +
     "			</div>\n" +

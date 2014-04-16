@@ -1,5 +1,7 @@
 from django import http
 from horizon import views
+#TODO: Remove this
+from django.views.decorators.csrf import csrf_exempt
 
 import shlex
 import subprocess
@@ -17,6 +19,8 @@ class IndexView(views.APIView):
         return context
 
 
+#TODO: Remove this!
+@csrf_exempt
 def attachments(request):
     if request.method == 'GET':
         response = http.HttpResponse(content_type='text/plain')
@@ -26,8 +30,8 @@ def attachments(request):
     elif request.method == 'POST':
         requestObj = json.loads(request.body)
 
-        caseNum = requestObj['caseNum']
-        authToken = 'Basic ' + requestObj['auth']
+        caseNum = requestObj['caseId']
+        authToken = 'Basic ' + requestObj['auth_token']
 
         #Need to return if request is bad
         if (caseNum is None) or (authToken is None):
