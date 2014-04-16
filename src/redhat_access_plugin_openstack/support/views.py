@@ -42,7 +42,6 @@ def attachments(request):
             LOG.debug("Attachment: %s" % attachment)
         except:
             LOG.error("Missing caseNum, authToken, or attachment")
-            #Need to return if request is bad
             return http.HttpResponseBadRequest("Required field missing")
 
         try:
@@ -73,6 +72,9 @@ def attachments(request):
             return checkRC(r)
         else:
             return rc
+    else:
+        LOG.error("Unsupported Method")
+        return http.HttpResponseNotAllowed(['GET', 'POST'])
 
 
 def checkRC(r):

@@ -98,9 +98,7 @@ def logs(request):
             return response
     else:
         LOG.error("Unsupported Method")
-        response = http.HttpResponse()
-        response.status_code = 405
-        return response
+        return http.HttpResponseNotAllowed(['GET'])
 
 
 class LogView(views.APIView):
