@@ -30,18 +30,24 @@ def attachments(request):
     elif request.method == 'POST':
         requestObj = json.loads(request.body)
 
-        caseNum = requestObj['caseId']
-        authToken = 'Basic ' + requestObj['auth_token']
+        caseNum = requestObj['caseNum']
+        authToken = requestObj['authToken']
+        print "Case Number: " + caseNum
+        print "Auth Token: " + authToken
 
         #Need to return if request is bad
         if (caseNum is None) or (authToken is None):
             return http.HttpResponseBadRequest()
 
         decoded = base64.b64decode(authToken)
+        print "Decoded: " + decoded
         user, password = decoded.split(':')
+        print "User: " + user
+        print "Password: " + password
 
         authToken = 'Basic ' + authToken
         headers = {'Authorization': authToken}
+        print "Headers: " + headers
 
         loginUri = apiBaseUri + '/users?ssoUserName=' + user
         attachUrl = apiBaseUri + '/cases/' + caseNum + '/attachments'
@@ -58,11 +64,14 @@ def attachments(request):
 
 def checkRC(r):
     if r.status_code == requests.codes.ok:
+        print "Response OK"
         return http.HttpResponse()
     #Auth was bad pass it up, use 409 Conflict?
     elif r.status_code == 401:
+        print "Response 401"
         response = HttpResponse()
         response.status_code = 409
         return response
     else:
+        print "Response Bad: " + r.status_code
         return http.HttpResponseServerError()
