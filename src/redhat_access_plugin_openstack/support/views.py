@@ -60,9 +60,15 @@ def attachments(request):
         attachUrl = apiBaseUri + '/cases/' + caseNum + '/attachments'
 
         loginReq = requests.get(loginUri, headers=headers)
+        LOG.debug("Validate credentials")
         rc = checkRC(loginReq)
         if rc.status_code == 200:
-            files = {'file': open('/var/log/horizon/horizon.log', 'rb')}
+            try:
+                files = {'file': open('/var/log/horizon/horizon.log', 'rb')}
+            except:
+                LOG.error("Could not open Horizon Log")
+                return http.HttpResponseServerError("Couldnt open horizon log")
+            LOG.debug("POST attachment")
             r = requests.post(attachUrl, files=files, headers=headers)
             return checkRC(r)
         else:
