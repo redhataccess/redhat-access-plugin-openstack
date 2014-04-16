@@ -1,3 +1,5 @@
+import logging
+
 from django import http
 from horizon import views
 #TODO: Remove this
@@ -10,6 +12,7 @@ import json
 import base64
 
 apiBaseUri = 'https://api.access.redhat.com/rs'
+LOG = logging.getLogger(__name__)
 
 
 class IndexView(views.APIView):
@@ -30,24 +33,28 @@ def attachments(request):
     elif request.method == 'POST':
         requestObj = json.loads(request.body)
 
-        caseNum = requestObj['caseNum']
-        authToken = requestObj['authToken']
-        print "Case Number: " + caseNum
-        print "Auth Token: " + authToken
+        try:
+            caseNum = requestObj['caseNum']
+            authToken = requestObj['authToken']
+            attachment = requestObj['attachment']
+            LOG.debug("Case Number: %s" % caseNum)
+            LOG.debug("Auth Token: %s" % authToken)
+            LOG.debug("Attachment: %s" % attachment)
+        except:
+            LOG.error("Missing caseNum, authToken, or attachment")
+            #Need to return if request is bad
+            return http.HttpResponseBadRequest("Required field missing")
 
-        #Need to return if request is bad
-        if (caseNum is None) or (authToken is None):
-            return http.HttpResponseBadRequest()
-
-        decoded = base64.b64decode(authToken)
-        print "Decoded: " + decoded
-        user, password = decoded.split(':')
-        print "User: " + user
-        print "Password: " + password
+        try:
+            decoded = base64.b64decode(authToken)
+            user, password = decoded.split(':')
+        except:
+            LOG.error("Could not decode authToken")
+            return http.HttpResponseBadRequest("Could not decode authToken")
 
         authToken = 'Basic ' + authToken
         headers = {'Authorization': authToken}
-        print "Headers: " + headers
+        LOG.debug("Headers: %s" % str(headers))
 
         loginUri = apiBaseUri + '/users?ssoUserName=' + user
         attachUrl = apiBaseUri + '/cases/' + caseNum + '/attachments'
@@ -63,15 +70,15 @@ def attachments(request):
 
 
 def checkRC(r):
-    if r.status_code == requests.codes.ok:
-        print "Response OK"
+    if r.status_code < 400:
+        LOG.debug("Response OK: %s" % str(r.status_code))
         return http.HttpResponse()
     #Auth was bad pass it up, use 409 Conflict?
     elif r.status_code == 401:
-        print "Response 401"
+        LOG.debug("Response 401")
         response = HttpResponse()
         response.status_code = 409
         return response
     else:
-        print "Response Bad: " + r.status_code
-        return http.HttpResponseServerError()
+        LOG.debug("Response Bad: %s" % str(r.status_code))
+        return http.HttpResponseServerError(str(r.status_code))
