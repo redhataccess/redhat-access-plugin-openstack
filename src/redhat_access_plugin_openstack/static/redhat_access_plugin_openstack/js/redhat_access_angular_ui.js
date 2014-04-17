@@ -292,7 +292,6 @@ angular.module('RedhatAccess.security', ['ui.bootstrap', 'templates.app', 'ui.ro
               if (authedUser) {
                 that.isLoggedIn = true;
                 that.loggedInUser = authedUser.name;
-                $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
                 defer.resolve(localStorage.getItem("rhAuthToken"));
               }
             },
@@ -333,11 +332,17 @@ angular.module('RedhatAccess.security', ['ui.bootstrap', 'templates.app', 'ui.ro
                 strata.setCredentials($scope.user.user, $scope.user.password,
                   function (passed, authedUser) {
                     if (passed) {
+                      $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
                       $scope.user.password = '';
                       $scope.authError = null;
-                      $modalInstance.close(authedUser);
+                      try {
+                        $modalInstance.close(authedUser);
+                      } catch (err) {
+                        console.log("Error closing login window.");
+                      }
                     } else {
                       // alert("Login failed!");
+                      $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
                       $scope.$apply(function () {
                         $scope.authError = "Login Failed!";
                       });
@@ -365,259 +370,314 @@ angular.module('RedhatAccess.security', ['ui.bootstrap', 'templates.app', 'ui.ro
  *
  */
 angular.module('RedhatAccess.search', [
-	'ui.router',
-	'templates.app',
-	'RedhatAccess.security',
-	'ui.bootstrap',
-	'ngSanitize'
+  'ui.router',
+  'templates.app',
+  'RedhatAccess.security',
+  'ui.bootstrap',
+  'ngSanitize'
 ])
-	.constant('RESOURCE_TYPES', {
-		article: 'Article',
-		solution: 'Solution',
+  .constant('RESOURCE_TYPES', {
+    article: 'Article',
+    solution: 'Solution',
 
-	})
-	.constant('SEARCH_PARAMS', {
-		limit: 10
+  })
+  .constant('SEARCH_PARAMS', {
+    limit: 10
 
-	})
-	.config(['$stateProvider',
-		function ($stateProvider) {
-			$stateProvider.state('search', {
-				url: "/search",
-				controller: 'SearchController',
-				templateUrl: 'search/views/search.html'
-			}).state('search_accordion', { //TEMPORARY
-				url: "/search2",
-				controller: 'SearchController',
-				templateUrl: 'search/views/accordion_search.html'
+  })
+  .config(['$stateProvider',
+    function ($stateProvider) {
+      $stateProvider.state('search', {
+        url: "/search",
+        controller: 'SearchController',
+        templateUrl: 'search/views/search.html'
+      }).state('search_accordion', { //TEMPORARY
+        url: "/search2",
+        controller: 'SearchController',
+        templateUrl: 'search/views/accordion_search.html'
 
-			});
-		}
-	])
-	.controller('SearchController', ['$scope',
-		'SearchResultsService', 'SEARCH_PARAMS',
-		function ($scope, SearchResultsService) {
-			$scope.results = SearchResultsService.results;
-			$scope.selectedSolution = SearchResultsService.currentSelection;
+      });
+    }
+  ])
+  .controller('SearchController', ['$scope',
+    'SearchResultsService', 'SEARCH_PARAMS',
+    function ($scope, SearchResultsService) {
+      $scope.results = SearchResultsService.results;
+      $scope.selectedSolution = SearchResultsService.currentSelection;
+      $scope.searchInProgress = SearchResultsService.searchInProgress;
 
-			clearResults = function () {
-				SearchResultsService.clear();
-			};
-
-
-			$scope.solutionSelected = function (index) {
-				var response = $scope.results[index];
-				SearchResultsService.setSelected(response);
-
-			};
-
-			$scope.search = function (searchStr, limit) {
-				SearchResultsService.search(searchStr, limit);
-			};
-
-			$scope.diagnose = function (data, limit) {
-				SearchResultsService.diagnose(data, limit);
-			};
+      clearResults = function () {
+        SearchResultsService.clear();
+      };
 
 
-			$scope.$watch(function () {
-					return SearchResultsService.currentSelection
-				},
-				function (newVal) {
-					$scope.selectedSolution = newVal;
-				}
-			);
+      $scope.solutionSelected = function (index) {
+        var response = $scope.results[index];
+        SearchResultsService.setSelected(response);
+
+      };
+
+      $scope.search = function (searchStr, limit) {
+
+        SearchResultsService.search(searchStr, limit);
+      };
+
+      $scope.diagnose = function (data, limit) {
+        SearchResultsService.diagnose(data, limit);
+      };
 
 
-		}
-	])
-	.directive('rhaAccordionSearchResults', function () {
-		return {
-			restrict: 'AE',
-			scope: false,
-			templateUrl: 'search/views/accordion_search_results.html'
-		};
-	})
-	.directive('rhaListSearchResults', function () {
-		return {
-			restrict: 'AE',
-			scope: false,
-			templateUrl: 'search/views/list_search_results.html'
-		};
-	})
-	.directive('rhaSearchForm', function () {
-		return {
-			restrict: 'AE',
-			scope: false,
-			templateUrl: 'search/views/search_form.html'
-		};
-	})
-	.directive('rhaStandardSearch', function () {
-		return {
-			restrict: 'AE',
-			scope: false,
-			templateUrl: 'search/views/standard_search.html'
-		};
-	})
-	.directive('rhaResultDetailDisplay', ['RESOURCE_TYPES',
-		function (RESOURCE_TYPES) {
-			return {
-				restrict: 'AE',
-				scope: {
-					result: '='
-				},
-				link: function (scope, element, attr) {
-					scope.isSolution = function () {
-						if (scope.result !== undefined && scope.result.resource_type !== undefined) {
-							if (scope.result.resource_type === RESOURCE_TYPES.solution) {
-								return true;
-							} else {
-								return false;
-							}
-						}
-						return false;
-					};
-					scope.isArticle = function () {
-						if (scope.result !== undefined && scope.result.resource_type !== undefined) {
-							if (scope.result.resource_type === RESOURCE_TYPES.article) {
-								return true;
-							} else {
-								return false;
-							}
-						}
-						return false;
-					};
-					scope.getSolutionResolution = function () {
-						var resolution_html = '';
-						if (scope.result.resolution !== undefined) {
-							resolution_html = scope.result.resolution.html;
-						}
-						return resolution_html;
-					};
-
-					scope.getArticleHtml = function () {
-						if (scope.result === undefined) {
-							return '';
-						}
-						if (scope.result.body !== undefined) {
-							return scope.result.body;
-						} else {
-							return '';
-						}
-					};
-
-				},
-				templateUrl: 'search/views/resultDetail.html'
-			};
-		}
-	])
-	.factory('SearchResultsService', ['$rootScope', 'AUTH_EVENTS', 'RESOURCE_TYPES', 'SEARCH_PARAMS',
-
-		function ($rootScope, AUTH_EVENTS, RESOURCE_TYPES, SEARCH_PARAMS) {
-			var service = {
-				results: [],
-				currentSelection: {},
-				add: function (result) {
-					this.results.push(result);
-				},
-				clear: function () {
-					this.results.length = 0;
-					this.setSelected({});
-				},
-				setSelected: function (selection) {
-					this.currentSelection = selection;
-				},
-				search: function (searchString, limit) {
-					var that = this;
-					if ((limit === undefined) || (limit < 1)) limit = SEARCH_PARAMS.limit;
-					this.clear();
-					strata.search(
-						searchString,
-						function (resourceType, response) {
-							response.resource_type = resourceType;
-							$rootScope.$apply(function () {
-								that.add(response);
-							});
-						},
-						function (error) {
-							console.log("search failed");
-						},
-						limit,
-						true
-					);
-				},
-				searchSolutions: function (searchString, limit) {
-					var that = this;
-					if ((limit === undefined) || (limit < 1)) limit = SEARCH_PARAMS.limit;
-					this.clear();
-					strata.solutions.search(
-						searchString,
-						function (response) {
-							//console.log(angular.toJson(response));
-							$rootScope.$apply(function () {
-								//console.log(angular.toJson(response));
-								response.forEach(function (entry) {
-									entry.resource_type = RESOURCE_TYPES.solution;
-									that.add(entry);
-									//console.log(angular.toJson(entry, true));
-								});
-							});
-						},
-						function (error) {
-							console.log("search failed");
-						},
-						limit,
-						false
-					);
-				},
-				searchArticles: function (searchString, limit) {
-					var that = this;
-					if ((limit === undefined) || (limit < 1)) limit = SEARCH_PARAMS.limit;
-					this.clear();
-					strata.articles.search(
-						searchString,
-						function (response) {
-							response.resource_type = RESOURCE_TYPES.article;
-							$rootScope.$apply(function () {
-								that.add(response);
-							});
-						},
-						function (error) {
-							console.log("search failed");
-						},
-						limit,
-						true
-					);
-				},
-				diagnose: function (searchString, limit) {
-					var that = this;
-					if ((limit === undefined) || (limit < 1)) limit = SEARCH_PARAMS.limit;
-					this.clear();
-					strata.diagnose(
-						searchString,
-						function (response) {
-							response.resource_type = RESOURCE_TYPES.solution;
-							$rootScope.$apply(function () {
-								that.add(response);
-							});
-						},
-						function (error) {
-							console.log("search failed");
-						},
-						limit
-					);
-				}
+      $scope.$watch(function () {
+          return SearchResultsService.currentSelection
+        },
+        function (newVal) {
+          $scope.selectedSolution = newVal;
+        }
+      );
 
 
+    }
+  ])
+  .directive('rhaAccordionSearchResults', function () {
+    return {
+      restrict: 'AE',
+      scope: false,
+      templateUrl: 'search/views/accordion_search_results.html'
+    };
+  })
+  .directive('rhaListSearchResults', function () {
+    return {
+      restrict: 'AE',
+      scope: false,
+      templateUrl: 'search/views/list_search_results.html'
+    };
+  })
+  .directive('rhaSearchForm', function () {
+    return {
+      restrict: 'AE',
+      scope: false,
+      templateUrl: 'search/views/search_form.html'
+    };
+  })
+  .directive('rhaStandardSearch', function () {
+    return {
+      restrict: 'AE',
+      scope: false,
+      templateUrl: 'search/views/standard_search.html'
+    };
+  })
+  .directive('rhaResultDetailDisplay', ['RESOURCE_TYPES',
+    function (RESOURCE_TYPES) {
+      return {
+        restrict: 'AE',
+        scope: {
+          result: '='
+        },
+        link: function (scope, element, attr) {
+          scope.isSolution = function () {
+            if (scope.result !== undefined && scope.result.resource_type !== undefined) {
+              if (scope.result.resource_type === RESOURCE_TYPES.solution) {
+                return true;
+              } else {
+                return false;
+              }
+            }
+            return false;
+          };
+          scope.isArticle = function () {
+            if (scope.result !== undefined && scope.result.resource_type !== undefined) {
+              if (scope.result.resource_type === RESOURCE_TYPES.article) {
+                return true;
+              } else {
+                return false;
+              }
+            }
+            return false;
+          };
+          scope.getSolutionResolution = function () {
+            var resolution_html = '';
+            if (scope.result.resolution !== undefined) {
+              resolution_html = scope.result.resolution.html;
+            }
+            return resolution_html;
+          };
 
-			};
+          scope.getArticleHtml = function () {
+            if (scope.result === undefined) {
+              return '';
+            }
+            if (scope.result.body !== undefined) {
+              return scope.result.body;
+            } else {
+              return '';
+            }
+          };
 
-			$rootScope.$on(AUTH_EVENTS.logoutSuccess, function () {
-				service.clear.apply(service);
-			});
-			return service;
-		}
-	]);
+        },
+        templateUrl: 'search/views/resultDetail.html'
+      };
+    }
+  ])
+  .factory('SearchResultsService', ['$q','$rootScope', 'AUTH_EVENTS', 'RESOURCE_TYPES', 'SEARCH_PARAMS',
+
+    function ($q,$rootScope, AUTH_EVENTS, RESOURCE_TYPES, SEARCH_PARAMS) {
+      var service = {
+        results: [],
+        currentSelection: {},
+        searchInProgress: {
+          value: false
+        },
+        add: function (result) {
+          this.results.push(result);
+        },
+        clear: function () {
+          this.results.length = 0;
+          this.setSelected({});
+        },
+        setSelected: function (selection) {
+          this.currentSelection = selection;
+        },
+        search: function (searchString, limit) {
+          var that = this;
+          if ((limit === undefined) || (limit < 1)) limit = SEARCH_PARAMS.limit;
+          this.clear();
+          this.searchInProgress.value = true;
+          var deferreds = [];
+          strata.search(
+            searchString,
+            function (entries) {
+              //retrieve details for each solution
+              entries.forEach(function (entry) {
+                var deferred = $q.defer();
+                deferreds.push(deferred.promise);
+                strata.utils.getURI(
+                  entry.uri,
+                  entry.resource_type,
+                  function (type, info) {
+                    if (info !== undefined) {
+                      info.resource_type = type;
+                    }
+                    deferred.resolve(info);
+                  },
+                  function (error) {
+                    deferred.resolve();
+                  });
+              });
+              $q.all(deferreds).then(
+                function (results) {
+                  results.forEach(function (result) {
+                    if (result !== undefined) {
+                      that.add(result);
+                    }
+                  });
+                  that.searchInProgress.value = false;
+                },
+                function (error) {
+                  that.searchInProgress.value = false;
+                }
+              );
+            },
+            function (error) {
+              that.searchInProgress.value = false;
+              console.log(error);
+            },
+            limit,
+            false
+          );
+        },
+        // solution and article search needs reimplementation
+        // searchSolutions: function (searchString, limit) {
+        //   var that = this;
+        //   if ((limit === undefined) || (limit < 1)) limit = SEARCH_PARAMS.limit;
+        //   this.clear();
+        //   strata.solutions.search(
+        //     searchString,
+        //     function (response) {
+        //       $rootScope.$apply(function () {
+        //         response.forEach(function (entry) {
+        //           entry.resource_type = RESOURCE_TYPES.solution;
+        //           that.add(entry);
+        //         });
+        //       });
+        //     },
+        //     function (error) {
+        //       console.log("search failed");
+        //     },
+        //     limit,
+        //     false
+        //   );
+        // },
+        // searchArticles: function (searchString, limit) {
+        //   var that = this;
+        //   if ((limit === undefined) || (limit < 1)) limit = SEARCH_PARAMS.limit;
+        //   this.clear();
+        //   strata.articles.search(
+        //     searchString,
+        //     function (response) {
+        //       response.resource_type = RESOURCE_TYPES.article;
+        //       $rootScope.$apply(function () {
+        //         that.add(response);
+        //       });
+        //     },
+        //     function (error) {
+        //       console.log("search failed");
+        //     },
+        //     limit,
+        //     true
+        //   );
+        // },
+        diagnose: function (data, limit) {
+          var that = this;
+          if ((limit === undefined) || (limit < 1)) limit = SEARCH_PARAMS.limit;
+          this.clear();
+          var deferreds = [];
+          that.searchInProgress.value = true;
+          strata.problems(
+            data,
+            function (solutions) {
+              //retrieve details for each solution
+              solutions.forEach(function (solution) {
+                var deferred = $q.defer();
+                deferreds.push(deferred.promise);
+                strata.solutions.get(
+                  solution.uri,
+                  function (solution) {
+                    deferred.resolve(solution);
+                  },
+                  function (error) {
+                    deferred.resolve();
+                  });
+              });
+              $q.all(deferreds).then(
+                function (solutions) {
+                  solutions.forEach(function (solution) {
+                    if (solution !== undefined) {
+                      solution.resource_type = RESOURCE_TYPES.solution;
+                      that.add(solution);
+                    }
+                  });
+                  that.searchInProgress.value = false;
+                },
+                function (error) {
+                  that.searchInProgress.value = false;
+                }
+              );
+            },
+            function (error) {
+              that.searchInProgress.value = false;
+              console.log(error);
+            },
+            limit
+          );
+        }
+      };
+
+      $rootScope.$on(AUTH_EVENTS.logoutSuccess, function () {
+        service.clear.apply(service);
+      });
+      return service;
+    }
+  ]);
 angular.module('RedhatAccess.cases', [
   'ui.router',
   'ui.bootstrap',
@@ -1376,9 +1436,7 @@ angular.module('RedhatAccess.cases')
           description: $scope.description
         };
 
-        if (!angular.equals($scope.currentData, newData) && !$scope.loadingRecommendations) {
-          $scope.loadingRecommendations = true;
-
+        if (!angular.equals($scope.currentData, newData) && !SearchResultsService.searchInProgress.value) {
           var data = {
             product: $scope.product,
             version: $scope.version,
@@ -1387,49 +1445,7 @@ angular.module('RedhatAccess.cases')
           };
           $scope.setCurrentData();
 
-          var deferreds = [];
-
-          strata.problems(
-            data,
-            function (solutions) {
-              //retrieve details for each solution
-              solutions.forEach(function (solution) {
-                var deferred = $q.defer();
-                deferreds.push(deferred.promise);
-
-                strata.solutions.get(
-                  solution.uri,
-                  function (solution) {
-                    deferred.resolve(solution);
-                  },
-                  function (error) {
-                    deferred.resolve();
-                  });
-              });
-
-              $q.all(deferreds).then(
-                function (solutions) {
-                  SearchResultsService.clear();
-
-                  solutions.forEach(function (solution) {
-                    if (solution !== undefined) {
-                      solution.resource_type = "Solution";
-                      SearchResultsService.add(solution);
-                    }
-                  });
-                  $scope.loadingRecommendations = false;
-                },
-                function (error) {
-                  $scope.loadingRecommendations = false;
-                }
-              );
-            },
-            function (error) {
-              $scope.loadingRecommendations = false;
-              console.log(error);
-            },
-            5
-          );
+          SearchResultsService.diagnose(data,5);
         }
       };
 
@@ -2632,10 +2648,23 @@ angular.module("search/views/accordion_search.html", []).run(["$templateCache", 
 
 angular.module("search/views/accordion_search_results.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("search/views/accordion_search_results.html",
+    "<div class=\"row\">\n" +
+    "    <div class=\"col-xs-12\">\n" +
+    "        <div style=\"padding-bottom: 0\" class=\"bottom-border\">\n" +
+    "            <span>\n" +
+    "                <h4 style=\"padding-left: 10px; display: inline-block;\">Recommendations</h4>\n" +
+    "            </span>\n" +
+    "            </span>\n" +
+    "            <span ng-show=\"searchInProgress.value\">\n" +
+    "                <img src=\"images/spinner.gif\" alt=\"Searching\">\n" +
+    "            </span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n" +
     "<div class=\"row \">\n" +
     "    <accordion>\n" +
     "        <accordion-group is-open=\"isopen\" ng-repeat=\"result in results\">\n" +
-    "            <accordion-heading >\n" +
+    "            <accordion-heading>\n" +
     "                <span class=\"pull-right glyphicon\" ng-class=\"{'glyphicon-chevron-down': isopen, 'glyphicon-chevron-right': !isopen}\"></span>\n" +
     "                <span>{{result.title}}</span>\n" +
     "            </accordion-heading>\n" +
@@ -2647,26 +2676,22 @@ angular.module("search/views/accordion_search_results.html", []).run(["$template
 
 angular.module("search/views/list_search_results.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("search/views/list_search_results.html",
-    "<div class=\"col-sm-4\">  \n" +
-    "  <div class=\"panel panel-default\" ng-show='results.length > 0'>\n" +
-    "    <!--pagination on-select-page=\"pageChanged(page)\" total-items=\"totalItems\" page=\"currentPage\" max-size=\"maxSize\"></pagination-->\n" +
-    "    <div class=\"panel-heading\">\n" +
-    "      <h3 class=\"panel-title\">\n" +
-    "       Recommendations\n" +
-    "     </h3>\n" +
-    "   </div>\n" +
-    "   <div id='solutions' class=\"list-group\">\n" +
-    "      <a href=\"\" ng-click=\"solutionSelected($index)\" class='list-group-item'  \n" +
-    "      ng-class=\"{'active': selectedSolution.title===result.title}\"\n" +
-    "      ng-repeat=\"result in results\" style=\"word-wrap: break-word;\"> {{ result.title }}</a>\n" +
-    "  </div>\n" +
-    "</div>\n" +
+    "<div class=\"col-sm-4\">\n" +
+    "    <div class=\"panel panel-default\" ng-show='results.length > 0'>\n" +
+    "        <!--pagination on-select-page=\"pageChanged(page)\" total-items=\"totalItems\" page=\"currentPage\" max-size=\"maxSize\"></pagination-->\n" +
+    "        <div class=\"panel-heading\">\n" +
+    "            <h4 class=\"panel-title\">\n" +
+    "                Recommendations\n" +
+    "            </h4>\n" +
+    "        </div>\n" +
+    "        <div id='solutions' class=\"list-group\">\n" +
+    "            <a href=\"\" ng-click=\"solutionSelected($index)\" class='list-group-item' ng-class=\"{'active': selectedSolution.title===result.title}\" ng-repeat=\"result in results\" style=\"word-wrap: break-word;\"> {{ result.title }}</a>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
     "</div>\n" +
     "<div class=\"col-sm-8\">\n" +
-    "  <x-rha-result-detail-display result='selectedSolution'/>\n" +
-    "</div>\n" +
-    "\n" +
-    "");
+    "    <x-rha-result-detail-display result='selectedSolution' />\n" +
+    "</div>");
 }]);
 
 angular.module("search/views/resultDetail.html", []).run(["$templateCache", function($templateCache) {
@@ -2697,36 +2722,34 @@ angular.module("search/views/search.html", []).run(["$templateCache", function($
 angular.module("search/views/search_form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("search/views/search_form.html",
     "<div class='container col-sm-4 pull-left'>\n" +
-    "    <form role=\"form\" id= \"rh-search\">\n" +
-    "    <div class=\"input-group\" >\n" +
-    "      <input type=\"text\" class=\"form-control\" id=\"rhSearchStr\" name=\"searchString\" ng-model=\"searchStr\" class=\"input-xxlarge\" placeholder=\"Search Articles and Solutions\">\n" +
-    "      <span class=\"input-group-btn\">\n" +
-    "        <button class=\"btn btn-default btn-primary\"  type='submit' ng-click=\"search(searchStr)\">Search</button>\n" +
-    "      </span>\n" +
-    "    </div>\n" +
-    "  </form>\n" +
-    "</div>\n" +
-    "  \n" +
-    "");
+    "    <form role=\"form\" id=\"rh-search\">\n" +
+    "        <div class=\"input-group\">\n" +
+    "            <input type=\"text\" class=\"form-control\" id=\"rhSearchStr\" name=\"searchString\" ng-model=\"searchStr\" class=\"input-xxlarge\" placeholder=\"Search Articles and Solutions\">\n" +
+    "            <span class=\"input-group-btn\">\n" +
+    "                <button ng-disabled=\"searchInProgress.value === true\" class=\"btn btn-default btn-primary\" type='submit' ng-click=\"search(searchStr)\">Search</button>\n" +
+    "            </span>\n" +
+    "            <span ng-show=\"searchInProgress.value\">\n" +
+    "                <img src=\"images/spinner.gif\" alt=\"Searching\" >\n" +
+    "            </span>\n" +
+    "        </div>\n" +
+    "    </form>\n" +
+    "</div>");
 }]);
 
 angular.module("search/views/standard_search.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("search/views/standard_search.html",
-    "<div class=\"container-fluid side-padding\">\n" +
-    "	<!--div class=\"row\">\n" +
+    "<div class=\"container-fluid side-padding\" ng-controller='SearchController'>\n" +
+    "    <!--div class=\"row\">\n" +
     "		<div class=\"col-xs-12\">\n" +
     "			<h3>Red Hat Access: Search</h3>\n" +
     "		</div>\n" +
     "	</div-->\n" +
-    "	<div x-rha-login-status style=\"padding: 10px;\"/>\n" +
-    "	<div class=\"bottom-border\" style=\"padding-top: 10px;\"></div>\n" +
-    "	<div class=\"row\" x-rha-search-form ng-controller='SearchController'></div>\n" +
-    "	<div style=\"padding-top: 10px;\"></div>\n" +
-    "	<div class='row' x-rha-list-search-results='' ng-controller='SearchController'/>\n" +
-    "</div>\n" +
-    "\n" +
-    "\n" +
-    "");
+    "    <div x-rha-login-status style=\"padding: 10px;\" />\n" +
+    "    <div class=\"bottom-border\" style=\"padding-top: 10px;\"></div>\n" +
+    "    <div class=\"row\" x-rha-search-form ></div>\n" +
+    "    <div style=\"padding-top: 10px;\"></div>\n" +
+    "    <div class='row' x-rha-list-search-results='' ng-controller='SearchController' />\n" +
+    "</div>");
 }]);
 
 angular.module("cases/views/attachLocalFile.html", []).run(["$templateCache", function($templateCache) {
@@ -2815,7 +2838,7 @@ angular.module("cases/views/listFilter.html", []).run(["$templateCache", functio
 
 angular.module("cases/views/new.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/new.html",
-    "<!DOCTYPE html><div class=\"container-offset\"><div id=\"redhat-access-case\" class=\"container-fluid\"><rha-page-header></rha-page-header><div class=\"row\"><div style=\"border-right: 1px solid; border-color: #cccccc;\" class=\"col-xs-6\"><div class=\"container-fluid side-padding\"><div ng-class=\"{&quot;hidden&quot;: isPage2}\" id=\"rha-case-wizard-page-1\" class=\"create-case-section\"><div class=\"row create-field\"><div class=\"col-md-4\"><div>Product:</div></div><div class=\"col-md-8\"><progressbar ng-hide=\"!productsLoading\" max=\"1\" value=\"1\" animate=\"false\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"productsLoading\" style=\"width: 100%;\" ng-model=\"product\" ng-change=\"getProductVersions(product)\" ng-options=\"p.name for p in products track by p.code\" ng-blur=\"getRecommendations()\" class=\"form-control\"></select></div></div><div class=\"row create-field\"><div class=\"col-md-4\"><div>Product Version:</div></div><div class=\"col-md-8\"><div><progressbar ng-hide=\"!versionLoading\" max=\"1\" value=\"1\" animate=\"false\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select style=\"width: 100%;\" ng-model=\"version\" ng-options=\"v for v in versions\" ng-change=\"validateForm()\" ng-disabled=\"versionDisabled\" ng-hide=\"versionLoading\" ng-blur=\"getRecommendations()\" class=\"form-control\"></select></div></div></div><div class=\"row create-field\"><div class=\"col-md-4\"><div>Summary:</div></div><div class=\"col-md-8\"><input id=\"rha-case-summary\" style=\"width: 100%;\" ng-change=\"validateForm()\" ng-model=\"summary\" ng-blur=\"getRecommendations()\" class=\"form-control\"></div></div><div class=\"row create-field\"><div class=\"col-md-4\"><div>Description:</div></div><div class=\"col-md-8\"><textarea style=\"width: 100%; height: 200px;\" ng-model=\"description\" ng-change=\"validateForm()\" ng-blur=\"getRecommendations()\" class=\"form-control\"></textarea></div></div><div class=\"row\"><div ng-class=\"{&quot;hidden&quot;: isPage2}\" class=\"col-xs-12\"><button style=\"float: right\" ng-click=\"doNext()\" ng-disabled=\"incomplete\" class=\"btn btn-primary\">Next</button></div></div></div><div ng-class=\"{&quot;hidden&quot;: isPage1}\" id=\"rha-case-wizard-page-1\" class=\"create-case-section\"><div class=\"bottom-border\"><div class=\"row\"><div class=\"col-xs-12\"><div style=\"margin-bottom: 10px;\" class=\"bold\">{{product.name}} {{version}}</div></div></div><div class=\"row\"><div class=\"col-xs-12\"><div style=\"font-size: 90%; margin-bottom: 4px;\" class=\"bold\">{{summary}}</div></div></div><div class=\"row\"><div class=\"col-xs-12\"><div style=\"font-size: 85%\">{{description}}</div></div></div></div><div class=\"row create-field\"><div class=\"col-md-4\">Severity:</div><div class=\"col-md-8\"><progressbar ng-hide=\"!severitiesLoading\" max=\"1\" value=\"1\" animate=\"false\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"severitiesLoading\" style=\"width: 100%;\" ng-model=\"severity\" ng-change=\"validatePage2()\" ng-options=\"s.name for s in severities track by s.name\" class=\"form-control\"></select></div></div><div class=\"row create-field\"><div class=\"col-md-4\">Case Group:</div><div class=\"col-md-8\"><progressbar ng-hide=\"!groupsLoading\" max=\"1\" value=\"1\" animate=\"false\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"groupsLoading\" style=\"width: 100%;\" ng-model=\"caseGroup\" ng-change=\"validatePage2()\" ng-options=\"g.name for g in groups track by g.number\" class=\"form-control\"></select></div></div><div class=\"row create-field\"><div class=\"col-xs-12\"><div>Attachments:</div></div></div><div class=\"bottom-border\"><div style=\"overflow: auto\" class=\"row create-field\"><div class=\"col-xs-12\"><rha-list-attachments></rha-list-attachments></div></div><div class=\"row create-field\"><div class=\"col-xs-12\"><rha-attach-local-file></rha-attach-local-file></div></div><div class=\"row create-field\"><div class=\"col-xs-12\"><div class=\"server-attach-header\">Server File(s) To Attach:<rha-choice-tree ng-model=\"attachmentTree\" ng-controller=\"BackEndAttachmentsCtrl\"></rha-choice-tree></div></div></div></div><div style=\"margin-top: 20px;\" class=\"row\"><div class=\"col-xs-6\"><button style=\"float: left\" ng-click=\"doPrevious()\" class=\"btn btn-primary\">Previous</button></div><div class=\"col-xs-6\"><button style=\"float: right\" ng-disabled=\"submittingCase\" ng-click=\"doSubmit()\" class=\"btn btn-primary\">Submit</button></div></div></div></div></div><div class=\"col-xs-6\"><div style=\"padding-right: 15px;\" class=\"container-fluid\"><div class=\"row\"><div class=\"col-xs-12\"><div style=\"padding-bottom: 0\" class=\"bottom-border\"><h4 style=\"padding-left: 10px; display: inline-block;\">Recommendations</h4><span ng-hide=\"!loadingRecommendations\" style=\"float: right; display: inline-block;\">Loading...</span></div></div></div><div class=\"row\"><div class=\"col-xs-12\"><div x-rha-accordion-search-results ng-controller=\"SearchController\" style=\"padding: 0 15px;\"></div></div></div></div></div></div></div></div>");
+    "<!DOCTYPE html><div class=\"container-offset\"><div id=\"redhat-access-case\" class=\"container-fluid\"><rha-page-header></rha-page-header><div class=\"row\"><div style=\"border-right: 1px solid; border-color: #cccccc;\" class=\"col-xs-6\"><div class=\"container-fluid side-padding\"><div ng-class=\"{&quot;hidden&quot;: isPage2}\" id=\"rha-case-wizard-page-1\" class=\"create-case-section\"><div class=\"row create-field\"><div class=\"col-md-4\"><div>Product:</div></div><div class=\"col-md-8\"><progressbar ng-hide=\"!productsLoading\" max=\"1\" value=\"1\" animate=\"false\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"productsLoading\" style=\"width: 100%;\" ng-model=\"product\" ng-change=\"getProductVersions(product)\" ng-options=\"p.name for p in products track by p.code\" ng-blur=\"getRecommendations()\" class=\"form-control\"></select></div></div><div class=\"row create-field\"><div class=\"col-md-4\"><div>Product Version:</div></div><div class=\"col-md-8\"><div><progressbar ng-hide=\"!versionLoading\" max=\"1\" value=\"1\" animate=\"false\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select style=\"width: 100%;\" ng-model=\"version\" ng-options=\"v for v in versions\" ng-change=\"validateForm()\" ng-disabled=\"versionDisabled\" ng-hide=\"versionLoading\" ng-blur=\"getRecommendations()\" class=\"form-control\"></select></div></div></div><div class=\"row create-field\"><div class=\"col-md-4\"><div>Summary:</div></div><div class=\"col-md-8\"><input id=\"rha-case-summary\" style=\"width: 100%;\" ng-change=\"validateForm()\" ng-model=\"summary\" ng-blur=\"getRecommendations()\" class=\"form-control\"></div></div><div class=\"row create-field\"><div class=\"col-md-4\"><div>Description:</div></div><div class=\"col-md-8\"><textarea style=\"width: 100%; height: 200px;\" ng-model=\"description\" ng-change=\"validateForm()\" ng-blur=\"getRecommendations()\" class=\"form-control\"></textarea></div></div><div class=\"row\"><div ng-class=\"{&quot;hidden&quot;: isPage2}\" class=\"col-xs-12\"><button style=\"float: right\" ng-click=\"doNext()\" ng-disabled=\"incomplete\" class=\"btn btn-primary\">Next</button></div></div></div><div ng-class=\"{&quot;hidden&quot;: isPage1}\" id=\"rha-case-wizard-page-1\" class=\"create-case-section\"><div class=\"bottom-border\"><div class=\"row\"><div class=\"col-xs-12\"><div style=\"margin-bottom: 10px;\" class=\"bold\">{{product.name}} {{version}}</div></div></div><div class=\"row\"><div class=\"col-xs-12\"><div style=\"font-size: 90%; margin-bottom: 4px;\" class=\"bold\">{{summary}}</div></div></div><div class=\"row\"><div class=\"col-xs-12\"><div style=\"font-size: 85%\">{{description}}</div></div></div></div><div class=\"row create-field\"><div class=\"col-md-4\">Severity:</div><div class=\"col-md-8\"><progressbar ng-hide=\"!severitiesLoading\" max=\"1\" value=\"1\" animate=\"false\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"severitiesLoading\" style=\"width: 100%;\" ng-model=\"severity\" ng-change=\"validatePage2()\" ng-options=\"s.name for s in severities track by s.name\" class=\"form-control\"></select></div></div><div class=\"row create-field\"><div class=\"col-md-4\">Case Group:</div><div class=\"col-md-8\"><progressbar ng-hide=\"!groupsLoading\" max=\"1\" value=\"1\" animate=\"false\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"groupsLoading\" style=\"width: 100%;\" ng-model=\"caseGroup\" ng-change=\"validatePage2()\" ng-options=\"g.name for g in groups track by g.number\" class=\"form-control\"></select></div></div><div class=\"row create-field\"><div class=\"col-xs-12\"><div>Attachments:</div></div></div><div class=\"bottom-border\"><div style=\"overflow: auto\" class=\"row create-field\"><div class=\"col-xs-12\"><rha-list-attachments></rha-list-attachments></div></div><div class=\"row create-field\"><div class=\"col-xs-12\"><rha-attach-local-file></rha-attach-local-file></div></div><div class=\"row create-field\"><div class=\"col-xs-12\"><div class=\"server-attach-header\">Server File(s) To Attach:<rha-choice-tree ng-model=\"attachmentTree\" ng-controller=\"BackEndAttachmentsCtrl\"></rha-choice-tree></div></div></div></div><div style=\"margin-top: 20px;\" class=\"row\"><div class=\"col-xs-6\"><button style=\"float: left\" ng-click=\"doPrevious()\" class=\"btn btn-primary\">Previous</button></div><div class=\"col-xs-6\"><button style=\"float: right\" ng-disabled=\"submittingCase\" ng-click=\"doSubmit()\" class=\"btn btn-primary\">Submit</button></div></div></div></div></div><div class=\"col-xs-6\"><div style=\"padding-right: 15px;\" class=\"container-fluid\"><div class=\"row\"><div class=\"col-xs-12\"><div x-rha-accordion-search-results ng-controller=\"SearchController\" style=\"padding: 0 15px;\"></div></div></div></div></div></div></div></div>");
 }]);
 
 angular.module("cases/views/pageHeader.html", []).run(["$templateCache", function($templateCache) {
