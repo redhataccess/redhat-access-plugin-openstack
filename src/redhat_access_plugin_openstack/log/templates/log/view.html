@@ -32,7 +32,7 @@ angular.module('RedhatAccess.openstack_search', [
 		function ($stateProvider) {
 			$stateProvider.state('search_openstack', {
 				url: '/search_openstack',
-				template: '<div class="row" x-login-status ng-controller="SecurityController" style="padding: 10px;" /><div id="diagbutton" class="row"><button id="diagnoseButton" style="margin-bottom: 15px; type="button" class="btn btn-primary" ">Red Hat Diagnose</button></div><div class="row"><div id="log-contents" class="col-sm-12" /><div id="accordion-results" class="container col-sm-6" x-accordion-search-results="" ng-controller="SearchController" /></div>'
+				template: '<div class="row" x-rha-login-status ng-controller="SecurityController" style="padding: 10px;" /><div id="diagbutton" class="row"><button id="diagnoseButton" style="margin-bottom: 15px; type="button" class="btn btn-primary" ">Red Hat Diagnose</button></div><div class="row"><div id="log-contents" class="col-sm-12" /><div id="accordion-results" class="container col-sm-6" x-rha-accordion-search-results="" ng-controller="SearchController" /></div>'
 
 			});
 		}
