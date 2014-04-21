@@ -21,7 +21,7 @@
 <script>
 angular.module('RedhatAccess.openstack_search', [
 	'ui.router',
-	'templates.app',
+	'RedhatAccess.template',
 	'RedhatAccess.security',
 	'RedhatAccess.search',
 	'ui.bootstrap',
@@ -56,7 +56,7 @@ angular.element(document).ready(function() {
     		setTimeout(function(){
         		btn.prop('disabled', false);
     		}, 5*1000);
-		angular.element($('#accordion-results')).scope().search(selectedText, 5);
+		angular.element($('#accordion-results')).scope().diagnose(selectedText, 5);
 		angular.element($('#accordion-results')).scope().$apply();
 	});
 });
