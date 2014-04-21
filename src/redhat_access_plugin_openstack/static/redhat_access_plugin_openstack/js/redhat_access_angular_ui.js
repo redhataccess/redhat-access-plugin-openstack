@@ -1,4 +1,4 @@
-/*! redhat_access_angular_ui - v0.0.0 - 2014-04-17
+/*! redhat_access_angular_ui - v0.0.0 - 2014-04-21
  * Copyright (c) 2014 ;
  * Licensed 
  */
@@ -184,7 +184,7 @@ app.config(function ($urlRouterProvider) {}).config(['$stateProvider',
     })
   }
 ]);
-angular.module('RedhatAccess.security', ['ui.bootstrap', 'templates.app', 'ui.router'])
+angular.module('RedhatAccess.security', ['ui.bootstrap', 'RedhatAccess.template', 'ui.router'])
   .constant('AUTH_EVENTS', {
     loginSuccess: 'auth-login-success',
     loginFailed: 'auth-login-failed',
@@ -231,7 +231,6 @@ angular.module('RedhatAccess.security', ['ui.bootstrap', 'templates.app', 'ui.ro
           console.log("Authorized!");
           $scope.$apply(function () {
             setLoginStatus(true, authedUser.name);
-            //$scope.loggedInUser = securityService.getLoggedInUserName();
           });
         } else {
           $scope.$apply(function () {
@@ -328,7 +327,12 @@ angular.module('RedhatAccess.security', ['ui.bootstrap', 'templates.app', 'ui.ro
               };
               $scope.modalOptions = tempModalOptions;
               $scope.modalOptions.ok = function (result) {
-                //console.log($scope.user);
+                //Hack below is needed to handle autofill issues
+                //@see https://github.com/angular/angular.js/issues/1460
+                //BEGIN HACK
+                $scope.user.user = $("#rha-login-user-id").val();
+                $scope.user.password = $("#rha-login-password").val();
+                //END HACK
                 strata.setCredentials($scope.user.user, $scope.user.password,
                   function (passed, authedUser) {
                     if (passed) {
@@ -337,9 +341,7 @@ angular.module('RedhatAccess.security', ['ui.bootstrap', 'templates.app', 'ui.ro
                       $scope.authError = null;
                       try {
                         $modalInstance.close(authedUser);
-                      } catch (err) {
-                        console.log("Error closing login window.");
-                      }
+                      } catch (err) {}
                     } else {
                       // alert("Login failed!");
                       $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
@@ -371,7 +373,7 @@ angular.module('RedhatAccess.security', ['ui.bootstrap', 'templates.app', 'ui.ro
  */
 angular.module('RedhatAccess.search', [
   'ui.router',
-  'templates.app',
+  'RedhatAccess.template',
   'RedhatAccess.security',
   'ui.bootstrap',
   'ngSanitize'
@@ -405,6 +407,7 @@ angular.module('RedhatAccess.search', [
       $scope.results = SearchResultsService.results;
       $scope.selectedSolution = SearchResultsService.currentSelection;
       $scope.searchInProgress = SearchResultsService.searchInProgress;
+      $scope.searchResultInfo = SearchResultsService.searchResultInfo;
 
       clearResults = function () {
         SearchResultsService.clear();
@@ -413,7 +416,7 @@ angular.module('RedhatAccess.search', [
 
       $scope.solutionSelected = function (index) {
         var response = $scope.results[index];
-        SearchResultsService.setSelected(response);
+        SearchResultsService.setSelected(response, index);
 
       };
 
@@ -434,7 +437,6 @@ angular.module('RedhatAccess.search', [
           $scope.selectedSolution = newVal;
         }
       );
-
 
     }
   ])
@@ -518,24 +520,33 @@ angular.module('RedhatAccess.search', [
       };
     }
   ])
-  .factory('SearchResultsService', ['$q','$rootScope', 'AUTH_EVENTS', 'RESOURCE_TYPES', 'SEARCH_PARAMS',
+  .factory('SearchResultsService', ['$q', '$rootScope', 'AUTH_EVENTS', 'RESOURCE_TYPES', 'SEARCH_PARAMS',
 
-    function ($q,$rootScope, AUTH_EVENTS, RESOURCE_TYPES, SEARCH_PARAMS) {
+    function ($q, $rootScope, AUTH_EVENTS, RESOURCE_TYPES, SEARCH_PARAMS) {
       var service = {
         results: [],
-        currentSelection: {},
+        currentSelection: {
+          data: {},
+          index: -1
+        },
         searchInProgress: {
           value: false
+        },
+
+        searchResultInfo: {
+          msg: null
         },
         add: function (result) {
           this.results.push(result);
         },
         clear: function () {
           this.results.length = 0;
-          this.setSelected({});
+          this.setSelected({}, -1);
+          this.searchResultInfo.msg = null;
         },
-        setSelected: function (selection) {
-          this.currentSelection = selection;
+        setSelected: function (selection, index) {
+          this.currentSelection.data = selection;
+          this.currentSelection.index = index;
         },
         search: function (searchString, limit) {
           var that = this;
@@ -578,8 +589,15 @@ angular.module('RedhatAccess.search', [
               );
             },
             function (error) {
-              that.searchInProgress.value = false;
               console.log(error);
+              $rootScope.$apply(function () {
+                that.searchInProgress.value = false;
+                if (error && error.statusText) {
+                  that.searchResultInfo.msg = error.statusText;
+                } else {
+                  that.searchResultInfo.msg = "Error retrieving solutions";
+                }
+              });
             },
             limit,
             false
@@ -664,7 +682,14 @@ angular.module('RedhatAccess.search', [
               );
             },
             function (error) {
-              that.searchInProgress.value = false;
+              $rootScope.$apply(function () {
+                that.searchInProgress.value = false;
+                if (error && error.statusText) {
+                  that.searchResultInfo.msg = error.statusText;
+                } else {
+                  that.searchResultInfo.msg = "Error retrieving solutions";
+                }
+              });
               console.log(error);
             },
             limit
@@ -682,7 +707,7 @@ angular.module('RedhatAccess.cases', [
   'ui.router',
   'ui.bootstrap',
   'ngTable',
-  'templates.app',
+  'RedhatAccess.template',
   'RedhatAccess.security',
   'RedhatAccess.search',
   'RedhatAccess.tree-selector'
@@ -697,7 +722,7 @@ angular.module('RedhatAccess.cases', [
   function ($stateProvider) {
 
     $stateProvider.state('compact', {
-      url: '/case/compact',
+      url: '/case/compact?sessionId',
       templateUrl: 'cases/views/compact.html',
       controller: 'Compact'
     });
@@ -806,15 +831,17 @@ angular.module('RedhatAccess.cases')
 angular.module('RedhatAccess.cases')
   .controller('BackEndAttachmentsCtrl', ['$scope',
     '$http',
+    '$location',
     'AttachmentsService',
     'TreeViewSelectorUtils',
-    function ($scope, $http, AttachmentsService, TreeViewSelectorUtils) {
+    function ($scope, $http, $location, AttachmentsService, TreeViewSelectorUtils) {
       $scope.name = 'Attachments';
       $scope.attachmentTree = []; //AttachmentsService.backendAttachemnts;
+      var sessionId = $location.search().sessionId;
       $scope.init = function () {
         $http({
           method: 'GET',
-          url: 'attachments'
+          url: 'attachments?sessionId=' + encodeURIComponent(sessionId)
         }).success(function (data, status, headers, config) {
           var tree = new Array();
           TreeViewSelectorUtils.parseTreeList(tree, data);
@@ -2561,7 +2588,7 @@ function returnNode(splitPath, tree, fullFilePath) {
 		}
 	}
 }
-angular.module('templates.app', ['common/views/treenode.html', 'common/views/treeview-selector.html', 'security/login_form.html', 'security/login_status.html', 'search/views/accordion_search.html', 'search/views/accordion_search_results.html', 'search/views/list_search_results.html', 'search/views/resultDetail.html', 'search/views/search.html', 'search/views/search_form.html', 'search/views/standard_search.html', 'cases/views/attachLocalFile.html', 'cases/views/attachProductLogs.html', 'cases/views/attachmentsSection.html', 'cases/views/commentsSection.html', 'cases/views/compact.edit.html', 'cases/views/compact.html', 'cases/views/compactCaseList.html', 'cases/views/descriptionSection.html', 'cases/views/detailsSection.html', 'cases/views/edit.html', 'cases/views/list.html', 'cases/views/listAttachments.html', 'cases/views/listFilter.html', 'cases/views/new.html', 'cases/views/pageHeader.html', 'log_viewer/views/log_viewer.html']);
+angular.module('RedhatAccess.template', ['common/views/treenode.html', 'common/views/treeview-selector.html', 'security/login_form.html', 'security/login_status.html', 'search/views/accordion_search.html', 'search/views/accordion_search_results.html', 'search/views/list_search_results.html', 'search/views/resultDetail.html', 'search/views/search.html', 'search/views/search_form.html', 'search/views/standard_search.html', 'cases/views/attachLocalFile.html', 'cases/views/attachProductLogs.html', 'cases/views/attachmentsSection.html', 'cases/views/commentsSection.html', 'cases/views/compact.edit.html', 'cases/views/compact.html', 'cases/views/compactCaseList.html', 'cases/views/descriptionSection.html', 'cases/views/detailsSection.html', 'cases/views/edit.html', 'cases/views/list.html', 'cases/views/listAttachments.html', 'cases/views/listFilter.html', 'cases/views/new.html', 'cases/views/pageHeader.html', 'log_viewer/views/log_viewer.html']);
 
 angular.module("common/views/treenode.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/views/treenode.html",
@@ -2600,15 +2627,15 @@ angular.module("security/login_form.html", []).run(["$templateCache", function($
     "            {{authError}}\n" +
     "        </div>\n" +
     "        <div class=\"form-group\" id=\"rha-login-modal-user-id\">\n" +
-    "            <label for=\"user-id\" class=\" control-label\">User ID</label>\n" +
+    "            <label for=\"rha-login-user-id\" class=\" control-label\">User ID</label>\n" +
     "            <div >\n" +
-    "                <input type=\"text\" class=\"form-control\" id=\"user-id\" placeholder=\"User ID\" ng-model=\"user.user\" required autofocus >\n" +
+    "                <input type=\"text\" class=\"form-control\" id=\"rha-login-user-id\" placeholder=\"User ID\" ng-model=\"user.user\" required autofocus >\n" +
     "            </div>\n" +
     "        </div>\n" +
     "        <div class=\"form-group\" id=\"rha-login-modal-user-pass\">\n" +
-    "            <label for=\"password\" class=\"control-label\">Password</label>\n" +
+    "            <label for=\"rha-login-password\" class=\"control-label\">Password</label>\n" +
     "            <div >\n" +
-    "                <input type=\"password\" class=\"form-control\" id=\"password\" placeholder=\"Password\" ng-model=\"user.password\" required>\n" +
+    "                <input type=\"password\" class=\"form-control\" id=\"rha-login-password\" placeholder=\"Password\" ng-model=\"user.password\" required>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "        <div class=\"form-group\" id=\"rha-login-modal-buttons\">\n" +
@@ -2654,9 +2681,8 @@ angular.module("search/views/accordion_search_results.html", []).run(["$template
     "            <span>\n" +
     "                <h4 style=\"padding-left: 10px; display: inline-block;\">Recommendations</h4>\n" +
     "            </span>\n" +
-    "            </span>\n" +
-    "            <span ng-show=\"searchInProgress.value\">\n" +
-    "                <img src=\"images/spinner.gif\" alt=\"Searching\">\n" +
+    "            <span ng-show=\"searchInProgress.value\" class=\"rha-search-spinner\">\n" +
+    "                &nbsp;\n" +
     "            </span>\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -2677,20 +2703,28 @@ angular.module("search/views/accordion_search_results.html", []).run(["$template
 angular.module("search/views/list_search_results.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("search/views/list_search_results.html",
     "<div class=\"col-sm-4\">\n" +
+    "    <div class=\"alert alert-info\" ng-show=\"searchResultInfo.msg\">\n" +
+    "        <a class=\"close\" ng-click=\"searchResultInfo.msg=null\">×</a>\n" +
+    "        {{searchResultInfo.msg}}\n" +
+    "    </div>\n" +
     "    <div class=\"panel panel-default\" ng-show='results.length > 0'>\n" +
     "        <!--pagination on-select-page=\"pageChanged(page)\" total-items=\"totalItems\" page=\"currentPage\" max-size=\"maxSize\"></pagination-->\n" +
+    "\n" +
     "        <div class=\"panel-heading\">\n" +
     "            <h4 class=\"panel-title\">\n" +
     "                Recommendations\n" +
     "            </h4>\n" +
     "        </div>\n" +
     "        <div id='solutions' class=\"list-group\">\n" +
-    "            <a href=\"\" ng-click=\"solutionSelected($index)\" class='list-group-item' ng-class=\"{'active': selectedSolution.title===result.title}\" ng-repeat=\"result in results\" style=\"word-wrap: break-word;\"> {{ result.title }}</a>\n" +
+    "            <a href=\"\" ng-click=\"solutionSelected($index)\" class='list-group-item' ng-class=\"{'active': selectedSolution.index===$index}\" ng-repeat=\"result in results\" style=\"word-wrap: break-word;\"> {{ result.title }}</a>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div class=\"col-sm-8\">\n" +
-    "    <x-rha-result-detail-display result='selectedSolution' />\n" +
+    "    <div class=\"alert alert-info\" ng-show='selectedSolution.index === -1 && results.length > 0' >\n" +
+    "        Please select a recommendation to view.\n" +
+    "    </div>\n" +
+    "    <x-rha-result-detail-display result='selectedSolution.data' />\n" +
     "</div>");
 }]);
 
@@ -2723,15 +2757,21 @@ angular.module("search/views/search_form.html", []).run(["$templateCache", funct
   $templateCache.put("search/views/search_form.html",
     "<div class='container col-sm-4 pull-left'>\n" +
     "    <form role=\"form\" id=\"rh-search\">\n" +
-    "        <div class=\"input-group\">\n" +
-    "            <input type=\"text\" class=\"form-control\" id=\"rhSearchStr\" name=\"searchString\" ng-model=\"searchStr\" class=\"input-xxlarge\" placeholder=\"Search Articles and Solutions\">\n" +
-    "            <span class=\"input-group-btn\">\n" +
-    "                <button ng-disabled=\"searchInProgress.value === true\" class=\"btn btn-default btn-primary\" type='submit' ng-click=\"search(searchStr)\">Search</button>\n" +
-    "            </span>\n" +
-    "            <span ng-show=\"searchInProgress.value\">\n" +
-    "                <img src=\"images/spinner.gif\" alt=\"Searching\" >\n" +
+    "        <div ng-class=\"{'col-sm-8': searchInProgress.value}\">\n" +
+    "            <div class=\"input-group\">\n" +
+    "                <input type=\"text\" class=\"form-control\" id=\"rhSearchStr\" name=\"searchString\" ng-model=\"searchStr\" class=\"input-xxlarge\" placeholder=\"Search Articles and Solutions\">\n" +
+    "                <span class=\"input-group-btn\">\n" +
+    "                    <button ng-disabled=\"searchInProgress.value === true\" class=\"btn btn-default btn-primary\" type='submit' ng-click=\"search(searchStr)\">Search</button>\n" +
+    "                </span>\n" +
+    "\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-4 \" ng-show=\"searchInProgress.value\">\n" +
+    "            <span class=\"rha-search-spinner\">\n" +
+    "                &nbsp;\n" +
     "            </span>\n" +
     "        </div>\n" +
+    "\n" +
     "    </form>\n" +
     "</div>");
 }]);
@@ -2779,26 +2819,7 @@ angular.module("cases/views/compact.edit.html", []).run(["$templateCache", funct
 
 angular.module("cases/views/compact.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/compact.html",
-    "<div class=\"container-offset\">\n" +
-    "    <div class=\"container-fluid\">\n" +
-    "        <div class=\"row\">\n" +
-    "            <div class=\"col-xs-12\">\n" +
-    "                <rha-page-header/>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "        <div class=\"row\">\n" +
-    "            <div class=\"col-xs-4\" style=\"height: 100%;\">\n" +
-    "                <rha-compact-case-list></rha-compact-case-list>\n" +
-    "            </div>\n" +
-    "            <div class=\"col-xs-8\" style=\"padding: 0px; \">\n" +
-    "                <!-- Jade can't create the ui-view attribute in the form\n" +
-    "                     angular ui router requires (see next line).-->\n" +
-    "                <div ui-view autoscroll=\"false\"></div>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "</div>\n" +
-    "");
+    "<!DOCTYPE html><div id=\"redhat-access-case\"><div ng-show=\"caseLoading\" class=\"container-fluid\"><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><div>Loading...</div></div></div></div><div ng-hide=\"caseLoading\" rha-resizable rha-dom-ready=\"domReady\" style=\"overflow: auto; padding-left: 15px;border-top: 1px solid #dddddd; border-left: 1px solid #dddddd;\" class=\"container-fluid\"><div style=\"margin-right: 0px; padding-top: 10px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-details compact=\"true\"></rha-case-details></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-description></rha-case-description></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-attachments></rha-case-attachments></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-comments></rha-case-comments></div></div></div></div>");
 }]);
 
 angular.module("cases/views/compactCaseList.html", []).run(["$templateCache", function($templateCache) {
@@ -2855,7 +2876,7 @@ angular.module("log_viewer/views/log_viewer.html", []).run(["$templateCache", fu
     "		<div class=\"nav-side-bar col-xs-3\" ng-class=\"{ showMe: sidePaneToggle }\" fill-down ng-style=\"{height: windowHeight }\">\n" +
     "			<div class=\"hideable-side-bar\" ng-class=\"{ showMe: sidePaneToggle }\">\n" +
     "				<div class=\"btn-group\" ng-class=\"{ hideMe: hideDropdown}\" ng-controller=\"DropdownCtrl\" ng-init=\"init()\">\n" +
-    "					<button type=\"button\" class=\"dropdown-toggle btn btn-primary\"\n" +
+    "					<button type=\"button\" class=\"dropdown-toggle btn btn-sm btn-primary\"\n" +
     "					data-toggle=\"dropdown\">\n" +
     "					{{machinesDropdownText}} <span class=\"caret\"></span>\n" +
     "					</button>\n" +
@@ -2869,7 +2890,7 @@ angular.module("log_viewer/views/log_viewer.html", []).run(["$templateCache", fu
     "					data-node-label=\"roleName\" data-node-children=\"children\">\n" +
     "					</div>\n" +
     "				</div>\n" +
-    "				<button ng-disabled=\"retrieveFileButtonIsDisabled.check\" type=\"button\" class=\"pull-right btn btn-primary\"\n" +
+    "				<button ng-disabled=\"retrieveFileButtonIsDisabled.check\" type=\"button\" class=\"pull-right btn btn-sm btn-primary\"\n" +
     "				ng-controller=\"selectFileButton\" ng-click=\"fileSelected()\">\n" +
     "				Select File</button>\n" +
     "			</div>\n" +
@@ -2901,7 +2922,7 @@ angular.module("log_viewer/views/log_viewer.html", []).run(["$templateCache", fu
     "										</a>\n" +
     "										<h3 class=\"panel-title\" style=\"display: inline\">{{tab.longTitle}}</h3>\n" +
     "										<div class=\"pull-right\" id=\"overlay\" popover=\"Select text and click to perform Red Hat Diagnose\" popover-trigger=\"mouseenter\" popover-placement=\"left\" > \n" +
-    "											<button ng-disabled=\"isDisabled\" id=\"diagnoseButton\" type=\"button\" class=\"btn btn-primary diagnoseButton\" ng-click=\"diagnoseText()\">Red Hat Diagnose</button>\n" +
+    "											<button ng-disabled=\"isDisabled\" id=\"diagnoseButton\" type=\"button\" class=\"btn btn-sm btn-primary diagnoseButton\" ng-click=\"diagnoseText()\">Red Hat Diagnose</button>\n" +
     "										</div>\n" +
     "										<br> \n" +
     "										<br>\n" +
