@@ -53,10 +53,11 @@ angular.element(document).ready(function() {
 		$('#log-contents').attr('class', 'col-sm-6');
 		var btn = $(this);
 		btn.prop('disabled', true);
-    		setTimeout(function(){
-        		btn.prop('disabled', false);
-    		}, 5*1000);
-		angular.element($('#accordion-results')).scope().diagnose(selectedText, 5);
+		$(document).ajaxStop(function () {
+		    btn.prop('disabled', false);
+		    $(document).off();
+		});
+		angular.element($('#accordion-results')).scope().diagnose(selectedText, 10);
 		angular.element($('#accordion-results')).scope().$apply();
 	});
 });
