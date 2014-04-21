@@ -15302,6 +15302,8 @@ angular.module('RedhatAccess.logViewer',
 	var selectedHost = '';
 	var file = '';
 	var retrieveFileButtonIsDisabled = {check : true};
+	var fileClicked = {check : false};
+	var activeTab = null;
 	return {
 		getFileList : function() {
 			return fileList;
@@ -15331,6 +15333,20 @@ angular.module('RedhatAccess.logViewer',
 
 		getRetrieveFileButtonIsDisabled : function() {
 			return retrieveFileButtonIsDisabled;
+		},
+		setFileClicked : function(isClicked){
+			fileClicked.check = isClicked;
+		},
+
+		getFileClicked : function() {
+			return fileClicked;
+		},
+		setActiveTab : function(activeTab){
+			this.activeTab = activeTab;
+		},
+
+		getActiveTab : function() {
+			return activeTab;
 		}
 	};
 })
@@ -15373,6 +15389,7 @@ angular.module('RedhatAccess.logViewer',
 	$scope.machinesDropdownText = "Please Select the Machine";
 	$scope.items = [];
 	$scope.hideDropdown = hideMachinesDropdown;
+	$scope.loading = false;
 	var sessionId = $location.search().sessionId;
 
 	$scope.getMachines = function() {
@@ -15388,6 +15405,7 @@ angular.module('RedhatAccess.logViewer',
 		});
 	};
 	$scope.machineSelected = function() {
+		$scope.loading = true;
 		var sessionId = $location.search().sessionId;
 		var userId = $location.search().userId;
 		files.selectedHost = this.choice;
@@ -15399,10 +15417,12 @@ angular.module('RedhatAccess.logViewer',
 			+ '&sessionId=' + encodeURIComponent(sessionId)
 			+ '&userId=' + encodeURIComponent(userId)
 		}).success(function(data, status, headers, config) {
+			$scope.loading = false;
 			var tree = new Array();
 			parseList(tree, data);
 			files.setFileList(tree);
 		}).error(function(data, status, headers, config) {
+			$scope.loading = false;
 			// called asynchronously if an error occurs
 			// or server returns response with an error status.
 		});
@@ -15418,6 +15438,7 @@ angular.module('RedhatAccess.logViewer',
 	$scope.retrieveFileButtonIsDisabled = files.getRetrieveFileButtonIsDisabled();
 
 	$scope.fileSelected = function() {
+		files.setFileClicked(true);
 		var sessionId = $location.search().sessionId;
 		var userId = $location.search().userId;
 		$scope.$parent.sidePaneToggle = !$scope.$parent.sidePaneToggle;
@@ -15444,7 +15465,8 @@ angular.module('RedhatAccess.logViewer',
 	'files',
 	'accordian',
 	'SearchResultsService',
-	function($scope, $http, $location, files, accordian, SearchResultsService) {
+	'securityService',
+	function($scope, $http, $location, files, accordian, SearchResultsService, securityService) {
 		$scope.tabs = [ {
 			shortTitle : "Short Sample Log File",
 			longTitle : "Long Log File",
@@ -15452,29 +15474,41 @@ angular.module('RedhatAccess.logViewer',
 		} ];
 		$scope.isDisabled = true;
 		$scope.textSelected = false;
+		$scope.isLoading = false;
 		$scope.$watch(function() {
-			return files.file;
+			return files.getFileClicked().check;
 		}, function() {
-			if (files.file != null && files.selectedFile != null) {
-				file = new Object();
+			if(files.getFileClicked().check && files.selectedFile != null){
+				tab = new Object();
 				if(files.selectedHost != null){
-					file.longTitle = files.selectedHost + ":"
+					tab.longTitle = files.selectedHost + ":"
 				} else {
-					file.longTitle = new String();
+					tab.longTitle = new String();
 				}
-				file.longTitle = file.longTitle.concat(files.selectedFile);
+				tab.longTitle = tab.longTitle.concat(files.selectedFile);
 				var splitFileName = files.selectedFile.split("/");
 				var fileName = splitFileName[splitFileName.length - 1];
 				
 				if(files.selectedHost != null){
-					file.shortTitle = files.selectedHost + ":"
+					tab.shortTitle = files.selectedHost + ":"
 				} else {
-					file.shortTitle = new String();
+					tab.shortTitle = new String();
 				}
-				file.shortTitle = file.shortTitle.concat(fileName);
-				file.content = files.file;
+				tab.shortTitle = tab.shortTitle.concat(fileName);
+				tab.active = true;
+				$scope.tabs.push(tab);
+				$scope.isLoading = true;
+				files.setActiveTab(tab);
+				files.setFileClicked(false);
+			}
+		});
+		$scope.$watch(function() {
+			return files.file;
+		}, function() {
+			if (files.file != null && files.activeTab  != null) {
+				files.activeTab.content = files.file;
+				$scope.isLoading = false;
 				files.file = null;
-				$scope.tabs.push(file);
 			}
 		});
 		$scope.$watch(function() {
@@ -15496,6 +15530,9 @@ angular.module('RedhatAccess.logViewer',
 
 		$scope.diagnoseText = function() {
 			//$scope.isDisabled = true;
+			if(!securityService.isLoggedIn){
+				securityService.login();
+			}
 			this.tt_isOpen = false;
 			if (!$scope.$parent.solutionsToggle) {
 				$scope.$parent.solutionsToggle = !$scope.$parent.solutionsToggle;
@@ -15950,6 +15987,8 @@ angular.module("log_viewer/views/log_viewer.html", []).run(["$templateCache", fu
     "		<div class=\"nav-side-bar col-xs-3\" ng-class=\"{ showMe: sidePaneToggle }\" fill-down ng-style=\"{height: windowHeight }\">\n" +
     "			<div class=\"hideable-side-bar\" ng-class=\"{ showMe: sidePaneToggle }\">\n" +
     "				<div class=\"btn-group\" ng-class=\"{ hideMe: hideDropdown}\" ng-controller=\"DropdownCtrl\" ng-init=\"init()\">\n" +
+    "					<div class=\"machines-spinner\"  ng-class=\"{ showMe: loading }\"><span class=\"rha-search-spinner pull-right\"></span></div>\n" +
+    "					\n" +
     "					<button type=\"button\" class=\"dropdown-toggle btn btn-sm btn-primary\"\n" +
     "					data-toggle=\"dropdown\">\n" +
     "					{{machinesDropdownText}} <span class=\"caret\"></span>\n" +
@@ -15982,28 +16021,28 @@ angular.module("log_viewer/views/log_viewer.html", []).run(["$templateCache", fu
     "			<div class=\"col-fluid\">\n" +
     "				<div ng-controller=\"TabsDemoCtrl\" ng-class=\"{ showMe: solutionsToggle }\">\n" +
     "					<tabset > \n" +
-    "						<tab ng-repeat=\"tab in tabs\"> \n" +
+    "						<tab active=\"tab.active\" ng-repeat=\"tab in tabs\"> \n" +
     "							<tab-heading>{{tab.shortTitle}}\n" +
     "								<a ng-click=\"removeTab($index)\" href=''> \n" +
     "									<span class=\"glyphicon glyphicon-remove\"></span>\n" +
     "								</a> \n" +
     "							</tab-heading>\n" +
-    "							<div active=\"tab.active\" disabled=\"tab.disabled\">\n" +
-    "								<div class=\"panel panel-default\" >\n" +
-    "									<div class=\"panel-heading\">\n" +
-    "										<a popover=\"Click to refresh log file.\" popover-trigger=\"mouseenter\" popover-placement=\"right\" ng-click=\"refreshTab($index)\">\n" +
-    "											<span class=\"glyphicon glyphicon-refresh\"></span>\n" +
-    "										</a>\n" +
-    "										<h3 class=\"panel-title\" style=\"display: inline\">{{tab.longTitle}}</h3>\n" +
-    "										<div class=\"pull-right\" id=\"overlay\" popover=\"Select text and click to perform Red Hat Diagnose\" popover-trigger=\"mouseenter\" popover-placement=\"left\" > \n" +
-    "											<button ng-disabled=\"isDisabled\" id=\"diagnoseButton\" type=\"button\" class=\"btn btn-sm btn-primary diagnoseButton\" ng-click=\"diagnoseText()\">Red Hat Diagnose</button>\n" +
-    "										</div>\n" +
-    "										<br> \n" +
-    "										<br>\n" +
+    "							<div class=\"panel panel-default\" >\n" +
+    "								<div class=\"panel-heading\">\n" +
+    "									<a class=\"tabs-spinner\"  ng-class=\"{ showMe: isLoading }\"><span class=\"rha-search-spinner\"></span></a>\n" +
+    "									<a popover=\"Click to refresh log file.\" popover-trigger=\"mouseenter\" popover-placement=\"right\" ng-click=\"refreshTab($index)\">\n" +
+    "										<span class=\"glyphicon glyphicon-refresh\"></span>\n" +
+    "									</a>\n" +
+    "									<h3 class=\"panel-title\" style=\"display: inline\">{{tab.longTitle}}</h3>\n" +
+    "									<div class=\"pull-right\" id=\"overlay\" popover=\"Select text and click to perform Red Hat Diagnose\" popover-trigger=\"mouseenter\" popover-placement=\"left\" > \n" +
+    "										<button ng-disabled=\"isDisabled\" id=\"diagnoseButton\" type=\"button\" class=\"btn btn-sm btn-primary diagnoseButton\" ng-click=\"diagnoseText()\">Red Hat Diagnose</button>\n" +
     "									</div>\n" +
-    "									<div  class=\"panel-body\" ng-mouseup=\"enableDiagnoseButton()\" fill-down ng-style=\"{ height: windowHeight }\">\n" +
-    "										<pre id=\"resizeable-file-view\" class=\"no-line-wrap\">{{tab.content}}</pre>\n" +
-    "									</div>\n" +
+    "									<br> \n" +
+    "									<br>\n" +
+    "								</div>\n" +
+    "								<div class=\"panel-body\" ng-mouseup=\"enableDiagnoseButton()\" fill-down ng-style=\"{ height: windowHeight }\">\n" +
+    "\n" +
+    "									<pre id=\"resizeable-file-view\" class=\"no-line-wrap\">{{tab.content}}</pre>\n" +
     "								</div>\n" +
     "							</div>\n" +
     "						</tab> \n" +
