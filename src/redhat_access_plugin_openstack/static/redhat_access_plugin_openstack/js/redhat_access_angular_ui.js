@@ -12905,7 +12905,7 @@ app.directive('rhaChoiceTree', function () {
   };
 });
 
-app.directive('rhaChoice', function ($compile) {
+app.directive('rhaChoice', ["$compile", function ($compile) {
   return {
     restrict: 'E',
     templateUrl: 'common/views/treenode.html',
@@ -12927,7 +12927,7 @@ app.directive('rhaChoice', function ($compile) {
       }
     }
   };
-});
+}]);
 
 app.factory('TreeViewSelectorUtils',
   function () {
@@ -13045,7 +13045,7 @@ app.factory('TreeViewSelectorUtils',
     return service;
   });
 
-app.config(function ($urlRouterProvider) {}).config(['$stateProvider',
+app.config(["$urlRouterProvider", function ($urlRouterProvider) {}]).config(['$stateProvider',
   function ($stateProvider) {
     $stateProvider.state('choiceSelector', {
       url: "/treeselector",
@@ -15288,8 +15288,8 @@ angular.module('RedhatAccess.cases')
 angular.module('RedhatAccess.logViewer',
 	[ 'angularTreeview', 'ui.bootstrap', 'RedhatAccess.search'])
 
-.config(function($urlRouterProvider) {
-}).config([ '$stateProvider', function($stateProvider) {
+.config(["$urlRouterProvider", function($urlRouterProvider) {
+}]).config([ '$stateProvider', function($stateProvider) {
 	$stateProvider.state('logviewer', {
 		url : "/logviewer",
 		templateUrl : 'log_viewer/views/log_viewer.html'
