@@ -18,3 +18,8 @@
 	padding: 0px;
 	width: auto;
 }
+
+.alert .close {
+        top: auto;
+        right: auto;
+}
