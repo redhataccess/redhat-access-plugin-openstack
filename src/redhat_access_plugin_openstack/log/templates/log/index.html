@@ -7,9 +7,17 @@
 {% endblock page_header %}
 
 {% block redhat_access_plugin_openstack_main %}
-<h3>Local Logs</h3>
-<button class="btn btn-small"><a href="viewlocal">View Local Logs</a></button>
+<div class="table_wrapper">
+<table class="table" style="margin-bottom: 0px;">
+<thead>
+<tr class="table_caption">
+<th class="table_header" colspan="11">
+<h3 class="table_title">Local Logs</h3>
+</th>
+</tr>
+</thead>
+</table>
+</div>
+<a href="viewlocal" class="btn btn-small" style="margin-left: 8px;">View Local Logs</a>
 {{ table.render }}
 {% endblock %}
-
-
