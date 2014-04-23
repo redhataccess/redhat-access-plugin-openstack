@@ -1,4 +1,4 @@
-/*! redhat_access_angular_ui - v0.0.0 - 2014-04-22
+/*! redhat_access_angular_ui - v0.0.0 - 2014-04-23
  * Copyright (c) 2014 ;
  * Licensed 
  */
@@ -3319,7 +3319,7 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
         fetchURI,
         fetchAccountUsers;
 
-    strata.version = "1.0.4";
+    strata.version = "1.0.6";
     redhatClientID = "stratajs-" + strata.version;
 
     if (window.portal && window.portal.host) {
@@ -3335,6 +3335,12 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
 
     strata.setRedhatClientID = function (id) {
         redhatClientID = id;
+        strataHostname = new Uri('https://api.' + portalHostname);
+        strataHostname.addQueryParam(redhatClient, redhatClientID);
+    };
+
+    strata.setStrataHostname = function (hostname) {
+        portalHostname = hostname;
         strataHostname = new Uri('https://api.' + portalHostname);
         strataHostname.addQueryParam(redhatClient, redhatClientID);
     };
@@ -3372,8 +3378,6 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
         window.open("https://access.redhat.com/logout", "rhLogoutFrame");
     };
 
-
-    //Private vars related to the connection
 
     //Private vars related to the connection
     baseAjaxParams = {
@@ -3530,7 +3534,7 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
     //PUBLIC METHODS
     //User provides a loginSuccess callback to handle the response
     strata.checkLogin = function (loginHandler) {
-        if (loginHandler === undefined) { return false; }
+        if (!$.isFunction(loginHandler)) { throw "loginHandler callback must be supplied"; }
 
         checkCredentials = $.extend({}, baseAjaxParams, {
             url: strataHostname.clone().setPath('/rs/users')
@@ -3561,6 +3565,12 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                         beforeSend: function (xhr) {
                             xhr.setRequestHeader('X-Omit', 'WWW-Authenticate');
                         },
+                        statusCode: {
+                            401: function () {
+                                strata.clearCookieAuth();
+                                loginHandler(false);
+                            }
+                        },
                         //We are all good
                         success: function (response) {
                             loginHandler(true, this);
@@ -3585,8 +3595,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
 
     //Sends data to the strata diagnostic toolchain
     strata.problems = function (data, onSuccess, onFailure, limit) {
-        if (data === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (data === undefined) { data = ""; }
         if (limit === undefined) { limit = 50; }
 
         var getSolutionsFromText = $.extend({}, baseAjaxParams, {
@@ -3602,10 +3613,12 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                     var suggestedSolutions = response.source_or_link_or_problem[2].source_or_link;
                     onSuccess(suggestedSolutions);
                 } else {
-                    onFailure("Failed to retrieve solutions");
+                    onSuccess([]);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(getSolutionsFromText);
     };
@@ -3615,8 +3628,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
 
     //Retrieve a solution
     strata.solutions.get = function (solution, onSuccess, onFailure) {
-        if (solution === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (solution === undefined) { onFailure("solution must be defined"); }
 
         var url;
         if (isUrl(solution)) {
@@ -3632,15 +3646,18 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                 convertDates(response);
                 onSuccess(response);
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(fetchSolution);
     };
 
     //Search for solutions
     strata.solutions.search = function (keyword, onSuccess, onFailure, limit, chain) {
-        if (keyword === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (keyword === undefined) { keyword = ""; }
         if (limit === undefined) {limit = 50; }
         if (chain === undefined) {chain = false; }
 
@@ -3657,10 +3674,12 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                     response.solution.forEach(convertDates);
                     onSuccess(response.solution);
                 } else {
-                    onFailure("No Solutions Found")
+                    onSuccess([]);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(searchSolutions);
     };
@@ -3670,8 +3689,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
 
     //Retrieve an article
     strata.articles.get = function (article, onSuccess, onFailure) {
-        if (article === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (article === undefined) { onFailure("article must be defined"); }
 
         var url;
         if (isUrl(article)) {
@@ -3688,18 +3708,21 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                 if (response !== undefined && response.body !== undefined) {
                     response.body = markDownToHtml(response.body);
                 } else {
-                    onFailure("Failed to retrieve Article");
+                    onFailure("Failed to retrieve Article " + article);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(fetchArticle);
     };
 
     //Search articles
     strata.articles.search = function (keyword, onSuccess, onFailure, limit, chain) {
-        if (keyword === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (keyword === undefined) { keyword = ""; }
         if (limit === undefined) {limit = 50; }
         if (chain === undefined) {chain = false; }
 
@@ -3718,10 +3741,12 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                     response.article.forEach(convertDates);
                     onSuccess(response.article);
                 } else {
-                    onFailure("Failed to search Articles");
+                    onSuccess([]);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(searchArticles);
     };
@@ -3733,8 +3758,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
 
     //Retrieve a case
     strata.cases.get = function (casenum, onSuccess, onFailure) {
-        if (casenum === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (casenum === undefined) { onFailure("casenum must be defined"); }
 
         var url;
         if (isUrl(casenum)) {
@@ -3754,15 +3780,18 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                     onFailure("Failed to retrieve Case: " + casenum);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(fetchCase);
     };
 
     //Retrieve case comments
     strata.cases.comments.get = function (casenum, onSuccess, onFailure) {
-        if (casenum === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (casenum === undefined) { onFailure("casenum must be defined"); }
 
         var url;
         if (isUrl(casenum)) {
@@ -3781,7 +3810,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                     onFailure("Failed to retrieve Comments for Case: " + casenum);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(fetchCaseComments);
     };
@@ -3789,10 +3820,10 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
     //TODO: Support DRAFT comments? Only useful for internal
     //Create a new case comment
     strata.cases.comments.post = function (casenum, casecomment, onSuccess, onFailure) {
-        //Default parameter value
-        if (casenum === undefined) { return false; }
-        if (casecomment === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (casenum === undefined) { onFailure("casenum must be defined"); }
+        if (casecomment === undefined) { onFailure("casecomment must be defined"); }
 
         var url;
         if (isUrl(casenum)) {
@@ -3813,14 +3844,17 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                 commentnum = commentnum.split("/").pop();
                 onSuccess(commentnum);
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(createComment);
     };
 
     //List cases for the given user
     strata.cases.list = function (onSuccess, onFailure, closed) {
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
         if (closed === undefined) { closed = 'false'; }
 
         if (!closed) {
@@ -3837,19 +3871,21 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                     response.case.forEach(convertDates);
                     onSuccess(response.case);
                 } else {
-                    onFailure("Failed to list Cases");
+                    onSuccess([]);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(fetchCases);
     };
 
     //Filter cases
     strata.cases.filter = function (casefilter, onSuccess, onFailure) {
-        //Default parameter value
-        if (casefilter === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (casefilter === undefined) { onFailure("casefilter must be defined"); }
 
         var url = strataHostname.clone().setPath('/rs/cases/filter');
 
@@ -3866,10 +3902,12 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                     response.case.forEach(convertDates);
                     onSuccess(response.case);
                 } else {
-                    onFailure("Could not filter cases");
+                    onSuccess([]);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(filterCases);
     };
@@ -3877,8 +3915,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
     //Create a new case
     strata.cases.post = function (casedata, onSuccess, onFailure) {
         //Default parameter value
-        if (casedata === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (casedata === undefined) { onFailure("casedata must be defined"); }
 
         var url = strataHostname.clone().setPath('/rs/cases');
 
@@ -3893,7 +3932,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                 casenum = casenum.split("/").pop();
                 onSuccess(casenum);
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(createAttachment);
     };
@@ -3901,9 +3942,10 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
     //Update a case
     strata.cases.put = function (casenum, casedata, onSuccess, onFailure) {
         //Default parameter value
-        if (casenum === undefined) { return false; }
-        if (casedata === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (casenum === undefined) { onFailure("casenum must be defined"); }
+        if (casedata === undefined) { onFailure("casedata must be defined"); }
 
         var url;
         if (isUrl(casenum)) {
@@ -3932,8 +3974,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
 
     //List case attachments
     strata.cases.attachments.list = function (casenum, onSuccess, onFailure) {
-        if (casenum === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (casenum === undefined) { onFailure("casenum must be defined"); }
 
         var url;
         if (isUrl(casenum)) {
@@ -3947,13 +3990,15 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
             url: url,
             success: function (response) {
                 if (response.attachment === undefined) {
-                    onFailure("Failed to retrieve case attachments");
+                    onSuccess([]);
                 } else {
                     response.attachment.forEach(convertDates);
                     onSuccess(response.attachment);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(listCaseAttachments);
     };
@@ -3962,9 +4007,10 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
     //data MUST be MULTIPART/FORM-DATA
     strata.cases.attachments.post = function (data, casenum, onSuccess, onFailure) {
         //Default parameter value
-        if (data === undefined) { return false; }
-        if (casenum === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (data === undefined) { onFailure("data must be defined"); }
+        if (casenum === undefined) { onFailure("casenum must be defined"); }
 
         var url;
         if (isUrl(casenum)) {
@@ -3983,15 +4029,18 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
             contentType: false,
             cache: false,
             success: onSuccess,
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(createAttachment);
     };
 
     strata.cases.attachments.delete = function (attachmentId, casenum, onSuccess, onFailure) {
-        if (attachmentId === undefined) { return false; }
-        if (casenum === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (attachmentId === undefined) { onFailure("attachmentId must be defined"); }
+        if (casenum === undefined) { onFailure("casenum must be defined"); }
 
         var url =
             strataHostname.clone().setPath(
@@ -4002,7 +4051,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
             type: 'DELETE',
             method: 'DELETE',
             success: onSuccess,
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(deleteAttachment);
     };
@@ -4012,8 +4063,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
 
     //Symptom Extractor
     strata.symptoms.extractor = function (data, onSuccess, onFailure) {
-        if (data === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (data === undefined) { onFailure("data must be defined"); }
 
         var url = strataHostname.clone().setPath('/rs/symptoms/extractor');
 
@@ -4027,10 +4079,12 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                 if (response.extracted_symptom !== undefined) {
                     onSuccess(response.extracted_symptom);
                 } else {
-                    onSuccess({});
+                    onSuccess([]);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(getSymptomsFromText);
     };
@@ -4040,7 +4094,8 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
 
     //List groups for this user
     strata.groups.list = function (onSuccess, onFailure) {
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
 
         var url = strataHostname.clone().setPath('/rs/groups');
 
@@ -4050,18 +4105,21 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                 if (response.group !== undefined) {
                     onSuccess(response.group);
                 } else {
-                    onFailure("Failed to retrieve groups");
+                    onSuccess([]);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(listGroups);
     };
 
     //Retrieve a group
     strata.groups.get = function (groupnum, onSuccess, onFailure) {
-        if (groupnum === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (groupnum === undefined) { onFailure("groupnum must be defined"); }
 
         var url;
         if (isUrl(groupnum)) {
@@ -4074,7 +4132,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
         fetchGroup = $.extend({}, baseAjaxParams, {
             url: url,
             success: onSuccess,
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(fetchGroup);
     };
@@ -4084,7 +4144,8 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
 
     //List products for this user
     strata.products.list = function (onSuccess, onFailure) {
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
 
         var url = strataHostname.clone().setPath('/rs/products');
 
@@ -4094,18 +4155,21 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                 if (response.product !== undefined) {
                     onSuccess(response.product);
                 } else {
-                    onFailure("Failed to retrieve Product List");
+                    onSuccess([]);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(listProducts);
     };
 
     //Retrieve a product
     strata.products.get = function (code, onSuccess, onFailure) {
-        if (code === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (code === undefined) { onFailure("code must be defined"); }
 
         var url;
         if (isUrl(code)) {
@@ -4118,15 +4182,18 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
         fetchProduct = $.extend({}, baseAjaxParams, {
             url: url,
             success: onSuccess,
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(fetchProduct);
     };
 
     //Retrieve versions for a product
     strata.products.versions = function (code, onSuccess, onFailure) {
-        if (code === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (code === undefined) { onFailure("code must be defined"); }
 
         var url;
         if (isUrl(code)) {
@@ -4142,10 +4209,12 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                 if (response.version !== undefined) {
                     onSuccess(response.version);
                 } else {
-                    onFailure("Could not retrieve versions for " + code);
+                    onSuccess([]);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(fetchProductVersions);
     };
@@ -4156,7 +4225,8 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
 
     //Retrieve the case types
     strata.values.cases.types = function (onSuccess, onFailure) {
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
 
         var url = strataHostname.clone().setPath('/rs/values/case/types');
 
@@ -4166,17 +4236,20 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                 if (response.value !== undefined) {
                     onSuccess(response.value);
                 } else {
-                    onFailure("Could not retreive case types");
+                    onSuccess([]);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(caseTypes);
     };
 
     //Retrieve the case severities
     strata.values.cases.severity = function (onSuccess, onFailure) {
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
 
         var url = strataHostname.clone().setPath('/rs/values/case/severity');
 
@@ -4186,17 +4259,20 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                 if (response.value !== undefined) {
                     onSuccess(response.value);
                 } else {
-                    onFailure("Could not retreive case serverities");
+                    onSuccess([]);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(caseSeverities);
     };
 
     //Retrieve the case statuses
     strata.values.cases.status = function (onSuccess, onFailure) {
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
 
         var url = strataHostname.clone().setPath('/rs/values/case/status');
 
@@ -4206,10 +4282,12 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                 if (response.value !== undefined) {
                     onSuccess(response.value);
                 } else {
-                    onFailure("Could not retreive case statuses");
+                    onSuccess([]);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(caseStatus);
     };
@@ -4219,7 +4297,8 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
 
     //List system profiles
     strata.systemProfiles.list = function (onSuccess, onFailure) {
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
 
         var url = strataHostname.clone().setPath('/rs/system_profiles');
 
@@ -4229,10 +4308,12 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                 if (response.system_profile !== undefined) {
                     onSuccess(response.system_profile);
                 } else {
-                    onFailure("Could not retrieve system profiles");
+                    onSuccess([]);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(fetchSystemProfiles);
     };
@@ -4240,8 +4321,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
     //Get a specific system_profile, either by hash or casenum
     //Case can return an array, hash will return a single result
     strata.systemProfiles.get = function (casenum, onSuccess, onFailure) {
-        if (casenum === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (casenum === undefined) { onFailure("casenum must be defined"); }
 
         var url;
         if (isUrl(casenum)) {
@@ -4260,7 +4342,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                     onSuccess(response);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(fetchSystemProfile);
     };
@@ -4269,8 +4353,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
     //Create a new System Profile
     strata.systemProfiles.post = function (systemprofile, onSuccess, onFailure) {
         //Default parameter value
-        if (systemprofile === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (systemprofile === undefined) { onFailure("systemprofile must be defined"); }
 
         var url = strataHostname.clone().setPath('/rs/system_profiles');
 
@@ -4285,7 +4370,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                 hash = hash.split("/").pop();
                 onSuccess(hash);
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(createSystemProfile);
     };
@@ -4294,7 +4381,8 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
 
     //List Accounts for the given user
     strata.accounts.list = function (onSuccess, onFailure, closed) {
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
         if (closed === undefined) { closed = false; }
 
         var url = strataHostname.clone().setPath('/rs/accounts');
@@ -4302,15 +4390,18 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
         fetchAccounts = $.extend({}, baseAjaxParams, {
             url: url,
             success:  onSuccess,
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(fetchAccounts);
     };
 
     //Get an Account
     strata.accounts.get = function (accountnum, onSuccess, onFailure) {
-        if (accountnum === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (accountnum === undefined) { onFailure("accountnum must be defined"); }
 
         var url;
         if (isUrl(accountnum)) {
@@ -4323,15 +4414,18 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
         fetchAccount = $.extend({}, baseAjaxParams, {
             url: url,
             success: onSuccess,
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(fetchAccount);
     };
 
     //Get an Accounts Users
     strata.accounts.users = function (accountnum, onSuccess, onFailure, group) {
-        if (accountnum === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (accountnum === undefined) { onFailure("accountnum must be defined"); }
 
         var url;
         if (isUrl(accountnum)) {
@@ -4350,10 +4444,12 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                 if (response.user !== undefined) {
                     onSuccess(response.user);
                 } else {
-                    onFailure("Could not retrieve users");
+                    onSuccess([]);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(fetchAccountUsers);
     };
@@ -4361,8 +4457,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
     //Helper function to "diagnose" text, chains problems and solutions calls
     //This will call 'onSuccess' for each solution
     strata.diagnose = function (data, onSuccess, onFailure, limit) {
-        if (data === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (data === undefined) { onFailure("data must be defined"); }
         if (limit === undefined) { limit = 50; }
 
         //Call problems, send that list to get solutions to get each one
@@ -4374,8 +4471,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
     };
 
     strata.search = function (keyword, onSuccess, onFailure, limit, chain) {
-        if (keyword === undefined) { return false; }
-        if (onSuccess === undefined) { return false; }
+        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
+        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
+        if (keyword === undefined) { keyword = ""; }
         if (limit === undefined) {limit = 50; }
         if (chain === undefined) {chain = false; }
 
@@ -4391,10 +4489,12 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                 } else if (response.search_result !== undefined) {
                     onSuccess(response.search_result);
                 } else {
-                    onSuccess({});
+                    onSuccess([]);
                 }
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(searchStrata);
     };
@@ -4422,7 +4522,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                 convertDates(response);
                 onSuccess(resourceType, response);
             },
-            error: onFailure
+            error: function (xhr, reponse, status) {
+                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+            }
         });
         $.ajax(fetchURI);
     };
@@ -12868,9 +12970,846 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
 	}]);
 })( angular );
 
-/*! ngTable v0.3.1 by Vitalii Savchuk(esvit666@gmail.com) - https://github.com/esvit/ng-table - New BSD License */
-!function(a,b){return"function"==typeof define&&define.amd?(define(["angular"],function(a){return b(a)}),void 0):b(a)}(angular||null,function(a){var b=a.module("ngTable",[]);b.factory("ngTableParams",["$q","$log",function(b,c){var d=function(a){return!isNaN(parseFloat(a))&&isFinite(a)},e=function(e,f){var g=this;this.data=[],this.parameters=function(b,e){if(e=e||!1,a.isDefined(b)){for(var f in b){var g=b[f];if(e&&f.indexOf("[")>=0){for(var i=f.split(/\[(.*)\]/).reverse(),j="",k=0,l=i.length;l>k;k++){var m=i[k];if(""!==m){var n=g;g={},g[j=m]=d(n)?parseFloat(n):n}}"sorting"===j&&(h[j]={}),h[j]=a.extend(h[j]||{},g[j])}else h[f]=d(b[f])?parseFloat(b[f]):b[f]}return c.debug&&c.debug("ngTable: set parameters",h),this}return h},this.settings=function(b){return a.isDefined(b)?(j=a.extend(j,b),c.debug&&c.debug("ngTable: set settings",h),this):j},this.page=function(b){return a.isDefined(b)?this.parameters({page:b}):h.page},this.total=function(b){return a.isDefined(b)?this.settings({total:b}):j.total},this.count=function(b){return a.isDefined(b)?this.parameters({count:b,page:1}):h.count},this.filter=function(b){return a.isDefined(b)?this.parameters({filter:b}):h.filter},this.sorting=function(b){if(2==arguments.length){var c={};return c[b]=arguments[1],this.parameters({sorting:c}),this}return a.isDefined(b)?this.parameters({sorting:b}):h.sorting},this.isSortBy=function(b,c){return a.isDefined(h.sorting[b])&&h.sorting[b]==c},this.orderBy=function(){var a=[];for(var b in h.sorting)a.push(("asc"===h.sorting[b]?"+":"-")+b);return a},this.getData=function(a){a.resolve([])},this.getGroups=function(d,e){var f=b.defer();f.promise.then(function(b){var f={};for(var g in b){var h=b[g],i=a.isFunction(e)?e(h):h[e];f[i]=f[i]||{data:[]},f[i].value=i,f[i].data.push(h)}var j=[];for(var k in f)j.push(f[k]);c.debug&&c.debug("ngTable: refresh groups",j),d.resolve(j)}),this.getData(f,g)},this.generatePagesArray=function(a,b,c){var d,e,f,g,h,j;if(d=11,j=[],h=Math.ceil(b/c),h>1){for(j.push({type:"prev",number:Math.max(1,a-1),active:a>1}),j.push({type:"first",number:1,active:a>1}),f=Math.round((d-5)/2),g=Math.max(2,a-f),e=Math.min(h-1,a+2*f-(a-g)),g=Math.max(2,g-(2*f-(e-g))),i=g;e>=i;)i===g&&2!==i||i===e&&i!==h-1?j.push({type:"more",active:!1}):j.push({type:"page",number:i,active:a!==i}),i++;j.push({type:"last",number:h,active:a!==h}),j.push({type:"next",number:Math.min(h,a+1),active:h>a})}return j},this.url=function(b){b=b||!1;var c=b?[]:{};for(key in h)if(h.hasOwnProperty(key)){var d=h[key],e=encodeURIComponent(key);if("object"==typeof d){for(var f in d)if(!a.isUndefined(d[f])&&""!==d[f]){var g=e+"["+encodeURIComponent(f)+"]";b?c.push(g+"="+encodeURIComponent(d[f])):c[g]=encodeURIComponent(d[f])}}else a.isFunction(d)||a.isUndefined(d)||""===d||(b?c.push(e+"="+encodeURIComponent(d)):c[e]=encodeURIComponent(d))}return c},this.reload=function(){var a=b.defer(),d=this;j.$loading=!0,j.groupBy?j.getGroups(a,j.groupBy,this):j.getData(a,this),c.debug&&c.debug("ngTable: reload data"),a.promise.then(function(a){j.$loading=!1,c.debug&&c.debug("ngTable: current scope",j.$scope),d.data=j.groupBy?j.$scope.$groups=a:j.$scope.$data=a,j.$scope.pages=d.generatePagesArray(d.page(),d.total(),d.count())})},this.reloadPages=function(){var a=this;j.$scope.pages=a.generatePagesArray(a.page(),a.total(),a.count())};var h=this.$params={page:1,count:1,filter:{},sorting:{},group:{},groupBy:null},j={$scope:null,$loading:!1,total:0,counts:[10,25,50,100],getGroups:this.getGroups,getData:this.getData};return this.settings(f),this.parameters(e,!0),this};return e}]);var c=["$scope","ngTableParams","$q",function(a,b){a.$loading=!1,a.params||(a.params=new b),a.params.settings().$scope=a,a.$watch("params.$params",function(){a.params.settings().$scope=a,a.params.reload()},!0),a.sortBy=function(b){var c=a.parse(b.sortable);if(c){var d=a.params.sorting()&&a.params.sorting()[c]&&"desc"===a.params.sorting()[c],e={};e[c]=d?"asc":"desc",a.params.parameters({sorting:e})}}}];return b.directive("ngTable",["$compile","$q","$parse",function(b,d,e){"use strict";return{restrict:"A",priority:1001,scope:!0,controller:c,compile:function(c){var d=[],f=0,g=null,h=c.find("thead");return a.forEach(a.element(c.find("tr")),function(b){b=a.element(b),b.hasClass("ng-table-group")||g||(g=b)}),g?(a.forEach(g.find("td"),function(b){var c=a.element(b);if(!c.attr("ignore-cell")||"true"!==c.attr("ignore-cell")){var g=function(a,b){return function(f){return e(c.attr("x-data-"+a)||c.attr("data-"+a)||c.attr(a))(f,{$columns:d})||b}},h=g("title"," "),i=g("header",!1),j=g("filter",!1)(),k=!1;j&&j.templateURL&&(k=j.templateURL,delete j.templateURL),c.attr("data-title-text",h()),d.push({id:f++,title:h,sortable:g("sortable",!1),"class":c.attr("x-data-header-class")||c.attr("data-header-class")||c.attr("header-class"),filter:j,filterTemplateURL:k,headerTemplateURL:i,filterData:c.attr("filter-data")?c.attr("filter-data"):null,show:c.attr("ng-show")?function(a){return e(c.attr("ng-show"))(a)}:function(){return!0}})}}),function(c,f,g){if(c.$loading=!1,c.$columns=d,c.$watch(g.ngTable,function(b){a.isUndefined(b)||(c.paramsModel=e(g.ngTable),c.params=b)},!0),c.parse=function(b){return a.isDefined(b)?b(c):""},g.showFilter&&c.$parent.$watch(g.showFilter,function(a){c.show_filter=a}),a.forEach(d,function(b){var d;if(b.filterData){if(d=e(b.filterData)(c,{$column:b}),!a.isObject(d)||!a.isObject(d.promise))throw new Error("Function "+b.filterData+" must be instance of $q.defer()");return delete b.filterData,d.promise.then(function(c){a.isArray(c)||(c=[]),c.unshift({title:"-",id:""}),b.data=c})}}),!f.hasClass("ng-table")){c.templates={header:g.templateHeader?g.templateHeader:"ng-table/header.html",pagination:g.templatePagination?g.templatePagination:"ng-table/pager.html"};var i=h.length>0?h:a.element(document.createElement("thead")).attr("ng-include","templates.header"),j=a.element(document.createElement("div")).attr("ng-include","templates.pagination");return f.find("thead").remove(),f.find("tbody"),f.prepend(i),b(i)(c),b(j)(c),f.addClass("ng-table"),f.after(j)}}):void 0}}}]),a.module("ngTable").run(["$templateCache",function(a){a.put("ng-table/filters/select.html",'<select ng-options="data.id as data.title for data in column.data" ng-model="params.filter()[name]" ng-show="filter==\'select\'" class="filter filter-select form-control"> </select>'),a.put("ng-table/filters/text.html",'<input type="text" ng-model="params.filter()[name]" ng-if="filter==\'text\'" class="input-filter form-control"/>'),a.put("ng-table/header.html",'<tr> <th ng-repeat="column in $columns" ng-class="{ \'sortable\': parse(column.sortable), \'sort-asc\': params.sorting()[parse(column.sortable)]==\'asc\', \'sort-desc\': params.sorting()[parse(column.sortable)]==\'desc\' }" ng-click="sortBy(column)" ng-show="column.show(this)" ng-init="template=column.headerTemplateURL(this)" class="header {{column.class}}"> <div ng-if="!template" ng-show="!template" ng-bind="parse(column.title)"></div> <div ng-if="template" ng-show="template"><div ng-include="template"></div></div> </th> </tr> <tr ng-show="show_filter" class="ng-table-filters"> <th ng-repeat="column in $columns" ng-show="column.show(this)" class="filter"> <div ng-repeat="(name, filter) in column.filter"> <div ng-if="column.filterTemplateURL" ng-show="column.filterTemplateURL"> <div ng-include="column.filterTemplateURL"></div> </div> <div ng-if="!column.filterTemplateURL" ng-show="!column.filterTemplateURL"> <div ng-include="\'ng-table/filters/\' + filter + \'.html\'"></div> </div> </div> </th> </tr>'),a.put("ng-table/pager.html",'<div class="ng-cloak"> <div ng-if="params.settings().counts.length" class="btn-group pull-right"> <button ng-repeat="count in params.settings().counts" type="button" ng-class="{\'active\':params.count()==count}" ng-click="params.count(count)" class="btn btn-default btn-xs"> <span ng-bind="count"></span> </button> </div> <ul class="pagination"> <li ng-class="{\'disabled\': !page.active}" ng-repeat="page in pages" ng-switch="page.type"> <a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo;</a> <a ng-switch-when="first" ng-click="params.page(page.number)" href=""><span ng-bind="page.number"></span></a> <a ng-switch-when="page" ng-click="params.page(page.number)" href=""><span ng-bind="page.number"></span></a> <a ng-switch-when="more" ng-click="params.page(page.number)" href="">&#8230;</a> <a ng-switch-when="last" ng-click="params.page(page.number)" href=""><span ng-bind="page.number"></span></a> <a ng-switch-when="next" ng-click="params.page(page.number)" href="">&raquo;</a> </li> </ul> </div>')}]),b});
-//# sourceMappingURL=ng-table.map
+(function(angular, factory) {
+    'use strict';
+
+    if (typeof define === 'function' && define.amd) {
+        define(['angular'], function(angular) {
+            return factory(angular);
+        });
+    } else {
+        return factory(angular);
+    }
+}(angular || null, function(angular) {
+    'use strict';
+/**
+ * ngTable: Table + Angular JS
+ *
+ * @author Vitalii Savchuk <esvit666@gmail.com>
+ * @url https://github.com/esvit/ng-table/
+ * @license New BSD License <http://creativecommons.org/licenses/BSD/>
+ */
+
+/**
+ * @ngdoc module
+ * @name ngTable
+ * @description ngTable: Table + Angular JS
+ * @example
+ <doc:example>
+ <doc:source>
+ <script>
+ var app = angular.module('myApp', ['ngTable']);
+ app.controller('MyCtrl', function($scope) {
+                    $scope.users = [
+                        {name: "Moroni", age: 50},
+                        {name: "Tiancum", age: 43},
+                        {name: "Jacob", age: 27},
+                        {name: "Nephi", age: 29},
+                        {name: "Enos", age: 34}
+                    ];
+                });
+ </script>
+ <table ng-table class="table">
+ <tr ng-repeat="user in users">
+ <td data-title="'Name'">{{user.name}}</td>
+ <td data-title="'Age'">{{user.age}}</td>
+ </tr>
+ </table>
+ </doc:source>
+ </doc:example>
+ */
+var app = angular.module('ngTable', []);
+/**
+ * ngTable: Table + Angular JS
+ *
+ * @author Vitalii Savchuk <esvit666@gmail.com>
+ * @url https://github.com/esvit/ng-table/
+ * @license New BSD License <http://creativecommons.org/licenses/BSD/>
+ */
+
+/**
+ * @ngdoc service
+ * @name ngTable.factory:ngTableParams
+ * @description Parameters manager for ngTable
+ */
+app.factory('ngTableParams', ['$q', '$log', function ($q, $log) {
+    var isNumber = function (n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    };
+    var ngTableParams = function (baseParameters, baseSettings) {
+        var self = this,
+            log = function () {
+                if (settings.debugMode && $log.debug) {
+                    $log.debug.apply(this, arguments);
+                }
+            };
+
+        this.data = [];
+
+        /**
+         * @ngdoc method
+         * @name ngTable.factory:ngTableParams#parameters
+         * @methodOf ngTable.factory:ngTableParams
+         * @description Set new parameters or get current parameters
+         *
+         * @param {string} newParameters      New parameters
+         * @param {string} parseParamsFromUrl Flag if parse parameters like in url
+         * @returns {Object} Current parameters or `this`
+         */
+        this.parameters = function (newParameters, parseParamsFromUrl) {
+            parseParamsFromUrl = parseParamsFromUrl || false;
+            if (angular.isDefined(newParameters)) {
+                for (var key in newParameters) {
+                    var value = newParameters[key];
+                    if (parseParamsFromUrl && key.indexOf('[') >= 0) {
+                        var keys = key.split(/\[(.*)\]/).reverse()
+                        var lastKey = '';
+                        for (var i = 0, len = keys.length; i < len; i++) {
+                            var name = keys[i];
+                            if (name !== '') {
+                                var v = value;
+                                value = {};
+                                value[lastKey = name] = (isNumber(v) ? parseFloat(v) : v);
+                            }
+                        }
+                        if (lastKey === 'sorting') {
+                            params[lastKey] = {};
+                        }
+                        params[lastKey] = angular.extend(params[lastKey] || {}, value[lastKey]);
+                    } else {
+                        params[key] = (isNumber(newParameters[key]) ? parseFloat(newParameters[key]) : newParameters[key]);
+                    }
+                }
+                log('ngTable: set parameters', params);
+                return this;
+            }
+            return params;
+        };
+
+        /**
+         * @ngdoc method
+         * @name ngTable.factory:ngTableParams#settings
+         * @methodOf ngTable.factory:ngTableParams
+         * @description Set new settings for table
+         *
+         * @param {string} newSettings New settings or undefined
+         * @returns {Object} Current settings or `this`
+         */
+        this.settings = function (newSettings) {
+            if (angular.isDefined(newSettings)) {
+                if (angular.isArray(newSettings.data)) {
+                    //auto-set the total from passed in data
+                    newSettings.total = newSettings.data.length;
+                }
+                settings = angular.extend(settings, newSettings);
+                log('ngTable: set settings', settings);
+                return this;
+            }
+            return settings;
+        };
+
+        /**
+         * @ngdoc method
+         * @name ngTable.factory:ngTableParams#page
+         * @methodOf ngTable.factory:ngTableParams
+         * @description If parameter page not set return current page else set current page
+         *
+         * @param {string} page Page number
+         * @returns {Object|Number} Current page or `this`
+         */
+        this.page = function (page) {
+            return angular.isDefined(page) ? this.parameters({'page': page}) : params.page;
+        };
+
+        /**
+         * @ngdoc method
+         * @name ngTable.factory:ngTableParams#total
+         * @methodOf ngTable.factory:ngTableParams
+         * @description If parameter total not set return current quantity else set quantity
+         *
+         * @param {string} total Total quantity of items
+         * @returns {Object|Number} Current page or `this`
+         */
+        this.total = function (total) {
+            return angular.isDefined(total) ? this.settings({'total': total}) : settings.total;
+        };
+
+        /**
+         * @ngdoc method
+         * @name ngTable.factory:ngTableParams#count
+         * @methodOf ngTable.factory:ngTableParams
+         * @description If parameter count not set return current count per page else set count per page
+         *
+         * @param {string} count Count per number
+         * @returns {Object|Number} Count per page or `this`
+         */
+        this.count = function (count) {
+            // reset to first page because can be blank page
+            return angular.isDefined(count) ? this.parameters({'count': count, 'page': 1}) : params.count;
+        };
+
+        /**
+         * @ngdoc method
+         * @name ngTable.factory:ngTableParams#filter
+         * @methodOf ngTable.factory:ngTableParams
+         * @description If parameter page not set return current filter else set current filter
+         *
+         * @param {string} filter New filter
+         * @returns {Object} Current filter or `this`
+         */
+        this.filter = function (filter) {
+            return angular.isDefined(filter) ? this.parameters({'filter': filter}) : params.filter;
+        };
+
+        /**
+         * @ngdoc method
+         * @name ngTable.factory:ngTableParams#sorting
+         * @methodOf ngTable.factory:ngTableParams
+         * @description If 'sorting' parameter is not set, return current sorting. Otherwise set current sorting.
+         *
+         * @param {string} sorting New sorting
+         * @returns {Object} Current sorting or `this`
+         */
+        this.sorting = function (sorting) {
+            if (arguments.length == 2) {
+                var sortArray = {};
+                sortArray[sorting] = arguments[1];
+                this.parameters({'sorting': sortArray});
+                return this;
+            }
+            return angular.isDefined(sorting) ? this.parameters({'sorting': sorting}) : params.sorting;
+        };
+
+        /**
+         * @ngdoc method
+         * @name ngTable.factory:ngTableParams#isSortBy
+         * @methodOf ngTable.factory:ngTableParams
+         * @description Checks sort field
+         *
+         * @param {string} field     Field name
+         * @param {string} direction Direction of sorting 'asc' or 'desc'
+         * @returns {Array} Return true if field sorted by direction
+         */
+        this.isSortBy = function (field, direction) {
+            return angular.isDefined(params.sorting[field]) && params.sorting[field] == direction;
+        };
+
+        /**
+         * @ngdoc method
+         * @name ngTable.factory:ngTableParams#orderBy
+         * @methodOf ngTable.factory:ngTableParams
+         * @description Return object of sorting parameters for angular filter
+         *
+         * @returns {Array} Array like: [ '-name', '+age' ]
+         */
+        this.orderBy = function () {
+            var sorting = [];
+            for (var column in params.sorting) {
+                sorting.push((params.sorting[column] === "asc" ? "+" : "-") + column);
+            }
+            return sorting;
+        };
+
+        /**
+         * @ngdoc method
+         * @name ngTable.factory:ngTableParams#getData
+         * @methodOf ngTable.factory:ngTableParams
+         * @description Called when updated some of parameters for get new data
+         *
+         * @param {Object} $defer promise object
+         * @param {Object} params New parameters
+         */
+        this.getData = function ($defer, params) {
+            if (angular.isArray(this.data) && angular.isObject(params)) {
+                $defer.resolve(this.data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+            } else {
+                $defer.resolve([]);
+            }
+        };
+
+        /**
+         * @ngdoc method
+         * @name ngTable.factory:ngTableParams#getGroups
+         * @methodOf ngTable.factory:ngTableParams
+         * @description Return groups for table grouping
+         */
+        this.getGroups = function ($defer, column) {
+            var defer = $q.defer();
+
+            defer.promise.then(function (data) {
+                var groups = {};
+                angular.forEach(data, function (item) {
+                    var groupName = angular.isFunction(column) ? column(item) : item[column];
+
+                    groups[groupName] = groups[groupName] || {
+                        data: []
+                    };
+                    groups[groupName]['value'] = groupName;
+                    groups[groupName].data.push(item);
+                });
+                var result = [];
+                for (var i in groups) {
+                    result.push(groups[i]);
+                }
+                log('ngTable: refresh groups', result);
+                $defer.resolve(result);
+            });
+            this.getData(defer, self);
+        };
+
+        /**
+         * @ngdoc method
+         * @name ngTable.factory:ngTableParams#generatePagesArray
+         * @methodOf ngTable.factory:ngTableParams
+         * @description Generate array of pages
+         *
+         * @param {boolean} currentPage which page must be active
+         * @param {boolean} totalItems  Total quantity of items
+         * @param {boolean} pageSize    Quantity of items on page
+         * @returns {Array} Array of pages
+         */
+        this.generatePagesArray = function (currentPage, totalItems, pageSize) {
+            var maxBlocks, maxPage, maxPivotPages, minPage, numPages, pages;
+            maxBlocks = 11;
+            pages = [];
+            numPages = Math.ceil(totalItems / pageSize);
+            if (numPages > 1) {
+                pages.push({
+                    type: 'prev',
+                    number: Math.max(1, currentPage - 1),
+                    active: currentPage > 1
+                });
+                pages.push({
+                    type: 'first',
+                    number: 1,
+                    active: currentPage > 1
+                });
+                maxPivotPages = Math.round((maxBlocks - 5) / 2);
+                minPage = Math.max(2, currentPage - maxPivotPages);
+                maxPage = Math.min(numPages - 1, currentPage + maxPivotPages * 2 - (currentPage - minPage));
+                minPage = Math.max(2, minPage - (maxPivotPages * 2 - (maxPage - minPage)));
+                var i = minPage;
+                while (i <= maxPage) {
+                    if ((i === minPage && i !== 2) || (i === maxPage && i !== numPages - 1)) {
+                        pages.push({
+                            type: 'more',
+                            active: false
+                        });
+                    } else {
+                        pages.push({
+                            type: 'page',
+                            number: i,
+                            active: currentPage !== i
+                        });
+                    }
+                    i++;
+                }
+                pages.push({
+                    type: 'last',
+                    number: numPages,
+                    active: currentPage !== numPages
+                });
+                pages.push({
+                    type: 'next',
+                    number: Math.min(numPages, currentPage + 1),
+                    active: currentPage < numPages
+                });
+            }
+            return pages;
+        };
+
+        /**
+         * @ngdoc method
+         * @name ngTable.factory:ngTableParams#url
+         * @methodOf ngTable.factory:ngTableParams
+         * @description Return groups for table grouping
+         *
+         * @param {boolean} asString flag indicates return array of string or object
+         * @returns {Array} If asString = true will be return array of url string parameters else key-value object
+         */
+        this.url = function (asString) {
+            asString = asString || false;
+            var pairs = (asString ? [] : {});
+            for (var key in params) {
+                if (params.hasOwnProperty(key)) {
+                    var item = params[key],
+                        name = encodeURIComponent(key);
+                    if (typeof item === "object") {
+                        for (var subkey in item) {
+                            if (!angular.isUndefined(item[subkey]) && item[subkey] !== "") {
+                                var pname = name + "[" + encodeURIComponent(subkey) + "]";
+                                if (asString) {
+                                    pairs.push(pname + "=" + item[subkey]);
+                                } else {
+                                    pairs[pname] = item[subkey];
+                                }
+                            }
+                        }
+                    } else if (!angular.isFunction(item) && !angular.isUndefined(item) && item !== "") {
+                        if (asString) {
+                            pairs.push(name + "=" + encodeURIComponent(item));
+                        } else {
+                            pairs[name] = encodeURIComponent(item);
+                        }
+                    }
+                }
+            }
+            return pairs;
+        };
+
+        /**
+         * @ngdoc method
+         * @name ngTable.factory:ngTableParams#reload
+         * @methodOf ngTable.factory:ngTableParams
+         * @description Reload table data
+         */
+        this.reload = function () {
+            var $defer = $q.defer(),
+                self = this;
+
+            settings.$loading = true;
+            if (settings.groupBy) {
+                settings.getGroups($defer, settings.groupBy, this);
+            } else {
+                settings.getData($defer, this);
+            }
+            log('ngTable: reload data');
+            $defer.promise.then(function (data) {
+                settings.$loading = false;
+                log('ngTable: current scope', settings.$scope);
+                if (settings.groupBy) {
+                    self.data = settings.$scope.$groups = data;
+                } else {
+                    self.data = settings.$scope.$data = data;
+                }
+                settings.$scope.pages = self.generatePagesArray(self.page(), self.total(), self.count());
+                settings.$scope.$emit('ngTableAfterReloadData');
+            });
+        };
+
+        this.reloadPages = function () {
+            var self = this;
+            settings.$scope.pages = self.generatePagesArray(self.page(), self.total(), self.count());
+        };
+
+        var params = this.$params = {
+            page: 1,
+            count: 1,
+            filter: {},
+            sorting: {},
+            group: {},
+            groupBy: null
+        };
+        var settings = {
+            $scope: null, // set by ngTable controller
+            $loading: false,
+            data: null, //allows data to be set when table is initialized
+            total: 0,
+            defaultSort: 'desc',
+            filterDelay: 750,
+            counts: [10, 25, 50, 100],
+            getGroups: this.getGroups,
+            getData: this.getData
+        };
+
+        this.settings(baseSettings);
+        this.parameters(baseParameters, true);
+        return this;
+    };
+    return ngTableParams;
+}]);
+
+/**
+ * ngTable: Table + Angular JS
+ *
+ * @author Vitalii Savchuk <esvit666@gmail.com>
+ * @url https://github.com/esvit/ng-table/
+ * @license New BSD License <http://creativecommons.org/licenses/BSD/>
+ */
+
+/**
+ * @ngdoc object
+ * @name ngTable.directive:ngTable.ngTableController
+ *
+ * @description
+ * Each {@link ngTable.directive:ngTable ngTable} directive creates an instance of `ngTableController`
+ */
+var ngTableController = ['$scope', 'ngTableParams', '$timeout', function ($scope, ngTableParams, $timeout) {
+    $scope.$loading = false;
+
+    if (!$scope.params) {
+        $scope.params = new ngTableParams();
+    }
+    $scope.params.settings().$scope = $scope;
+
+    var delayFilter = (function () {
+        var timer = 0;
+        return function (callback, ms) {
+            $timeout.cancel(timer);
+            timer = $timeout(callback, ms);
+        };
+    })();
+
+    $scope.$watch('params.$params', function (newParams, oldParams) {
+        $scope.params.settings().$scope = $scope;
+
+        if (!angular.equals(newParams.filter, oldParams.filter)) {
+            delayFilter(function () {
+                $scope.params.$params.page = 1;
+                $scope.params.reload();
+            }, $scope.params.settings().filterDelay);
+        } else {
+            $scope.params.reload();
+        }
+    }, true);
+
+    $scope.sortBy = function (column, event) {
+        var parsedSortable = $scope.parse(column.sortable);
+        if (!parsedSortable) {
+            return;
+        }
+        var defaultSort = $scope.params.settings().defaultSort;
+        var inverseSort = (defaultSort === 'asc' ? 'desc' : 'asc');
+        var sorting = $scope.params.sorting() && $scope.params.sorting()[parsedSortable] && ($scope.params.sorting()[parsedSortable] === defaultSort);
+        var sortingParams = (event.ctrlKey || event.metaKey) ? $scope.params.sorting() : {};
+        sortingParams[parsedSortable] = (sorting ? inverseSort : defaultSort);
+        $scope.params.parameters({
+            sorting: sortingParams
+        });
+    };
+}];
+/**
+ * ngTable: Table + Angular JS
+ *
+ * @author Vitalii Savchuk <esvit666@gmail.com>
+ * @url https://github.com/esvit/ng-table/
+ * @license New BSD License <http://creativecommons.org/licenses/BSD/>
+ */
+
+/**
+ * @ngdoc directive
+ * @name ngTable.directive:ngTable
+ * @restrict A
+ *
+ * @description
+ * Directive that instantiates {@link ngTable.directive:ngTable.ngTableController ngTableController}.
+ */
+app.directive('ngTable', ['$compile', '$q', '$parse',
+    function ($compile, $q, $parse) {
+        'use strict';
+
+        return {
+            restrict: 'A',
+            priority: 1001,
+            scope: true,
+            controller: ngTableController,
+            compile: function (element) {
+                var columns = [], i = 0, row = null;
+
+                // custom header
+                var thead = element.find('thead');
+
+                // IE 8 fix :not(.ng-table-group) selector
+                angular.forEach(angular.element(element.find('tr')), function (tr) {
+                    tr = angular.element(tr);
+                    if (!tr.hasClass('ng-table-group') && !row) {
+                        row = tr;
+                    }
+                });
+                if (!row) {
+                    return;
+                }
+                angular.forEach(row.find('td'), function (item) {
+                    var el = angular.element(item);
+                    if (el.attr('ignore-cell') && 'true' === el.attr('ignore-cell')) {
+                        return;
+                    }
+                    var parsedAttribute = function (attr, defaultValue) {
+                        return function (scope) {
+                            return $parse(el.attr('x-data-' + attr) || el.attr('data-' + attr) || el.attr(attr))(scope, {
+                                $columns: columns
+                            }) || defaultValue;
+                        };
+                    };
+
+                    var parsedTitle = parsedAttribute('title', ' '),
+                        headerTemplateURL = parsedAttribute('header', false),
+                        filter = parsedAttribute('filter', false)(),
+                        filterTemplateURL = false,
+                        filterName = false;
+
+                    if (filter && filter.$$name) {
+                        filterName = filter.$$name;
+                        delete filter.$$name;
+                    }
+                    if (filter && filter.templateURL) {
+                        filterTemplateURL = filter.templateURL;
+                        delete filter.templateURL;
+                    }
+
+                    el.attr('data-title-text', parsedTitle()); // this used in responsive table
+                    columns.push({
+                        id: i++,
+                        title: parsedTitle,
+                        sortable: parsedAttribute('sortable', false),
+                        'class': el.attr('x-data-header-class') || el.attr('data-header-class') || el.attr('header-class'),
+                        filter: filter,
+                        filterTemplateURL: filterTemplateURL,
+                        filterName: filterName,
+                        headerTemplateURL: headerTemplateURL,
+                        filterData: (el.attr("filter-data") ? el.attr("filter-data") : null),
+                        show: (el.attr("ng-show") ? function (scope) {
+                            return $parse(el.attr("ng-show"))(scope);
+                        } : function () {
+                            return true;
+                        })
+                    });
+                });
+                return function (scope, element, attrs) {
+                    scope.$loading = false;
+                    scope.$columns = columns;
+
+                    scope.$watch(attrs.ngTable, (function (params) {
+                        if (angular.isUndefined(params)) {
+                            return;
+                        }
+                        scope.paramsModel = $parse(attrs.ngTable);
+                        scope.params = params;
+                    }), true);
+                    scope.parse = function (text) {
+                        return angular.isDefined(text) ? text(scope) : '';
+                    };
+                    if (attrs.showFilter) {
+                        scope.$parent.$watch(attrs.showFilter, function (value) {
+                            scope.show_filter = value;
+                        });
+                    }
+                    angular.forEach(columns, function (column) {
+                        var def;
+                        if (!column.filterData) {
+                            return;
+                        }
+                        def = $parse(column.filterData)(scope, {
+                            $column: column
+                        });
+                        if (!(angular.isObject(def) && angular.isObject(def.promise))) {
+                            throw new Error('Function ' + column.filterData + ' must be instance of $q.defer()');
+                        }
+                        delete column.filterData;
+                        return def.promise.then(function (data) {
+                            if (!angular.isArray(data)) {
+                                data = [];
+                            }
+                            data.unshift({
+                                title: '-',
+                                id: ''
+                            });
+                            column.data = data;
+                        });
+                    });
+                    if (!element.hasClass('ng-table')) {
+                        scope.templates = {
+                            header: (attrs.templateHeader ? attrs.templateHeader : 'ng-table/header.html'),
+                            pagination: (attrs.templatePagination ? attrs.templatePagination : 'ng-table/pager.html')
+                        };
+                        var headerTemplate = thead.length > 0 ? thead : angular.element(document.createElement('thead')).attr('ng-include', 'templates.header');
+                        var paginationRow = angular.element(document.createElement('tr'))
+                                .append(angular.element(document.createElement('td'))
+                                    .attr({
+                                        'ng-table-pagination': 'params',
+                                        'template-url': 'templates.pagination',
+                                        'colspan': columns.length
+                                    })),
+                            paginationTemplate = angular.element(document.createElement('tfoot')).append(paginationRow);
+
+                        element.find('thead').remove();
+
+                        element.addClass('ng-table')
+                            .prepend(headerTemplate)
+                            .append(paginationTemplate);
+
+                        $compile(headerTemplate)(scope);
+                        $compile(paginationTemplate)(scope);
+                    }
+                };
+            }
+        }
+    }
+]);
+
+/**
+ * ngTable: Table + Angular JS
+ *
+ * @author Vitalii Savchuk <esvit666@gmail.com>
+ * @url https://github.com/esvit/ng-table/
+ * @license New BSD License <http://creativecommons.org/licenses/BSD/>
+ */
+
+/**
+ * @ngdoc directive
+ * @name ngTable.directive:ngTablePagination
+ * @restrict A
+ */
+app.directive('ngTablePagination', ['$compile',
+    function ($compile) {
+        'use strict';
+
+        return {
+            restrict: 'A',
+            scope: {
+                'params': '=ngTablePagination',
+                'templateUrl': '='
+            },
+            replace: false,
+            link: function (scope, element, attrs) {
+
+                scope.params.settings().$scope.$on('ngTableAfterReloadData', function () {
+                    scope.pages = scope.params.generatePagesArray(scope.params.page(), scope.params.total(), scope.params.count());
+                }, true);
+
+                scope.$watch('templateUrl', function(templateUrl) {
+                    if (angular.isUndefined(templateUrl)) {
+                        return;
+                    }
+                    var template = angular.element(document.createElement('div'))
+                    template.attr({
+                        'ng-include': 'templateUrl'
+                    });
+                    element.append(template);
+                    $compile(template)(scope);
+                });
+            }
+        };
+    }
+]);
+
+angular.module('ngTable').run(['$templateCache', function ($templateCache) {
+	$templateCache.put('ng-table/filters/select-multiple.html', '<select ng-options="data.id as data.title for data in column.data" multiple ng-multiple="true" ng-model="params.filter()[name]" ng-show="filter==\'select-multiple\'" class="filter filter-select-multiple form-control" name="{{column.filterName}}"> </select>');
+	$templateCache.put('ng-table/filters/select.html', '<select ng-options="data.id as data.title for data in column.data" ng-model="params.filter()[name]" ng-show="filter==\'select\'" class="filter filter-select form-control" name="{{column.filterName}}"> </select>');
+	$templateCache.put('ng-table/filters/text.html', '<input type="text" name="{{column.filterName}}" ng-model="params.filter()[name]" ng-if="filter==\'text\'" class="input-filter form-control"/>');
+	$templateCache.put('ng-table/header.html', '<tr> <th ng-repeat="column in $columns" ng-class="{ \'sortable\': parse(column.sortable), \'sort-asc\': params.sorting()[parse(column.sortable)]==\'asc\', \'sort-desc\': params.sorting()[parse(column.sortable)]==\'desc\' }" ng-click="sortBy(column, $event)" ng-show="column.show(this)" ng-init="template=column.headerTemplateURL(this)" class="header {{column.class}}"> <div ng-if="!template" ng-show="!template" ng-bind="parse(column.title)"></div> <div ng-if="template" ng-show="template"><div ng-include="template"></div></div> </th> </tr> <tr ng-show="show_filter" class="ng-table-filters"> <th ng-repeat="column in $columns" ng-show="column.show(this)" class="filter"> <div ng-repeat="(name, filter) in column.filter"> <div ng-if="column.filterTemplateURL" ng-show="column.filterTemplateURL"> <div ng-include="column.filterTemplateURL"></div> </div> <div ng-if="!column.filterTemplateURL" ng-show="!column.filterTemplateURL"> <div ng-include="\'ng-table/filters/\' + filter + \'.html\'"></div> </div> </div> </th> </tr>');
+	$templateCache.put('ng-table/pager.html', '<div class="ng-cloak ng-table-pager"> <div ng-if="params.settings().counts.length" class="ng-table-counts btn-group pull-right"> <button ng-repeat="count in params.settings().counts" type="button" ng-class="{\'active\':params.count()==count}" ng-click="params.count(count)" class="btn btn-default"> <span ng-bind="count"></span> </button> </div> <ul class="pagination ng-table-pagination"> <li ng-class="{\'disabled\': !page.active}" ng-repeat="page in pages" ng-switch="page.type"> <a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo;</a> <a ng-switch-when="first" ng-click="params.page(page.number)" href=""><span ng-bind="page.number"></span></a> <a ng-switch-when="page" ng-click="params.page(page.number)" href=""><span ng-bind="page.number"></span></a> <a ng-switch-when="more" ng-click="params.page(page.number)" href="">&#8230;</a> <a ng-switch-when="last" ng-click="params.page(page.number)" href=""><span ng-bind="page.number"></span></a> <a ng-switch-when="next" ng-click="params.page(page.number)" href="">&raquo;</a> </li> </ul> </div> ');
+}]);
+    return app;
+}));
+angular.module('RedhatAccess.header', [])
+.value('TITLE_VIEW_CONFIG', {
+    show: 'true'
+})
+.controller('TitleViewCtrl', ['TITLE_VIEW_CONFIG', '$scope',
+    function(TITLE_VIEW_CONFIG, $scope) {
+        $scope.showTitle = TITLE_VIEW_CONFIG.show;
+    }])
+.directive('rhaTitleTemplate',
+    function() {
+      return {
+          restrict: 'AE',
+          scope: {
+              pageTitle: '@title'
+          },
+          templateUrl: 'common/views/title.html',
+          controller: 'TitleViewCtrl'
+      };
+    })
+.controller('AlertController', ['$scope', 'AlertService',
+    function ($scope, AlertService) {
+      $scope.AlertService = AlertService;
+    }])
+.directive('rhaAlert',
+    function () {
+      return {
+        templateUrl: 'common/views/alert.html',
+        restrict: 'E',
+        controller: 'AlertController'
+      };
+    })
+.service('AlertService', ['$filter',
+    function ($filter) {
+      var ALERT_TYPES = {
+        DANGER: 'danger',
+        SUCCESS: 'success',
+        WARNING: 'warning'
+      };
+
+      this.alerts = []; //array of {message: 'some alert', type: '<type>'} objects
+
+      this.clearAlerts = function() {
+        this.alerts = [];
+      };
+
+      this.addAlert = function(alert) {
+        this.alerts.push(alert);
+      };
+
+      this.addDangerMessage = function(message) {
+        this.addMessage(message, ALERT_TYPES.DANGER);
+      };
+
+      this.addSuccessMessage = function(message) {
+        this.addMessage(message, ALERT_TYPES.SUCCESS);
+      };
+
+      this.addWarningMessage = function(message) {
+        this.addMessage(message, ALERT_TYPES.WARNING);
+      };
+
+      this.addMessage = function(message, type) {
+        this.alerts.push({
+          message: message,
+          type: type == null ? 'warning' : type
+        })
+      };
+
+      this.getErrors = function() {
+        var errors = $filter('filter')(this.alerts, {type: ALERT_TYPES.DANGER});
+
+        if (errors == null) {
+          errors = [];
+        }
+
+        return errors;
+      };
+
+      var buildStrataErrorMessage = function(error) {
+        var message = error.status + ': ' + error.statusText;
+
+        function messageWithDetails(message, details) {
+          return message + ' - ' + details;
+        }
+
+        if (error.responseText != null && error.responseText != '') {
+          message = messageWithDetails(message, error.responseText);
+        }
+
+        if (error.status == '401') {
+          message = messageWithDetails(message, 'Please log in to continue.');
+        }
+
+        return message;
+      };
+
+      this.addStrataErrorMessage = function(error) {
+        var message = buildStrataErrorMessage(error);
+
+        var existingMessage =
+            $filter('filter')(this.alerts, {type: ALERT_TYPES.DANGER, message: message})
+
+        if (existingMessage.length < 1) {
+          this.addDangerMessage(message);
+        }
+      };
+    }])
+.directive('rhaHeader',
+    function () {
+      return {
+        templateUrl: 'common/views/header.html',
+        restrict: 'E',
+        scope: {
+          title: '@'
+        }
+      };
+    });
+
 var app = angular.module('RedhatAccess.tree-selector', []);
 
 app.controller('TreeViewSelectorCtrl', ['TreeViewSelectorUtils', '$scope', '$http',
@@ -13245,7 +14184,8 @@ angular.module('RedhatAccess.search', [
   'RedhatAccess.template',
   'RedhatAccess.security',
   'ui.bootstrap',
-  'ngSanitize'
+  'ngSanitize',
+  'RedhatAccess.header'
 ])
   .constant('RESOURCE_TYPES', {
     article: 'Article',
@@ -13257,7 +14197,7 @@ angular.module('RedhatAccess.search', [
 
   })
   .config(['$stateProvider',
-    function ($stateProvider) {
+    function($stateProvider) {
       $stateProvider.state('search', {
         url: "/search",
         controller: 'SearchController',
@@ -13272,65 +14212,65 @@ angular.module('RedhatAccess.search', [
   ])
   .controller('SearchController', ['$scope',
     'SearchResultsService', 'SEARCH_PARAMS',
-    function ($scope, SearchResultsService) {
+    function($scope, SearchResultsService) {
       $scope.results = SearchResultsService.results;
       $scope.selectedSolution = SearchResultsService.currentSelection;
       $scope.searchInProgress = SearchResultsService.searchInProgress;
       $scope.searchResultInfo = SearchResultsService.searchResultInfo;
 
-      clearResults = function () {
+      clearResults = function() {
         SearchResultsService.clear();
       };
 
 
-      $scope.solutionSelected = function (index) {
+      $scope.solutionSelected = function(index) {
         var response = $scope.results[index];
         SearchResultsService.setSelected(response, index);
 
       };
 
-      $scope.search = function (searchStr, limit) {
+      $scope.search = function(searchStr, limit) {
 
         SearchResultsService.search(searchStr, limit);
       };
 
-      $scope.diagnose = function (data, limit) {
+      $scope.diagnose = function(data, limit) {
         SearchResultsService.diagnose(data, limit);
       };
 
 
-      $scope.$watch(function () {
+      $scope.$watch(function() {
           return SearchResultsService.currentSelection
         },
-        function (newVal) {
+        function(newVal) {
           $scope.selectedSolution = newVal;
         }
       );
 
     }
   ])
-  .directive('rhaAccordionSearchResults', function () {
+  .directive('rhaAccordionSearchResults', function() {
     return {
       restrict: 'AE',
       scope: false,
       templateUrl: 'search/views/accordion_search_results.html'
     };
   })
-  .directive('rhaListSearchResults', function () {
+  .directive('rhaListSearchResults', function() {
     return {
       restrict: 'AE',
       scope: false,
       templateUrl: 'search/views/list_search_results.html'
     };
   })
-  .directive('rhaSearchForm', function () {
+  .directive('rhaSearchForm', function() {
     return {
       restrict: 'AE',
       scope: false,
       templateUrl: 'search/views/search_form.html'
     };
   })
-  .directive('rhaStandardSearch', function () {
+  .directive('rhaStandardSearch', function() {
     return {
       restrict: 'AE',
       scope: false,
@@ -13338,14 +14278,14 @@ angular.module('RedhatAccess.search', [
     };
   })
   .directive('rhaResultDetailDisplay', ['RESOURCE_TYPES',
-    function (RESOURCE_TYPES) {
+    function(RESOURCE_TYPES) {
       return {
         restrict: 'AE',
         scope: {
           result: '='
         },
-        link: function (scope, element, attr) {
-          scope.isSolution = function () {
+        link: function(scope, element, attr) {
+          scope.isSolution = function() {
             if (scope.result !== undefined && scope.result.resource_type !== undefined) {
               if (scope.result.resource_type === RESOURCE_TYPES.solution) {
                 return true;
@@ -13355,7 +14295,7 @@ angular.module('RedhatAccess.search', [
             }
             return false;
           };
-          scope.isArticle = function () {
+          scope.isArticle = function() {
             if (scope.result !== undefined && scope.result.resource_type !== undefined) {
               if (scope.result.resource_type === RESOURCE_TYPES.article) {
                 return true;
@@ -13365,7 +14305,7 @@ angular.module('RedhatAccess.search', [
             }
             return false;
           };
-          scope.getSolutionResolution = function () {
+          scope.getSolutionResolution = function() {
             var resolution_html = '';
             if (scope.result.resolution !== undefined) {
               resolution_html = scope.result.resolution.html;
@@ -13373,7 +14313,7 @@ angular.module('RedhatAccess.search', [
             return resolution_html;
           };
 
-          scope.getArticleHtml = function () {
+          scope.getArticleHtml = function() {
             if (scope.result === undefined) {
               return '';
             }
@@ -13391,7 +14331,7 @@ angular.module('RedhatAccess.search', [
   ])
   .factory('SearchResultsService', ['$q', '$rootScope', 'AUTH_EVENTS', 'RESOURCE_TYPES', 'SEARCH_PARAMS',
 
-    function ($q, $rootScope, AUTH_EVENTS, RESOURCE_TYPES, SEARCH_PARAMS) {
+    function($q, $rootScope, AUTH_EVENTS, RESOURCE_TYPES, SEARCH_PARAMS) {
       var service = {
         results: [],
         currentSelection: {
@@ -13405,61 +14345,68 @@ angular.module('RedhatAccess.search', [
         searchResultInfo: {
           msg: null
         },
-        add: function (result) {
+        add: function(result) {
           this.results.push(result);
         },
-        clear: function () {
+        clear: function() {
           this.results.length = 0;
           this.setSelected({}, -1);
           this.searchResultInfo.msg = null;
         },
-        setSelected: function (selection, index) {
+        setSelected: function(selection, index) {
           this.currentSelection.data = selection;
           this.currentSelection.index = index;
         },
-        search: function (searchString, limit) {
+        search: function(searchString, limit) {
           var that = this;
           if ((limit === undefined) || (limit < 1)) limit = SEARCH_PARAMS.limit;
           this.clear();
           this.searchInProgress.value = true;
           var deferreds = [];
-          strata.search(
+          var sent = strata.search(
             searchString,
-            function (entries) {
+            function(entries) {
               //retrieve details for each solution
-              entries.forEach(function (entry) {
-                var deferred = $q.defer();
-                deferreds.push(deferred.promise);
-                strata.utils.getURI(
-                  entry.uri,
-                  entry.resource_type,
-                  function (type, info) {
-                    if (info !== undefined) {
-                      info.resource_type = type;
-                    }
-                    deferred.resolve(info);
-                  },
-                  function (error) {
-                    deferred.resolve();
-                  });
-              });
+              if (entries !== undefined) {
+                if (entries.length === 0) {
+                  that.searchResultInfo.msg = "No recommendations found.";
+                };
+                entries.forEach(function(entry) {
+                  var deferred = $q.defer();
+                  deferreds.push(deferred.promise);
+                  strata.utils.getURI(
+                    entry.uri,
+                    entry.resource_type,
+                    function(type, info) {
+                      if (info !== undefined) {
+                        info.resource_type = type;
+                      }
+                      deferred.resolve(info);
+                    },
+                    function(error) {
+                      deferred.resolve();
+                    });
+                });
+              } else {
+                that.searchResultInfo.msg = "No recommendations found.";
+              };
               $q.all(deferreds).then(
-                function (results) {
-                  results.forEach(function (result) {
+                function(results) {
+                  results.forEach(function(result) {
                     if (result !== undefined) {
                       that.add(result);
                     }
                   });
                   that.searchInProgress.value = false;
                 },
-                function (error) {
+                function(error) {
                   that.searchInProgress.value = false;
                 }
               );
             },
-            function (error) {
+            function(error) {
               console.log(error);
-              $rootScope.$apply(function () {
+              $rootScope.$apply(function() {
                 that.searchInProgress.value = false;
                 if (error && error.statusText) {
                   that.searchResultInfo.msg = error.statusText;
@@ -13471,6 +14418,10 @@ angular.module('RedhatAccess.search', [
             limit,
             false
           );
+          if (sent == false) {
+            this.searchInProgress.value = false;
+          };
+
         },
         // solution and article search needs reimplementation
         // searchSolutions: function (searchString, limit) {
@@ -13513,31 +14464,39 @@ angular.module('RedhatAccess.search', [
         //     true
         //   );
         // },
-        diagnose: function (data, limit) {
+        diagnose: function(data, limit) {
           var that = this;
           if ((limit === undefined) || (limit < 1)) limit = SEARCH_PARAMS.limit;
           this.clear();
           var deferreds = [];
           that.searchInProgress.value = true;
-          strata.problems(
+          var sent = strata.problems(
             data,
-            function (solutions) {
+            function(solutions) {
               //retrieve details for each solution
-              solutions.forEach(function (solution) {
-                var deferred = $q.defer();
-                deferreds.push(deferred.promise);
-                strata.solutions.get(
-                  solution.uri,
-                  function (solution) {
-                    deferred.resolve(solution);
-                  },
-                  function (error) {
-                    deferred.resolve();
-                  });
-              });
+              if (solutions !== undefined) {
+                if (solutions.length === 0) {
+                  that.searchResultInfo.msg = "No solutions found.";
+                };
+
+                solutions.forEach(function(solution) {
+                  var deferred = $q.defer();
+                  deferreds.push(deferred.promise);
+                  strata.solutions.get(
+                    solution.uri,
+                    function(solution) {
+                      deferred.resolve(solution);
+                    },
+                    function(error) {
+                      deferred.resolve();
+                    });
+                });
+              } else {
+                that.searchResultInfo.msg = "No solutions found.";
+              };
               $q.all(deferreds).then(
-                function (solutions) {
-                  solutions.forEach(function (solution) {
+                function(solutions) {
+                  solutions.forEach(function(solution) {
                     if (solution !== undefined) {
                       solution.resource_type = RESOURCE_TYPES.solution;
                       that.add(solution);
@@ -13545,13 +14504,14 @@ angular.module('RedhatAccess.search', [
                   });
                   that.searchInProgress.value = false;
                 },
-                function (error) {
+                function(error) {
                   that.searchInProgress.value = false;
                 }
               );
             },
-            function (error) {
-              $rootScope.$apply(function () {
+
+            function(error) {
+              $rootScope.$apply(function() {
                 that.searchInProgress.value = false;
                 if (error && error.statusText) {
                   that.searchResultInfo.msg = error.statusText;
@@ -13563,10 +14523,13 @@ angular.module('RedhatAccess.search', [
             },
             limit
           );
+          if (sent == false) {
+            this.searchInProgress.value = false;
+          };
         }
       };
 
-      $rootScope.$on(AUTH_EVENTS.logoutSuccess, function () {
+      $rootScope.$on(AUTH_EVENTS.logoutSuccess, function() {
         service.clear.apply(service);
       });
       return service;
@@ -13579,7 +14542,8 @@ angular.module('RedhatAccess.cases', [
   'RedhatAccess.template',
   'RedhatAccess.security',
   'RedhatAccess.search',
-  'RedhatAccess.tree-selector'
+  'RedhatAccess.tree-selector',
+  'RedhatAccess.header'
 ])
 .constant('STATUS', {
   open: 'open',
@@ -13598,7 +14562,7 @@ angular.module('RedhatAccess.cases', [
 
     $stateProvider.state('compact.edit', {
       url: '/{id:[0-9]{1,8}}',
-      templateUrl: 'cases/views/compact.edit.html',
+      templateUrl: 'cases/views/compactEdit.html',
       controller: 'CompactEdit'
     });
 
@@ -14127,8 +15091,24 @@ angular.module('RedhatAccess.cases')
   'STATUS',
   'strataService',
   'CaseListService',
-  function ($scope, $filter, ngTableParams, STATUS, strataService, CaseListService) {
+  'securityService',
+  'AlertService',
+  '$rootScope',
+  'AUTH_EVENTS',
+  function ($scope,
+            $filter,
+            ngTableParams,
+            STATUS,
+            strataService,
+            CaseListService,
+            securityService,
+            AlertService,
+            $rootScope,
+            AUTH_EVENTS) {
     $scope.CaseListService = CaseListService;
+    $scope.securityService = securityService;
+    $scope.AlertService = AlertService;
+    AlertService.clearAlerts();
 
     var buildTable = function() {
       $scope.tableParams = new ngTableParams({
@@ -14152,19 +15132,42 @@ angular.module('RedhatAccess.cases')
       });
     };
 
-    $scope.loadingCases = true;
-    strataService.cases.filter().then(
-        function(cases) {
-          CaseListService.defineCases(cases);
-          buildTable();
-          $scope.loadingCases = false;
-        }
-    );
+    $scope.loadCases = function() {
+      $scope.loadingCases = true;
+      strataService.cases.filter().then(
+          function(cases) {
+            CaseListService.defineCases(cases);
+            buildTable();
+            $scope.loadingCases = false;
+          },
+          function(error) {
+            AlertService.addStrataErrorMessage(error);
+          }
+      );
+    }
+    $scope.loadCases();
 
+    /**
+     * Callback after user login. Load the cases and clear alerts
+     */
+    $rootScope.$on(AUTH_EVENTS.loginSuccess, function() {
+      $scope.loadCases();
+      AlertService.clearAlerts();
+    });
+
+    /**
+     * Callback from listFilter directive
+     */
     $scope.preFilter = function() {
       $scope.loadingCases = true;
     };
 
+
+    /**
+     * Callback from listFilter directive.
+     * Fired after filtering the case list via strata api call.
+     * Reload the table.
+     */
     $scope.postFilter = function() {
       $scope.tableParams.reload();
       $scope.loadingCases = false;
@@ -14192,14 +15195,38 @@ angular.module('RedhatAccess.cases')
   'strataService',
   'STATUS',
   'CaseListService',
-  function ($scope, strataService, STATUS, CaseListService) {
+  'securityService',
+  'AlertService',
+  '$rootScope',
+  'AUTH_EVENTS',
+  function ($scope,
+            strataService,
+            STATUS,
+            CaseListService,
+            securityService,
+            AlertService,
+            $rootScope,
+            AUTH_EVENTS) {
 
     $scope.groups = [];
-    strataService.groups.list().then(
-        function(groups) {
-          $scope.groups = groups;
-        }
-    );
+    $scope.securityService = securityService;
+
+    $scope.loadGroups = function() {
+      strataService.groups.list().then(
+          function(groups) {
+            $scope.groups = groups;
+          },
+          function(error) {
+            AlertService.addStrataErrorMessage(error);
+          }
+      );
+    }
+    $scope.loadGroups();
+
+    $rootScope.$on(AUTH_EVENTS.loginSuccess, function() {
+      $scope.loadGroups();
+      AlertService.clearAlerts();
+    });
 
     $scope.statusFilter = STATUS.both;
 
@@ -14275,6 +15302,10 @@ angular.module('RedhatAccess.cases')
     'strataService',
     'RecommendationsService',
     'CaseService',
+    'AlertService',
+    'securityService',
+    '$rootScope',
+    'AUTH_EVENTS',
     function ($scope,
               $state,
               $q,
@@ -14282,7 +15313,11 @@ angular.module('RedhatAccess.cases')
               AttachmentsService,
               strataService,
               RecommendationsService,
-              CaseService) {
+              CaseService,
+              AlertService,
+              securityService,
+              $rootScope,
+              AUTH_EVENTS) {
 
       $scope.versions = [];
       $scope.versionDisabled = true;
@@ -14293,11 +15328,14 @@ angular.module('RedhatAccess.cases')
       CaseService.clearCase();
       RecommendationsService.clear();
       SearchResultsService.clear();
+      AlertService.clearAlerts();
 
       $scope.CaseService = CaseService;
       $scope.RecommendationsService = RecommendationsService;
+      $scope.securityService = securityService;
 
       $scope.getRecommendations = function() {
+        SearchResultsService.searchInProgress.value = true;
         RecommendationsService.populateRecommendations(5).then(
             function() {
               SearchResultsService.clear();
@@ -14307,35 +15345,62 @@ angular.module('RedhatAccess.cases')
                     SearchResultsService.add(recommendation);
                   }
               )
+              SearchResultsService.searchInProgress.value = false;
+            },
+            function(error) {
+              AlertService.addStrataErrorMessage(error);
             }
         );
       };
 
-      $scope.productsLoading = true;
-      strataService.products.list().then(
-          function(products) {
-            $scope.products = products;
-            $scope.productsLoading = false;
-          }
-      );
+      /**
+       * Populate the selects
+       */
+      $scope.initSelects = function() {
+        $scope.productsLoading = true;
+        strataService.products.list().then(
+            function(products) {
+              $scope.products = products;
+              $scope.productsLoading = false;
+            },
+            function(error) {
+              AlertService.addStrataErrorMessage(error);
+            }
+        );
 
-      $scope.severitiesLoading = true;
-      strataService.values.cases.severity().then(
-          function(severities) {
-            $scope.severities = severities;
-            CaseService.case.severity = severities[severities.length - 1];
-            $scope.severitiesLoading = false;
-          }
-      );
+        $scope.severitiesLoading = true;
+        strataService.values.cases.severity().then(
+            function(severities) {
+              $scope.severities = severities;
+              CaseService.case.severity = severities[severities.length - 1];
+              $scope.severitiesLoading = false;
+            },
+            function(error) {
+              AlertService.addStrataErrorMessage(error);
+            }
+        );
 
-      $scope.groupsLoading = true;
-      strataService.groups.list().then(
-          function(groups) {
-            $scope.groups = groups;
-            $scope.groupsLoading = false;
-          }
-      );
+        $scope.groupsLoading = true;
+        strataService.groups.list().then(
+            function(groups) {
+              $scope.groups = groups;
+              $scope.groupsLoading = false;
+            },
+            function(error) {
+              AlertService.addStrataErrorMessage(error);
+            }
+        );
+      };
+      $scope.initSelects();
 
+      $rootScope.$on(AUTH_EVENTS.loginSuccess, function() {
+        $scope.initSelects();
+        AlertService.clearAlerts();
+      });
+
+      /**
+       * Set $scope.incomplete to boolean based on state of form
+       */
       $scope.validateForm = function () {
         if (CaseService.case.product == null || CaseService.case.product == "" ||
           CaseService.case.version == null || CaseService.case.version == "" ||
@@ -14367,7 +15432,7 @@ angular.module('RedhatAccess.cases')
             $scope.$apply();
           },
           function (error) {
-            console.log(error);
+            AlertService.addStrataErrorMessage(error);
           });
       };
 
@@ -14395,40 +15460,11 @@ angular.module('RedhatAccess.cases')
         $scope.gotoPage(1);
       };
 
-      /**
-       * Return promise for a single attachment
-       */
-      var postAttachment = function (caseNumber, attachment, progressIncrement) {
-
-        var singleAttachmentSuccess = function (response) {
-          $scope.submitProgress = $scope.submitProgress + progressIncrement;
-        };
-
-        var deferred = $q.defer();
-        deferred.promise.then(singleAttachmentSuccess);
-
-        strata.cases.attachments.post(
-          attachment,
-          caseNumber,
-          function (response) {
-            deferred.resolve(response);
-          },
-          function (error, error2, error3, error4) {
-            console.log(error);
-            deferred.reject(error);
-          }
-        );
-
-        return deferred.promise;
-      };
-
       $scope.submittingCase = false;
-
       /**
        * Create the case with attachments
        */
       $scope.doSubmit = function () {
-
         var caseJSON = {
           'product': CaseService.case.product.code,
           'version': CaseService.case.version,
@@ -14448,15 +15484,17 @@ angular.module('RedhatAccess.cases')
                     id: caseNumber
                   });
                   $scope.submittingCase = false;
+                },
+                function(error) {
+                  AlertService.addStrataErrorMessage(error);
                 }
               );
             }
           },
           function (error) {
-            console.log(error);
+            AlertService.addStrataErrorMessage(error);
           }
         );
-
       };
 
       $scope.gotoPage(1);
@@ -14830,10 +15868,14 @@ angular.module('RedhatAccess.cases')
                   updatedAttachments[i].file,
                   caseId
                 )
-                promise.then(function (uri) {
-                  updatedAttachments[i].uri = uri;
-                });
-
+                promise.then(
+                    function (uri) {
+                      updatedAttachments[i].uri = uri;
+                    },
+                    function(error) {
+                      AlertService.addStrataErrorMessage(error);
+                    }
+                );
                 promises.push(promise);
               }
             }
@@ -14845,24 +15887,29 @@ angular.module('RedhatAccess.cases')
                 });
 
               if (attachment.length == 0) {
-                promises.push(
-                  strataService.cases.attachments.delete(
+                var promise = strataService.cases.attachments.delete(
                     origAttachment.uuid,
-                    caseId
-                  )
-                );
+                    caseId)
+
+                promise.then(
+                    function() {},
+                    function(error) {
+                      AlertService.addStrataErrorMessage(error);
+                    }
+                )
+
+                promises.push(promise);
               }
             });
           }
 
           var parentPromise = $q.all(promises);
           parentPromise.then(
-            angular.bind(this, function (AttachmentsService, two, three, four) {
+            angular.bind(this, function () {
               this.defineOriginalAttachments(angular.copy(updatedAttachments));
             }),
             function (error) {
-              console.log("Problem creating attachments");
-              console.log(error);
+              AlertService.addStrataErrorMessage(error);
             }
           );
 
@@ -15286,7 +16333,7 @@ angular.module('RedhatAccess.cases')
 //var testURL = 'http://localhost:8080/LogCollector/';
 // angular module
 angular.module('RedhatAccess.logViewer',
-	[ 'angularTreeview', 'ui.bootstrap', 'RedhatAccess.search'])
+	[ 'angularTreeview', 'ui.bootstrap', 'RedhatAccess.search', 'RedhatAccess.header'])
 
 .config(["$urlRouterProvider", function($urlRouterProvider) {
 }]).config([ '$stateProvider', function($stateProvider) {
@@ -15674,7 +16721,44 @@ function returnNode(splitPath, tree, fullFilePath) {
 		}
 	}
 }
-angular.module('RedhatAccess.template', ['common/views/treenode.html', 'common/views/treeview-selector.html', 'security/login_form.html', 'security/login_status.html', 'search/views/accordion_search.html', 'search/views/accordion_search_results.html', 'search/views/list_search_results.html', 'search/views/resultDetail.html', 'search/views/search.html', 'search/views/search_form.html', 'search/views/standard_search.html', 'cases/views/attachLocalFile.html', 'cases/views/attachProductLogs.html', 'cases/views/attachmentsSection.html', 'cases/views/commentsSection.html', 'cases/views/compact.edit.html', 'cases/views/compact.html', 'cases/views/compactCaseList.html', 'cases/views/descriptionSection.html', 'cases/views/detailsSection.html', 'cases/views/edit.html', 'cases/views/list.html', 'cases/views/listAttachments.html', 'cases/views/listFilter.html', 'cases/views/new.html', 'cases/views/pageHeader.html', 'cases/views/recommendationsSection.html', 'log_viewer/views/log_viewer.html']);
+angular.module('RedhatAccess.template', ['common/views/alert.html', 'common/views/header.html', 'common/views/title.html', 'common/views/treenode.html', 'common/views/treeview-selector.html', 'security/login_form.html', 'security/login_status.html', 'search/views/accordion_search.html', 'search/views/accordion_search_results.html', 'search/views/list_search_results.html', 'search/views/resultDetail.html', 'search/views/search.html', 'search/views/search_form.html', 'search/views/standard_search.html', 'cases/views/alert.html', 'cases/views/attachLocalFile.html', 'cases/views/attachProductLogs.html', 'cases/views/attachmentsSection.html', 'cases/views/commentsSection.html', 'cases/views/compact.html', 'cases/views/compactCaseList.html', 'cases/views/compactEdit.html', 'cases/views/descriptionSection.html', 'cases/views/detailsSection.html', 'cases/views/edit.html', 'cases/views/list.html', 'cases/views/listAttachments.html', 'cases/views/listFilter.html', 'cases/views/new.html', 'cases/views/pageHeader.html', 'cases/views/recommendationsSection.html', 'log_viewer/views/log_viewer.html']);
+
+angular.module("common/views/alert.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("common/views/alert.html",
+    "<alert ng-repeat='alert in AlertService.alerts' type='alert.type'>{{alert.message}}</alert>\n" +
+    "");
+}]);
+
+angular.module("common/views/header.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("common/views/header.html",
+    "<div class=\"container-fluid\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-xs-12\">\n" +
+    "            <x-rha-title-template title=\"{{title}}\"/>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-xs-12\">\n" +
+    "            <x-rha-login-status />\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "<div class=\"bottom-border\" />\n" +
+    "<div class=\"container-fluid\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-xs-12\">\n" +
+    "            <x-rha-alert />\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("common/views/title.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("common/views/title.html",
+    "<h3 ng-show='showTitle'>Red Hat Access: {{pageTitle}}</h3>\n" +
+    "");
+}]);
 
 angular.module("common/views/treenode.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/views/treenode.html",
@@ -15749,8 +16833,7 @@ angular.module("security/login_status.html", []).run(["$templateCache", function
 angular.module("search/views/accordion_search.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("search/views/accordion_search.html",
     "<div class=\"container-fluid side-padding\">\n" +
-    "    <div x-rha-login-status style=\"padding: 10px;\" />\n" +
-    "    <div class=\"bottom-border\" style=\"padding-top: 10px;\"></div>\n" +
+    "    <x-rha-header title=\"Search\"></x-rha-header>\n" +
     "    <div class=\"row\" x-rha-search-form ng-controller='SearchController'></div>\n" +
     "    <div style=\"padding-top: 10px;\"></div>\n" +
     "    <div class='row'>\n" +
@@ -15775,6 +16858,10 @@ angular.module("search/views/accordion_search_results.html", []).run(["$template
     "</div>\n" +
     "<div class=\"row \">\n" +
     "    <div class=\"col-xs-12\">\n" +
+    "        <div class=\"alert alert-info\" ng-show=\"searchResultInfo.msg\">\n" +
+    "            <a class=\"close\" ng-click=\"searchResultInfo.msg=null\">×</a>\n" +
+    "            {{searchResultInfo.msg}}\n" +
+    "        </div>\n" +
     "        <accordion>\n" +
     "            <accordion-group is-open=\"isopen\" ng-repeat=\"result in results\">\n" +
     "                <accordion-heading>\n" +
@@ -15849,7 +16936,7 @@ angular.module("search/views/search_form.html", []).run(["$templateCache", funct
     "            <div class=\"input-group\">\n" +
     "                <input type=\"text\" class=\"form-control\" id=\"rhSearchStr\" name=\"searchString\" ng-model=\"searchStr\" class=\"input-xxlarge\" placeholder=\"Search Articles and Solutions\">\n" +
     "                <span class=\"input-group-btn\">\n" +
-    "                    <button ng-disabled=\"searchInProgress.value === true\" class=\"btn btn-default btn-primary\" type='submit' ng-click=\"search(searchStr)\">Search</button>\n" +
+    "                    <button ng-disabled=\"(searchStr === undefined || searchStr.trim()==='' || searchInProgress.value === true)\" class=\"btn btn-default btn-primary\" type='submit' ng-click=\"search(searchStr)\">Search</button>\n" +
     "                </span>\n" +
     "\n" +
     "            </div>\n" +
@@ -15867,17 +16954,16 @@ angular.module("search/views/search_form.html", []).run(["$templateCache", funct
 angular.module("search/views/standard_search.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("search/views/standard_search.html",
     "<div class=\"container-fluid side-padding\" ng-controller='SearchController'>\n" +
-    "    <!--div class=\"row\">\n" +
-    "		<div class=\"col-xs-12\">\n" +
-    "			<h3>Red Hat Access: Search</h3>\n" +
-    "		</div>\n" +
-    "	</div-->\n" +
-    "    <div x-rha-login-status style=\"padding: 10px;\" />\n" +
-    "    <div class=\"bottom-border\" style=\"padding-top: 10px;\"></div>\n" +
-    "    <div class=\"row\" x-rha-search-form ></div>\n" +
+    "    <x-rha-header title=\"Search\"></x-rha-header>\n" +
+    "    <div class=\"row\" x-rha-search-form></div>\n" +
     "    <div style=\"padding-top: 10px;\"></div>\n" +
     "    <div class='row' x-rha-list-search-results='' ng-controller='SearchController' />\n" +
     "</div>");
+}]);
+
+angular.module("cases/views/alert.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("cases/views/alert.html",
+    "<alert ng-repeat=\"alert in AlertService.alerts\" type=\"alert.type\">{{alert.message}}</alert>");
 }]);
 
 angular.module("cases/views/attachLocalFile.html", []).run(["$templateCache", function($templateCache) {
@@ -15900,20 +16986,11 @@ angular.module("cases/views/commentsSection.html", []).run(["$templateCache", fu
     "<h4 class=\"section-header\">Case Discussion</h4><div class=\"container-fluid side-padding\"><div class=\"row create-field\"><div class=\"col-xs-12\"><textarea ng-disabled=\"addingComment\" rows=\"5\" ng-model=\"newComment\" style=\"max-width: 100%\" class=\"form-control\"></textarea></div></div><div style=\"margin-left: 0px; margin-right: 0px;\" class=\"row create-field\"><div class=\"col-xs-12 col-no-padding\"><div style=\"float: right;\"><div ng-hide=\"!addingComment\">Adding comment...</div><button ng-hide=\"addingComment\" ng-disabled=\"false\" ng-click=\"addComment()\" style=\"float: right;\" class=\"btn btn-primary\">Add Comment</button></div></div></div><div ng-hide=\"comments.length &lt;= 0 || comments === undefined\" style=\"border-top: 1px solid #dddddd;\"><div class=\"row\"><div class=\"col-xs-12\"><pagination style=\"float: right;\" boundary-links=\"true\" total-items=\"comments.length\" on-select-page=\"selectPage(page)\" items-per-page=\"itemsPerPage\" page=\"currentPage\" rotate=\"false\" max-size=\"maxPagerSize\" previous-text=\"&lt;\" next-text=\"&gt;\" first-text=\"&lt;&lt;\" last-text=\"&gt;&gt;\" class=\"pagination-sm\"></pagination></div></div><div ng-repeat=\"comment in commentsOnScreen\"><div style=\"padding-bottom: 10px;\" class=\"row\"><div class=\"col-md-2\"><div class=\"bold\">{{comment.created_by}}</div><div>{{comment.created_date | date:'mediumDate'}}</div><div>{{comment.created_date | date:'mediumTime'}}</div></div><div class=\"col-md-10\"><pre>{{comment.text}}</pre></div></div></div></div></div>");
 }]);
 
-angular.module("cases/views/compact.edit.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("cases/views/compact.edit.html",
-    "<!DOCTYPE html><div id=\"redhat-access-case\"><div ng-show=\"caseLoading\" class=\"container-fluid\"><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><div>Loading...</div></div></div></div><div ng-hide=\"caseLoading\" rha-resizable rha-dom-ready=\"domReady\" style=\"overflow: auto; padding-left: 15px;border-top: 1px solid #dddddd; border-left: 1px solid #dddddd;\" class=\"container-fluid\"><div style=\"margin-right: 0px; padding-top: 10px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-details compact=\"true\"></rha-case-details></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-description></rha-case-description></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-attachments></rha-case-attachments></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-comments></rha-case-comments></div></div></div></div>");
-}]);
-
 angular.module("cases/views/compact.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/compact.html",
     "<div class=\"container-offset\">\n" +
+    "    <x-rha-header title=\"My Cases\"/>\n" +
     "    <div class=\"container-fluid\">\n" +
-    "        <div class=\"row\">\n" +
-    "            <div class=\"col-xs-12\">\n" +
-    "                <rha-page-header/>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-xs-4\" style=\"height: 100%;\">\n" +
     "                <rha-compact-case-list></rha-compact-case-list>\n" +
@@ -15931,7 +17008,12 @@ angular.module("cases/views/compact.html", []).run(["$templateCache", function($
 
 angular.module("cases/views/compactCaseList.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/compactCaseList.html",
-    "<div id=\"redhat-access-case\"><div class=\"container-fluid\"><div class=\"row\"><div class=\"col-xs-12 col-no-padding\"><rha-list-filter postfilter=\"filterCallback\" prefilter=\"onFilter\"></rha-list-filter></div></div><div class=\"row\"><div class=\"col-xs-12\"><div ng-show=\"CaseListService.cases.length == 0 &amp;&amp; !loadingCaseList\">No cases found with given filters.</div><div ng-show=\"loadingCaseList\">Loading...</div></div></div><div ng-hide=\"CaseListService.cases.length ==0 || loadingCaseList\" style=\"border-top: 1px solid #dddddd;\" class=\"row\"><div style=\"overflow: auto;\" rha-resizable=\"rha-resizable\" rha-dom-ready=\"domReady\" class=\"col-xs-12 col-no-padding\"><div style=\"margin-bottom: 0px; overflow: auto;\"><ul style=\"margin-bottom: 0px;\" class=\"list-group\"><a ng-repeat=\"case in CaseListService.cases\" ui-sref=\".edit({id: &quot;{{case.case_number}}&quot;})\" ng-class=\"{&quot;active&quot;: $index == selectedCaseIndex}\" ng-click=\"selectCase($index)\" class=\"list-group-item\">{{case.case_number}} {{case.summary}}</a></ul></div></div></div></div></div>");
+    "<div id=\"redhat-access-case\"><div class=\"container-fluid\"><div class=\"row\"><div class=\"col-xs-12 col-no-padding\"><rha-list-filter postfilter=\"filterCallback\" prefilter=\"onFilter\"></rha-list-filter></div></div><div class=\"row\"><div class=\"col-xs-12\"><div ng-show=\"CaseListService.cases.length == 0 &amp;&amp; !loadingCaseList\">No cases found with given filters.</div><span ng-show=\"loadingCaseList\" class=\"rha-search-spinner\"></span></div></div><div ng-hide=\"CaseListService.cases.length ==0 || loadingCaseList\" style=\"border-top: 1px solid #dddddd;\" class=\"row\"><div style=\"overflow: auto;\" rha-resizable=\"rha-resizable\" rha-dom-ready=\"domReady\" class=\"col-xs-12 col-no-padding\"><div style=\"margin-bottom: 0px; overflow: auto;\"><ul style=\"margin-bottom: 0px;\" class=\"list-group\"><a ng-repeat=\"case in CaseListService.cases\" ui-sref=\".edit({id: &quot;{{case.case_number}}&quot;})\" ng-class=\"{&quot;active&quot;: $index == selectedCaseIndex}\" ng-click=\"selectCase($index)\" class=\"list-group-item\">{{case.case_number}} {{case.summary}}</a></ul></div></div></div></div></div>");
+}]);
+
+angular.module("cases/views/compactEdit.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("cases/views/compactEdit.html",
+    "<!DOCTYPE html><div id=\"redhat-access-case\"><div ng-show=\"caseLoading\" class=\"container-fluid\"><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><span class=\"rha-search-spinner\"></span></div></div></div><div ng-hide=\"caseLoading\" rha-resizable rha-dom-ready=\"domReady\" style=\"overflow: auto; padding-left: 15px;border-top: 1px solid #dddddd; border-left: 1px solid #dddddd;\" class=\"container-fluid\"><div style=\"margin-right: 0px; padding-top: 10px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-details compact=\"true\"></rha-case-details></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-description></rha-case-description></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-attachments></rha-case-attachments></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-comments></rha-case-comments></div></div></div></div>");
 }]);
 
 angular.module("cases/views/descriptionSection.html", []).run(["$templateCache", function($templateCache) {
@@ -15946,12 +17028,12 @@ angular.module("cases/views/detailsSection.html", []).run(["$templateCache", fun
 
 angular.module("cases/views/edit.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/edit.html",
-    "<!DOCTYPE html><div id=\"redhat-access-case\" class=\"container-offset\"><rha-page-header></rha-page-header><div class=\"container-fluid side-padding\"><div class=\"row\"><div ng-hide=\"caseLoading\" class=\"col-xs-12\"><rha-case-details compact=\"false\"></rha-case-details></div><div ng-show=\"caseLoading\" class=\"col-xs-12\"><div>Loading Details...</div></div></div><div class=\"row\"><div ng-hide=\"caseLoading\" class=\"col-xs-12\"><rha-case-description></rha-case-description></div></div><div class=\"row\"><div ng-hide=\"attachmentsLoading\" class=\"col-xs-12\"><rha-case-attachments></rha-case-attachments></div><div ng-show=\"attachmentsLoading\" class=\"col-xs-12\"><div>Loading Attachments...</div></div></div><div class=\"row\"><div ng-hide=\"recommendationsLoading\" class=\"col-xs-12\"><rha-case-recommendations></rha-case-recommendations></div><div ng-show=\"recommendationsLoading\" class=\"col-xs-12\"><div>Loading Recommendations...</div></div></div><div class=\"row\"><div class=\"col-xs-12\"><rha-case-comments></rha-case-comments></div></div></div></div>");
+    "<!DOCTYPE html><div id=\"redhat-access-case\" class=\"container-offset\"><x-rha-header title=\"Edit Case\"></x-rha-header><div class=\"container-fluid side-padding\"><div class=\"row\"><div ng-hide=\"caseLoading\" class=\"col-xs-12\"><rha-case-details compact=\"false\"></rha-case-details></div><div ng-show=\"caseLoading\" class=\"col-xs-12\"><div>Loading Details...</div></div></div><div class=\"row\"><div ng-hide=\"caseLoading\" class=\"col-xs-12\"><rha-case-description></rha-case-description></div></div><div class=\"row\"><div ng-hide=\"attachmentsLoading\" class=\"col-xs-12\"><rha-case-attachments></rha-case-attachments></div><div ng-show=\"attachmentsLoading\" class=\"col-xs-12\"><div>Loading Attachments...</div></div></div><div class=\"row\"><div ng-hide=\"recommendationsLoading\" class=\"col-xs-12\"><rha-case-recommendations></rha-case-recommendations></div><div ng-show=\"recommendationsLoading\" class=\"col-xs-12\"><div>Loading Recommendations...</div></div></div><div class=\"row\"><div class=\"col-xs-12\"><rha-case-comments></rha-case-comments></div></div></div></div>");
 }]);
 
 angular.module("cases/views/list.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/list.html",
-    "<div id=\"redhat-access-case\" class=\"container-offset\"><rha-page-header></rha-page-header><div class=\"container-fluid side-padding\"><div class=\"row\"><div style=\"padding-bottom: 14px;\" class=\"col-xs-12\"><button ui-sref=\"new\" class=\"btn btn-primary pull-right\">Open a New Support Case</button></div></div></div><rha-list-filter prefilter=\"preFilter\" postfilter=\"postFilter\"></rha-list-filter><div style=\"margin-left: 10px; margin-right: 10px;\" class=\"bottom-border\"></div><div class=\"container-fluid side-padding\"><div class=\"row\"><div class=\"col-xs-12\"><div ng-show=\"CaseListService.cases.length == 0 &amp;&amp; !loadingCases\">No cases found with given filters.</div><div ng-show=\"loadingCases\">Loading...</div><div ng-hide=\"CaseListService.cases.length == 0 || loadingCases\"><table ng-table=\"tableParams\" style=\"text-align: center\" class=\"table table-bordered table-striped\"><tr ng-repeat=\"case in $data\"><td data-title=\"&quot;Case ID&quot;\" sortable=\"&quot;case_number&quot;\" style=\"width: 10%\"><a href=\"#/case/{{case.case_number}}\">{{case.case_number}}</a></td><td data-title=\"&quot;Summary&quot;\" sortable=\"&quot;summary&quot;\" style=\"width: 15%\">{{case.summary}}</td><td data-title=\"&quot;Product/Version&quot;\" sortable=\"&quot;product&quot;\">{{case.product}} / {{case.version}}</td><td data-title=\"&quot;Status&quot;\" sortable=\"&quot;status&quot;\">{{case.status}}</td><td data-title=\"&quot;Severity&quot;\" sortable=\"&quot;severity&quot;\">{{case.severity}}</td><td data-title=\"&quot;Owner&quot;\" sortable=\"&quot;owner&quot;\">{{case.owner}}</td><td data-title=\"&quot;Opened&quot;\" sortable=\"&quot;created_date&quot;\" style=\"width: 10%\">{{case.created_date | date:'medium'}}</td><td data-title=\"&quot;Updated&quot;\" sortable=\"&quot;last_modified_date&quot;\" style=\"width: 10%\">{{case.last_modified_date | date:'medium'}}</td></tr></table></div></div></div></div></div>");
+    "<div id=\"redhat-access-case\" class=\"container-offset\"><x-rha-header title=\"My Cases\"></x-rha-header><div class=\"container-fluid side-padding\"><div class=\"row\"><div style=\"padding-bottom: 14px;\" class=\"col-xs-12\"><button ui-sref=\"new\" class=\"btn btn-primary pull-right\">Open a New Support Case</button></div></div></div><rha-list-filter prefilter=\"preFilter\" postfilter=\"postFilter\"></rha-list-filter><div style=\"margin-left: 10px; margin-right: 10px;\" class=\"bottom-border\"></div><div class=\"container-fluid side-padding\"><div class=\"row\"><div class=\"col-xs-12\"><div ng-show=\"securityService.isLoggedIn\"><span ng-show=\"loadingCases\" class=\"rha-search-spinner\"></span><div ng-show=\"CaseListService.cases.length == 0 &amp;&amp; !loadingCases\">No cases found with given filters.</div><div ng-hide=\"CaseListService.cases.length == 0 || loadingCases\"><table ng-table=\"tableParams\" style=\"text-align: center\" class=\"table table-bordered table-striped\"><tr ng-repeat=\"case in $data\"><td data-title=\"&quot;Case ID&quot;\" sortable=\"&quot;case_number&quot;\" style=\"width: 10%\"><a href=\"#/case/{{case.case_number}}\">{{case.case_number}}</a></td><td data-title=\"&quot;Summary&quot;\" sortable=\"&quot;summary&quot;\" style=\"width: 15%\">{{case.summary}}</td><td data-title=\"&quot;Product/Version&quot;\" sortable=\"&quot;product&quot;\">{{case.product}} / {{case.version}}</td><td data-title=\"&quot;Status&quot;\" sortable=\"&quot;status&quot;\">{{case.status}}</td><td data-title=\"&quot;Severity&quot;\" sortable=\"&quot;severity&quot;\">{{case.severity}}</td><td data-title=\"&quot;Owner&quot;\" sortable=\"&quot;owner&quot;\">{{case.owner}}</td><td data-title=\"&quot;Opened&quot;\" sortable=\"&quot;created_date&quot;\" style=\"width: 10%\">{{case.created_date | date:'medium'}}</td><td data-title=\"&quot;Updated&quot;\" sortable=\"&quot;last_modified_date&quot;\" style=\"width: 10%\">{{case.last_modified_date | date:'medium'}}</td></tr></table></div></div></div></div></div></div>");
 }]);
 
 angular.module("cases/views/listAttachments.html", []).run(["$templateCache", function($templateCache) {
@@ -15961,17 +17043,17 @@ angular.module("cases/views/listAttachments.html", []).run(["$templateCache", fu
 
 angular.module("cases/views/listFilter.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/listFilter.html",
-    "<div class=\"container-fluid side-padding\"><div class=\"row\"><div style=\"padding-bottom: 14px;\" class=\"col-lg-4\"><input placeholder=\"Search\" ng-model=\"keyword\" ng-keypress=\"onFilterKeyPress($event)\" class=\"form-control\"/></div><div style=\"padding-bottom: 14px;\" class=\"col-lg-4\"><!--label(for='rha-case-group-filter', style='padding-right: 4px; font-weight: normal;') Group:--><select id=\"rha-case-group-filter\" style=\"display: inline-block;\" ng-model=\"group\" ng-change=\"doFilter()\" ng-options=\"g.name for g in groups track by g.number\" class=\"form-control\"><option value=\"\">All Groups</option></select></div><div style=\"padding-bottom: 14px;\" class=\"col-lg-4\"><select ng-model=\"statusFilter\" ng-change=\"doFilter()\" class=\"form-control\"><option value=\"both\" selected=\"selected\">Open and Closed</option><option value=\"open\">Open</option><option value=\"closed\">Closed</option></select></div></div></div>");
+    "<div class=\"container-fluid side-padding\"><div class=\"row\"><div style=\"padding-bottom: 14px;\" class=\"col-lg-4\"><input ng-disabled=\"!securityService.isLoggedIn\" placeholder=\"Search\" ng-model=\"keyword\" ng-keypress=\"onFilterKeyPress($event)\" class=\"form-control\"/></div><div style=\"padding-bottom: 14px;\" class=\"col-lg-4\"><!--label(for='rha-case-group-filter', style='padding-right: 4px; font-weight: normal;') Group:--><select id=\"rha-case-group-filter\" ng-disabled=\"!securityService.isLoggedIn\" style=\"display: inline-block;\" ng-model=\"group\" ng-change=\"doFilter()\" ng-options=\"g.name for g in groups track by g.number\" class=\"form-control\"><option value=\"\">All Groups</option></select></div><div style=\"padding-bottom: 14px;\" class=\"col-lg-4\"><select ng-disabled=\"!securityService.isLoggedIn\" ng-model=\"statusFilter\" ng-change=\"doFilter()\" class=\"form-control\"><option value=\"both\" selected=\"selected\">Open and Closed</option><option value=\"open\">Open</option><option value=\"closed\">Closed</option></select></div></div></div>");
 }]);
 
 angular.module("cases/views/new.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/new.html",
-    "<!DOCTYPE html><div class=\"container-offset\"><div id=\"redhat-access-case\" class=\"container-fluid\"><rha-page-header></rha-page-header><div class=\"row\"><div style=\"border-right: 1px solid; border-color: #cccccc;\" class=\"col-xs-6\"><div class=\"container-fluid side-padding\"><div ng-class=\"{&quot;hidden&quot;: isPage2}\" id=\"rha-case-wizard-page-1\" class=\"create-case-section\"><div class=\"row create-field\"><div class=\"col-md-4\"><div>Product:</div></div><div class=\"col-md-8\"><progressbar ng-hide=\"!productsLoading\" max=\"1\" value=\"1\" animate=\"false\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"productsLoading\" style=\"width: 100%;\" ng-model=\"CaseService.case.product\" ng-change=\"getProductVersions(CaseService.case.product)\" ng-options=\"p.name for p in products track by p.code\" ng-blur=\"getRecommendations()\" class=\"form-control\"></select></div></div><div class=\"row create-field\"><div class=\"col-md-4\"><div>Product Version:</div></div><div class=\"col-md-8\"><div><progressbar ng-hide=\"!versionLoading\" max=\"1\" value=\"1\" animate=\"false\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select style=\"width: 100%;\" ng-model=\"CaseService.case.version\" ng-options=\"v for v in versions\" ng-change=\"validateForm()\" ng-disabled=\"versionDisabled\" ng-hide=\"versionLoading\" ng-blur=\"getRecommendations()\" class=\"form-control\"></select></div></div></div><div class=\"row create-field\"><div class=\"col-md-4\"><div>Summary:</div></div><div class=\"col-md-8\"><input id=\"rha-case-summary\" style=\"width: 100%;\" ng-change=\"validateForm()\" ng-model=\"CaseService.case.summary\" ng-blur=\"getRecommendations()\" class=\"form-control\"></div></div><div class=\"row create-field\"><div class=\"col-md-4\"><div>Description:</div></div><div class=\"col-md-8\"><textarea style=\"width: 100%; height: 200px;\" ng-model=\"CaseService.case.description\" ng-change=\"validateForm()\" ng-blur=\"getRecommendations()\" class=\"form-control\"></textarea></div></div><div class=\"row\"><div ng-class=\"{&quot;hidden&quot;: isPage2}\" class=\"col-xs-12\"><button style=\"float: right\" ng-click=\"doNext()\" ng-disabled=\"incomplete\" class=\"btn btn-primary\">Next</button></div></div></div><div ng-class=\"{&quot;hidden&quot;: isPage1}\" id=\"rha-case-wizard-page-1\" class=\"create-case-section\"><div class=\"bottom-border\"><div class=\"row\"><div class=\"col-xs-12\"><div style=\"margin-bottom: 10px;\" class=\"bold\">{{CaseService.case.product.name}} {{CaseService.case.version}}</div></div></div><div class=\"row\"><div class=\"col-xs-12\"><div style=\"font-size: 90%; margin-bottom: 4px;\" class=\"bold\">{{CaseService.case.summary}}</div></div></div><div class=\"row\"><div class=\"col-xs-12\"><div style=\"font-size: 85%\">{{CaseService.case.description}}</div></div></div></div><div class=\"row create-field\"><div class=\"col-md-4\">Severity:</div><div class=\"col-md-8\"><progressbar ng-hide=\"!severitiesLoading\" max=\"1\" value=\"1\" animate=\"false\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"severitiesLoading\" style=\"width: 100%;\" ng-model=\"CaseService.case.severity\" ng-change=\"validatePage2()\" ng-options=\"s.name for s in severities track by s.name\" class=\"form-control\"></select></div></div><div class=\"row create-field\"><div class=\"col-md-4\">Case Group:</div><div class=\"col-md-8\"><progressbar ng-hide=\"!groupsLoading\" max=\"1\" value=\"1\" animate=\"false\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"groupsLoading\" style=\"width: 100%;\" ng-model=\"CaseService.case.group\" ng-change=\"validatePage2()\" ng-options=\"g.name for g in groups track by g.number\" class=\"form-control\"></select></div></div><div class=\"row create-field\"><div class=\"col-xs-12\"><div>Attachments:</div></div></div><div class=\"bottom-border\"><div style=\"overflow: auto\" class=\"row create-field\"><div class=\"col-xs-12\"><rha-list-attachments></rha-list-attachments></div></div><div class=\"row create-field\"><div class=\"col-xs-12\"><rha-attach-local-file></rha-attach-local-file></div></div><div class=\"row create-field\"><div class=\"col-xs-12\"><div class=\"server-attach-header\">Server File(s) To Attach:<rha-choice-tree ng-model=\"attachmentTree\" ng-controller=\"BackEndAttachmentsCtrl\"></rha-choice-tree></div></div></div></div><div style=\"margin-top: 20px;\" class=\"row\"><div class=\"col-xs-6\"><button style=\"float: left\" ng-click=\"doPrevious()\" class=\"btn btn-primary\">Previous</button></div><div class=\"col-xs-6\"><button style=\"float: right\" ng-disabled=\"submittingCase\" ng-click=\"doSubmit()\" class=\"btn btn-primary\">Submit</button></div></div></div></div></div><div class=\"col-xs-6\"><div x-rha-accordion-search-results ng-controller=\"SearchController\" style=\"padding: 0 15px;\"></div></div></div></div></div>");
+    "<!DOCTYPE html><div class=\"container-offset\"><div id=\"redhat-access-case\" class=\"container-fluid\"><x-rha-header title=\"New Case\"></x-rha-header><div class=\"row\"><div style=\"border-right: 1px solid; border-color: #cccccc;\" class=\"col-xs-6\"><div class=\"container-fluid side-padding\"><div ng-class=\"{&quot;hidden&quot;: isPage2}\" id=\"rha-case-wizard-page-1\" class=\"create-case-section\"><div class=\"row create-field\"><div class=\"col-md-4\"><div>Product:</div></div><div class=\"col-md-8\"><progressbar ng-hide=\"!productsLoading || !securityService.isLoggedIn\" max=\"1\" value=\"1\" animate=\"false\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-disabled=\"!securityService.isLoggedIn\" ng-hide=\"productsLoading &amp;&amp; securityService.isLoggedIn\" style=\"width: 100%;\" ng-model=\"CaseService.case.product\" ng-change=\"getProductVersions(CaseService.case.product)\" ng-options=\"p.name for p in products track by p.code\" ng-blur=\"getRecommendations()\" class=\"form-control\"></select></div></div><div class=\"row create-field\"><div class=\"col-md-4\"><div>Product Version:</div></div><div class=\"col-md-8\"><div><progressbar ng-hide=\"!versionLoading\" max=\"1\" value=\"1\" animate=\"false\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select style=\"width: 100%;\" ng-model=\"CaseService.case.version\" ng-options=\"v for v in versions\" ng-change=\"validateForm()\" ng-disabled=\"versionDisabled || !securityService.isLoggedIn\" ng-hide=\"versionLoading\" ng-blur=\"getRecommendations()\" class=\"form-control\"></select></div></div></div><div class=\"row create-field\"><div class=\"col-md-4\"><div>Summary:</div></div><div class=\"col-md-8\"><input id=\"rha-case-summary\" style=\"width: 100%;\" ng-disabled=\"!securityService.isLoggedIn\" ng-change=\"validateForm()\" ng-model=\"CaseService.case.summary\" ng-blur=\"getRecommendations()\" class=\"form-control\"></div></div><div class=\"row create-field\"><div class=\"col-md-4\"><div>Description:</div></div><div class=\"col-md-8\"><textarea style=\"width: 100%; height: 200px; max-width: 100%;\" ng-model=\"CaseService.case.description\" ng-change=\"validateForm()\" ng-disabled=\"!securityService.isLoggedIn\" ng-blur=\"getRecommendations()\" class=\"form-control\"></textarea></div></div><div class=\"row\"><div ng-class=\"{&quot;hidden&quot;: isPage2}\" class=\"col-xs-12\"><button style=\"float: right\" ng-click=\"doNext()\" ng-disabled=\"incomplete\" class=\"btn btn-primary\">Next</button></div></div></div><div ng-class=\"{&quot;hidden&quot;: isPage1}\" id=\"rha-case-wizard-page-1\" class=\"create-case-section\"><div class=\"bottom-border\"><div class=\"row\"><div class=\"col-xs-12\"><div style=\"margin-bottom: 10px;\" class=\"bold\">{{CaseService.case.product.name}} {{CaseService.case.version}}</div></div></div><div class=\"row\"><div class=\"col-xs-12\"><div style=\"font-size: 90%; margin-bottom: 4px;\" class=\"bold\">{{CaseService.case.summary}}</div></div></div><div class=\"row\"><div class=\"col-xs-12\"><div style=\"font-size: 85%\">{{CaseService.case.description}}</div></div></div></div><div class=\"row create-field\"><div class=\"col-md-4\">Severity:</div><div class=\"col-md-8\"><progressbar ng-hide=\"!severitiesLoading\" max=\"1\" value=\"1\" animate=\"false\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"severitiesLoading\" style=\"width: 100%;\" ng-model=\"CaseService.case.severity\" ng-change=\"validatePage2()\" ng-options=\"s.name for s in severities track by s.name\" class=\"form-control\"></select></div></div><div class=\"row create-field\"><div class=\"col-md-4\">Case Group:</div><div class=\"col-md-8\"><progressbar ng-hide=\"!groupsLoading\" max=\"1\" value=\"1\" animate=\"false\" style=\"height: 34px; margin-bottom: 0px;\" class=\"progress-striped active\"></progressbar><select ng-hide=\"groupsLoading\" style=\"width: 100%;\" ng-model=\"CaseService.case.group\" ng-change=\"validatePage2()\" ng-options=\"g.name for g in groups track by g.number\" class=\"form-control\"></select></div></div><div class=\"row create-field\"><div class=\"col-xs-12\"><div>Attachments:</div></div></div><div class=\"bottom-border\"><div style=\"overflow: auto\" class=\"row create-field\"><div class=\"col-xs-12\"><rha-list-attachments></rha-list-attachments></div></div><div class=\"row create-field\"><div class=\"col-xs-12\"><rha-attach-local-file></rha-attach-local-file></div></div><div class=\"row create-field\"><div class=\"col-xs-12\"><div class=\"server-attach-header\">Server File(s) To Attach:<rha-choice-tree ng-model=\"attachmentTree\" ng-controller=\"BackEndAttachmentsCtrl\"></rha-choice-tree></div></div></div></div><div style=\"margin-top: 20px;\" class=\"row\"><div class=\"col-xs-6\"><button style=\"float: left\" ng-click=\"doPrevious()\" class=\"btn btn-primary\">Previous</button></div><div class=\"col-xs-6\"><button style=\"float: right\" ng-disabled=\"submittingCase\" ng-click=\"doSubmit()\" class=\"btn btn-primary\">Submit</button></div></div></div></div></div><div class=\"col-xs-6\"><div x-rha-accordion-search-results ng-controller=\"SearchController\" style=\"padding: 0 15px;\"></div></div></div></div></div>");
 }]);
 
 angular.module("cases/views/pageHeader.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/pageHeader.html",
-    "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-xs-12\"><div x-rha-login-status=\"x-rha-login-status\"></div></div></div></div><div class=\"bottom-border\"></div>");
+    "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-xs-12\"><rha-alert></rha-alert></div></div><div class=\"row\"><div class=\"col-xs-12\"><div x-rha-login-status=\"x-rha-login-status\"></div></div></div></div><div class=\"bottom-border\"></div>");
 }]);
 
 angular.module("cases/views/recommendationsSection.html", []).run(["$templateCache", function($templateCache) {
@@ -15982,8 +17064,9 @@ angular.module("cases/views/recommendationsSection.html", []).run(["$templateCac
 angular.module("log_viewer/views/log_viewer.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("log_viewer/views/log_viewer.html",
     "<div id=\"log_view_main\" style=\"max-height: 500px;\" >\n" +
-    "	<div x-rha-login-status style=\"padding: 10px;\"></div>\n" +
-    "	<div class=\"bottom-border\" style=\"padding-top: 10px;\"></div>\n" +
+    "  <div class=\"container-offset\">\n" +
+    "    <x-rha-header title=\"Diagnose Logs\"></x-rha-header>\n" +
+    "  </div>\n" +
     "	<div class=\"row-fluid\">\n" +
     "		<div class=\"nav-side-bar col-xs-3\" ng-class=\"{ showMe: sidePaneToggle }\" fill-down ng-style=\"{height: windowHeight }\">\n" +
     "			<div class=\"hideable-side-bar\" ng-class=\"{ showMe: sidePaneToggle }\">\n" +
