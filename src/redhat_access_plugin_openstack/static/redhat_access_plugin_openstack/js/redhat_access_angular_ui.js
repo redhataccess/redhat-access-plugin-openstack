@@ -1,4 +1,4 @@
-/*! redhat_access_angular_ui - v0.0.0 - 2014-04-23
+/*! redhat_access_angular_ui - v0.0.0 - 2014-04-24
  * Copyright (c) 2014 ;
  * Licensed 
  */
@@ -13694,7 +13694,7 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
 }));
 angular.module('RedhatAccess.header', [])
 .value('TITLE_VIEW_CONFIG', {
-    show: 'true'
+    show: 'false'
 })
 .controller('TitleViewCtrl', ['TITLE_VIEW_CONFIG', '$scope',
     function(TITLE_VIEW_CONFIG, $scope) {
@@ -14196,6 +14196,10 @@ angular.module('RedhatAccess.search', [
     limit: 10
 
   })
+  .value('SEARCH_CONFIG', {
+    openCaseRef: null,
+    showOpenCaseBtn:true
+  })
   .config(['$stateProvider',
     function($stateProvider) {
       $stateProvider.state('search', {
@@ -14211,17 +14215,26 @@ angular.module('RedhatAccess.search', [
     }
   ])
   .controller('SearchController', ['$scope',
-    'SearchResultsService', 'SEARCH_PARAMS',
-    function($scope, SearchResultsService) {
+    'SearchResultsService', 'SEARCH_CONFIG',
+    function($scope, SearchResultsService, SEARCH_CONFIG) {
       $scope.results = SearchResultsService.results;
       $scope.selectedSolution = SearchResultsService.currentSelection;
       $scope.searchInProgress = SearchResultsService.searchInProgress;
       $scope.searchResultInfo = SearchResultsService.searchResultInfo;
+      $scope.currentSearchData = SearchResultsService.currentSearchData;
 
       clearResults = function() {
         SearchResultsService.clear();
       };
 
+      $scope.getOpenCaseRef = function() {
+        if (SEARCH_CONFIG.openCaseRef !== null) {
+          //TODO data may be complex type - need to normalize to string in future
+          return SEARCH_CONFIG.openCaseRef + '?data=' + SearchResultsService.currentSearchData.data;
+        } else {
+          return '#/case/new?data=' + SearchResultsService.currentSearchData.data;
+        }
+      };
 
       $scope.solutionSelected = function(index) {
         var response = $scope.results[index];
@@ -14249,13 +14262,22 @@ angular.module('RedhatAccess.search', [
 
     }
   ])
-  .directive('rhaAccordionSearchResults', function() {
+  .directive('rhaAccordionSearchResults',['SEARCH_CONFIG', function(SEARCH_CONFIG) {
     return {
       restrict: 'AE',
       scope: false,
-      templateUrl: 'search/views/accordion_search_results.html'
+      templateUrl: 'search/views/accordion_search_results.html',
+      link: function(scope, element, attr) {
+        scope.showOpenCaseBtn = function() {
+          if (SEARCH_CONFIG.showOpenCaseBtn && (attr && attr.opencase === 'true')) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }
     };
-  })
+  }])
   .directive('rhaListSearchResults', function() {
     return {
       restrict: 'AE',
@@ -14345,6 +14367,11 @@ angular.module('RedhatAccess.search', [
         searchResultInfo: {
           msg: null
         },
+        currentSearchData: {
+          data: '',
+          method: ''
+        },
+
         add: function(result) {
           this.results.push(result);
         },
@@ -14352,16 +14379,23 @@ angular.module('RedhatAccess.search', [
           this.results.length = 0;
           this.setSelected({}, -1);
           this.searchResultInfo.msg = null;
+          this.setCurrentSearchData('', '');
+
         },
         setSelected: function(selection, index) {
           this.currentSelection.data = selection;
           this.currentSelection.index = index;
+        },
+        setCurrentSearchData: function(data, method) {
+          this.currentSearchData.data = data;
+          this.currentSearchData.method = method;
         },
         search: function(searchString, limit) {
           var that = this;
           if ((limit === undefined) || (limit < 1)) limit = SEARCH_PARAMS.limit;
           this.clear();
           this.searchInProgress.value = true;
+          this.setCurrentSearchData(searchString, 'search');
           var deferreds = [];
           var sent = strata.search(
             searchString,
@@ -14470,6 +14504,7 @@ angular.module('RedhatAccess.search', [
           this.clear();
           var deferreds = [];
           that.searchInProgress.value = true;
+          this.setCurrentSearchData(data, 'diagnose');
           var sent = strata.problems(
             data,
             function(solutions) {
@@ -15306,6 +15341,7 @@ angular.module('RedhatAccess.cases')
     'securityService',
     '$rootScope',
     'AUTH_EVENTS',
+    '$location',
     function ($scope,
               $state,
               $q,
@@ -15317,7 +15353,8 @@ angular.module('RedhatAccess.cases')
               AlertService,
               securityService,
               $rootScope,
-              AUTH_EVENTS) {
+              AUTH_EVENTS,
+              $location) {
 
       $scope.versions = [];
       $scope.versionDisabled = true;
@@ -15391,10 +15428,20 @@ angular.module('RedhatAccess.cases')
             }
         );
       };
+      
+      $scope.initDescription = function() {
+        var searchObject = $location.search();
+        if (searchObject.data){
+          CaseService.case.description = searchObject.data;
+        };
+      };
+
       $scope.initSelects();
+      $scope.initDescription();
 
       $rootScope.$on(AUTH_EVENTS.loginSuccess, function() {
         $scope.initSelects();
+        $scope.initDescription();
         AlertService.clearAlerts();
       });
 
@@ -16335,13 +16382,14 @@ angular.module('RedhatAccess.cases')
 angular.module('RedhatAccess.logViewer',
 	[ 'angularTreeview', 'ui.bootstrap', 'RedhatAccess.search', 'RedhatAccess.header'])
 
-.config(["$urlRouterProvider", function($urlRouterProvider) {
-}]).config([ '$stateProvider', function($stateProvider) {
+.config([ '$stateProvider', function($stateProvider) {
 	$stateProvider.state('logviewer', {
 		url : "/logviewer",
 		templateUrl : 'log_viewer/views/log_viewer.html'
 	})
-} ]).value('hideMachinesDropdown', false)
+} ])
+
+.value('hideMachinesDropdown', false)
 
 .factory('files', function() {
 	var fileList = '';
@@ -16412,6 +16460,34 @@ angular.module('RedhatAccess.logViewer',
 		}
 	};
 })
+.controller('logViewerController', ['$scope', 'SearchResultsService', function($scope, SearchResultsService) {
+		$scope.isDisabled = true;
+		$scope.textSelected = false;
+		$scope.enableDiagnoseButton = function(){
+			//Gotta wait for text to "unselect"
+			$scope.sleep(1, $scope.checkTextSelection);
+		};
+		$scope.checkTextSelection = function(){
+			if(strata.utils.getSelectedText()){
+				$scope.textSelected = true;
+				if(SearchResultsService.searchInProgress.value){
+					$scope.isDisabled = true;
+				} else {
+					$scope.isDisabled = false;
+				}
+			} else{
+				$scope.textSelected = false;
+				$scope.isDisabled = true;
+			}
+			$scope.$apply();
+		};
+
+		$scope.sleep = function(millis, callback) {
+			setTimeout(function()
+        		{ callback(); }
+			, millis);
+		};
+}])
 .controller('fileController', ['$scope', 'files', function($scope, files) {
 	$scope.roleList = '';
 
@@ -16520,8 +16596,6 @@ angular.module('RedhatAccess.logViewer',
 			longTitle : "Long Log File",
 			content : "Sample Log Text"
 		} ];
-		$scope.isDisabled = true;
-		$scope.textSelected = false;
 		$scope.isLoading = false;
 		$scope.$watch(function() {
 			return files.getFileClicked().check;
@@ -16563,9 +16637,9 @@ angular.module('RedhatAccess.logViewer',
 			return SearchResultsService.searchInProgress.value;
 		}, function() {
 			if (SearchResultsService.searchInProgress.value == true) {
-				$scope.isDisabled = true;
-			} else if(SearchResultsService.searchInProgress.value == false && $scope.textSelected == true){
-				$scope.isDisabled = false;
+				$scope.$parent.isDisabled = true;
+			} else if(SearchResultsService.searchInProgress.value == false && $scope.$parent.textSelected == true){
+				$scope.$parent.isDisabled = false;
 			}
 		});
 		$scope.removeTab = function(index) {
@@ -16613,31 +16687,7 @@ angular.module('RedhatAccess.logViewer',
 		// or server returns response with an error status.
 			});
 		};
-		$scope.enableDiagnoseButton = function(){
-			//Gotta wait for text to "unselect"
-			$scope.sleep(1, $scope.checkTextSelection);
-		};
-		$scope.checkTextSelection = function(){
-			if(strata.utils.getSelectedText()){
-				$scope.textSelected = true;
-				if(SearchResultsService.searchInProgress.value){
-					$scope.isDisabled = true;
-				} else {
-					$scope.isDisabled = false;
-				}
-			} else{
-				$scope.textSelected = false;
-				$scope.isDisabled = true;
-			}
-			$scope.$apply();
-		};
-
-		$scope.sleep = function(millis, callback) {
-			setTimeout(function()
-        		{ callback(); }
-			, millis);
-		};
-		}])
+}])
 
 .controller('AccordionDemoCtrl', ['$scope', 'accordian', function($scope, accordian) {
 	$scope.oneAtATime = true;
@@ -16756,7 +16806,7 @@ angular.module("common/views/header.html", []).run(["$templateCache", function($
 
 angular.module("common/views/title.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/views/title.html",
-    "<h3 ng-show='showTitle'>Red Hat Access: {{pageTitle}}</h3>\n" +
+    "<h4 ng-show='showTitle'>Red Hat Access: {{pageTitle}}</h4>\n" +
     "");
 }]);
 
@@ -16844,9 +16894,9 @@ angular.module("search/views/accordion_search.html", []).run(["$templateCache", 
 
 angular.module("search/views/accordion_search_results.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("search/views/accordion_search_results.html",
-    "<div class=\"row\">\n" +
-    "    <div class=\"col-xs-12\">\n" +
-    "        <div style=\"padding-bottom: 0\" class=\"bottom-border\">\n" +
+    "<div class=\"row bottom-border\">\n" +
+    "    <div class=\"col-xs-6\">\n" +
+    "        <div style=\"padding-bottom: 0\">\n" +
     "            <span>\n" +
     "                <h4 style=\"padding-left: 10px; display: inline-block;\">Recommendations</h4>\n" +
     "            </span>\n" +
@@ -16854,6 +16904,9 @@ angular.module("search/views/accordion_search_results.html", []).run(["$template
     "                &nbsp;\n" +
     "            </span>\n" +
     "        </div>\n" +
+    "    </div>\n" +
+    "    <div style=\"padding-bottom: 14px;\" class=\"col-xs-6\" ng-show=\"showOpenCaseBtn()\">\n" +
+    "        <a href={{getOpenCaseRef()}} class=\"btn btn-primary pull-right \">Open a New Support Case</a>\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div class=\"row \">\n" +
@@ -17067,7 +17120,7 @@ angular.module("log_viewer/views/log_viewer.html", []).run(["$templateCache", fu
     "  <div class=\"container-offset\">\n" +
     "    <x-rha-header title=\"Diagnose Logs\"></x-rha-header>\n" +
     "  </div>\n" +
-    "	<div class=\"row-fluid\">\n" +
+    "	<div class=\"row-fluid\" ng-controller=\"logViewerController\" ng-mouseup=\"enableDiagnoseButton()\" >\n" +
     "		<div class=\"nav-side-bar col-xs-3\" ng-class=\"{ showMe: sidePaneToggle }\" fill-down ng-style=\"{height: windowHeight }\">\n" +
     "			<div class=\"hideable-side-bar\" ng-class=\"{ showMe: sidePaneToggle }\">\n" +
     "				<div class=\"btn-group\" ng-class=\"{ hideMe: hideDropdown}\" ng-controller=\"DropdownCtrl\" ng-init=\"init()\">\n" +
@@ -17097,7 +17150,7 @@ angular.module("log_viewer/views/log_viewer.html", []).run(["$templateCache", fu
     "		<div class=col-fluid> \n" +
     "			<div class=\"col-xs-6 pull-right solutions\" fill-down ng-style=\"{height: windowHeight }\" ng-class=\"{ showMe: solutionsToggle }\">\n" +
     "				<div id=\"resizeable-solution-view\" fill-down class=\"resizeable-solution-view\" ng-class=\"{ showMe: solutionsToggle }\" ng-style=\"{height: windowHeight }\" \n" +
-    "					x-rha-accordion-search-results='' ng-controller='SearchController' >\n" +
+    "					x-rha-accordion-search-results='' opencase='true' ng-controller='SearchController' >\n" +
     "				</div>\n" +
     "				<a ng-click=\"solutionsToggle = !solutionsToggle\"><span ng-class=\"{ showMe: solutionsToggle }\"\n" +
     "							class=\"glyphicon glyphicon-chevron-left right-side-glyphicon\"></span></a>\n" +
@@ -17113,7 +17166,6 @@ angular.module("log_viewer/views/log_viewer.html", []).run(["$templateCache", fu
     "							</tab-heading>\n" +
     "							<div class=\"panel panel-default\" >\n" +
     "								<div class=\"panel-heading\">\n" +
-    "									<a class=\"tabs-spinner\"  ng-class=\"{ showMe: isLoading }\"><span class=\"rha-search-spinner\"></span></a>\n" +
     "									<a popover=\"Click to refresh log file.\" popover-trigger=\"mouseenter\" popover-placement=\"right\" ng-click=\"refreshTab($index)\">\n" +
     "										<span class=\"glyphicon glyphicon-refresh\"></span>\n" +
     "									</a>\n" +
@@ -17121,10 +17173,12 @@ angular.module("log_viewer/views/log_viewer.html", []).run(["$templateCache", fu
     "									<div class=\"pull-right\" id=\"overlay\" popover=\"Select text and click to perform Red Hat Diagnose\" popover-trigger=\"mouseenter\" popover-placement=\"left\" > \n" +
     "										<button ng-disabled=\"isDisabled\" id=\"diagnoseButton\" type=\"button\" class=\"btn btn-sm btn-primary diagnoseButton\" ng-click=\"diagnoseText()\">Red Hat Diagnose</button>\n" +
     "									</div>\n" +
+    "									<a class=\"tabs-spinner\"  ng-class=\"{ showMe: isLoading }\"><span class=\"rha-search-spinner\"></span></a>\n" +
+    "									\n" +
     "									<br> \n" +
     "									<br>\n" +
     "								</div>\n" +
-    "								<div class=\"panel-body\" ng-mouseup=\"enableDiagnoseButton()\" fill-down ng-style=\"{ height: windowHeight }\">\n" +
+    "								<div class=\"panel-body\" fill-down ng-style=\"{ height: windowHeight }\">\n" +
     "\n" +
     "									<pre id=\"resizeable-file-view\" class=\"no-line-wrap\">{{tab.content}}</pre>\n" +
     "								</div>\n" +
