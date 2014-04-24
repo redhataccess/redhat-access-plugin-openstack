@@ -19,6 +19,9 @@
 angular.module('RedhatAccess.logViewer').config(function($urlRouterProvider) {
 	$urlRouterProvider.otherwise('/logviewer')
 }).value('hideMachinesDropdown', true);
+angular.module('RedhatAccess.search').value('SEARCH_CONFIG',
+    { openCaseRef: "/dashboard/redhat_access_plugin_openstack/support/#/case/new", showOpenCaseBtn: true }
+    );
 angular.element(document).ready(function() {
 	angular.bootstrap(document.getElementById("redhat-access-logs"), ['RedhatAccess.logViewer']);
 });
