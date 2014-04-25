@@ -3319,7 +3319,7 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
         fetchURI,
         fetchAccountUsers;
 
-    strata.version = "1.0.6";
+    strata.version = "1.0.7";
     redhatClientID = "stratajs-" + strata.version;
 
     if (window.portal && window.portal.host) {
@@ -3565,12 +3565,6 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                         beforeSend: function (xhr) {
                             xhr.setRequestHeader('X-Omit', 'WWW-Authenticate');
                         },
-                        statusCode: {
-                            401: function () {
-                                strata.clearCookieAuth();
-                                loginHandler(false);
-                            }
-                        },
                         //We are all good
                         success: function (response) {
                             loginHandler(true, this);
@@ -3584,6 +3578,7 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                     //Check /rs/users?ssoUserName=sso-id
                     $.ajax(checkCredentialsNoBasic);
                 } else {
+                    strata.clearCookieAuth();
                     $.ajax(checkCredentials);
                 }
             }
@@ -13714,6 +13709,11 @@ angular.module('RedhatAccess.header', [])
 .controller('AlertController', ['$scope', 'AlertService',
     function ($scope, AlertService) {
       $scope.AlertService = AlertService;
+      $scope.closeable = true;
+
+      $scope.closeAlert = function(index) {
+        AlertService.alerts.splice(index, 1);
+      }
     }])
 .directive('rhaAlert',
     function () {
@@ -13770,32 +13770,12 @@ angular.module('RedhatAccess.header', [])
         return errors;
       };
 
-      var buildStrataErrorMessage = function(error) {
-        var message = error.status + ': ' + error.statusText;
-
-        function messageWithDetails(message, details) {
-          return message + ' - ' + details;
-        }
-
-        if (error.responseText != null && error.responseText != '') {
-          message = messageWithDetails(message, error.responseText);
-        }
-
-        if (error.status == '401') {
-          message = messageWithDetails(message, 'Please log in to continue.');
-        }
-
-        return message;
-      };
-
       this.addStrataErrorMessage = function(error) {
-        var message = buildStrataErrorMessage(error);
-
         var existingMessage =
-            $filter('filter')(this.alerts, {type: ALERT_TYPES.DANGER, message: message})
+            $filter('filter')(this.alerts, {type: ALERT_TYPES.DANGER, message: error.message})
 
         if (existingMessage.length < 1) {
-          this.addDangerMessage(message);
+          this.addDangerMessage(error.message);
         }
       };
     }])
@@ -14059,7 +14039,7 @@ angular.module('RedhatAccess.security', ['ui.bootstrap', 'RedhatAccess.template'
         strata.clearCredentials();
         setLoginStatus(false, '');
         $rootScope.$broadcast(AUTH_EVENTS.logoutSuccess);
-        location.reload(); //TODO: probably a neater way to do this with $state
+        //location.reload(); //TODO: probably a neater way to do this with $state
       };
     }
   ])
@@ -14220,7 +14200,6 @@ angular.module('RedhatAccess.search', [
       $scope.results = SearchResultsService.results;
       $scope.selectedSolution = SearchResultsService.currentSelection;
       $scope.searchInProgress = SearchResultsService.searchInProgress;
-      $scope.searchResultInfo = SearchResultsService.searchResultInfo;
       $scope.currentSearchData = SearchResultsService.currentSearchData;
 
       clearResults = function() {
@@ -14351,9 +14330,9 @@ angular.module('RedhatAccess.search', [
       };
     }
   ])
-  .factory('SearchResultsService', ['$q', '$rootScope', 'AUTH_EVENTS', 'RESOURCE_TYPES', 'SEARCH_PARAMS',
+  .factory('SearchResultsService', ['$q', '$rootScope', 'AUTH_EVENTS', 'RESOURCE_TYPES', 'SEARCH_PARAMS','AlertService',
 
-    function($q, $rootScope, AUTH_EVENTS, RESOURCE_TYPES, SEARCH_PARAMS) {
+    function($q, $rootScope, AUTH_EVENTS, RESOURCE_TYPES, SEARCH_PARAMS,AlertService) {
       var service = {
         results: [],
         currentSelection: {
@@ -14362,10 +14341,6 @@ angular.module('RedhatAccess.search', [
         },
         searchInProgress: {
           value: false
-        },
-
-        searchResultInfo: {
-          msg: null
         },
         currentSearchData: {
           data: '',
@@ -14378,7 +14353,6 @@ angular.module('RedhatAccess.search', [
         clear: function() {
           this.results.length = 0;
           this.setSelected({}, -1);
-          this.searchResultInfo.msg = null;
           this.setCurrentSearchData('', '');
 
         },
@@ -14394,16 +14368,17 @@ angular.module('RedhatAccess.search', [
           var that = this;
           if ((limit === undefined) || (limit < 1)) limit = SEARCH_PARAMS.limit;
           this.clear();
+          AlertService.clearAlerts();
           this.searchInProgress.value = true;
           this.setCurrentSearchData(searchString, 'search');
           var deferreds = [];
-          var sent = strata.search(
+          strata.search(
             searchString,
             function(entries) {
               //retrieve details for each solution
               if (entries !== undefined) {
                 if (entries.length === 0) {
-                  that.searchResultInfo.msg = "No recommendations found.";
+                  AlertService.addSuccessMessage("No recommendations found.");
                 };
                 entries.forEach(function(entry) {
                   var deferred = $q.defer();
@@ -14422,7 +14397,7 @@ angular.module('RedhatAccess.search', [
                     });
                 });
               } else {
-                that.searchResultInfo.msg = "No recommendations found.";
+                AlertService.addSuccessMessage("No recommendations found.");
               };
               $q.all(deferreds).then(
                 function(results) {
@@ -14442,20 +14417,13 @@ angular.module('RedhatAccess.search', [
               console.log(error);
               $rootScope.$apply(function() {
                 that.searchInProgress.value = false;
-                if (error && error.statusText) {
-                  that.searchResultInfo.msg = error.statusText;
-                } else {
-                  that.searchResultInfo.msg = "Error retrieving solutions";
-                }
+                console.log(error);
+                AlertService.addDangerMessage(error);
               });
             },
             limit,
             false
           );
-          if (sent == false) {
-            this.searchInProgress.value = false;
-          };
-
         },
         // solution and article search needs reimplementation
         // searchSolutions: function (searchString, limit) {
@@ -14502,16 +14470,17 @@ angular.module('RedhatAccess.search', [
           var that = this;
           if ((limit === undefined) || (limit < 1)) limit = SEARCH_PARAMS.limit;
           this.clear();
+          AlertService.clearAlerts();
           var deferreds = [];
           that.searchInProgress.value = true;
           this.setCurrentSearchData(data, 'diagnose');
-          var sent = strata.problems(
+          strata.problems(
             data,
             function(solutions) {
               //retrieve details for each solution
               if (solutions !== undefined) {
                 if (solutions.length === 0) {
-                  that.searchResultInfo.msg = "No solutions found.";
+                  AlertService.addSuccessMessage("No solutions found.");
                 };
 
                 solutions.forEach(function(solution) {
@@ -14527,7 +14496,7 @@ angular.module('RedhatAccess.search', [
                     });
                 });
               } else {
-                that.searchResultInfo.msg = "No solutions found.";
+                AlertService.addSuccessMessage("No solutions found.");
               };
               $q.all(deferreds).then(
                 function(solutions) {
@@ -14548,25 +14517,22 @@ angular.module('RedhatAccess.search', [
             function(error) {
               $rootScope.$apply(function() {
                 that.searchInProgress.value = false;
-                if (error && error.statusText) {
-                  that.searchResultInfo.msg = error.statusText;
-                } else {
-                  that.searchResultInfo.msg = "Error retrieving solutions";
-                }
+                AlertService.addDangerMessage(error);
               });
               console.log(error);
             },
             limit
           );
-          if (sent == false) {
-            this.searchInProgress.value = false;
-          };
         }
       };
 
       $rootScope.$on(AUTH_EVENTS.logoutSuccess, function() {
         service.clear.apply(service);
       });
+      $rootScope.$on(AUTH_EVENTS.loginSuccess, function() {
+         AlertService.clearAlerts();
+      });
+
       return service;
     }
   ]);
@@ -14591,8 +14557,7 @@ angular.module('RedhatAccess.cases', [
 
     $stateProvider.state('compact', {
       url: '/case/compact?sessionId',
-      templateUrl: 'cases/views/compact.html',
-      controller: 'Compact'
+      templateUrl: 'cases/views/compact.html'
     });
 
     $stateProvider.state('compact.edit', {
@@ -14730,11 +14695,13 @@ angular.module('RedhatAccess.cases')
   'CaseService',
   'strataService',
   '$stateParams',
+  'AlertService',
   function(
       $scope,
       CaseService,
       strataService,
-      $stateParams) {
+      $stateParams,
+      AlertService) {
 
     strataService.cases.comments.get($stateParams.id).then(
         function(commentsJSON) {
@@ -14745,7 +14712,7 @@ angular.module('RedhatAccess.cases')
           }
         },
         function(error) {
-          console.log(error);
+          AlertService.addStrataErrorMessage(error);
         }
     );
 
@@ -14755,14 +14722,9 @@ angular.module('RedhatAccess.cases')
     $scope.addComment = function() {
       $scope.addingComment = true;
 
-      strata.cases.comments.post(
-          CaseService.case.case_number,
-          {'text': $scope.newComment},
+      strataService.cases.comments.post(CaseService.case.case_number, $scope.newComment).then(
           function(response) {
-
-            //refresh the comments list
-            strata.cases.comments.get(
-                CaseService.case.case_number,
+            strataService.cases.comments.get(CaseService.case.case_number).then(
                 function(comments) {
                   $scope.newComment = '';
                   $scope.comments = comments;
@@ -14771,14 +14733,13 @@ angular.module('RedhatAccess.cases')
                   $scope.$apply();
                 },
                 function(error) {
-                  console.log(error);
-                }
-            );
+                  AlertService.addStrataErrorMessage(error);
+                });
           },
           function(error) {
-            console.log(error);
-          }
-      );
+            AlertService.addStrataErrorMessage(error);
+            $scope.addingComment = false;
+          });
     };
 
     $scope.itemsPerPage = 4;
@@ -14803,30 +14764,28 @@ angular.module('RedhatAccess.cases')
 'use strict';
 
 angular.module('RedhatAccess.cases')
-.controller('Compact', [
-  '$scope',
-  function(
-      $scope) {
-
-  }
-]);
-
-'use strict';
-
-angular.module('RedhatAccess.cases')
 .controller('CompactCaseList', [
   '$scope',
   '$stateParams',
   'strataService',
   'CaseService',
   'CaseListService',
+  '$rootScope',
+  'AUTH_EVENTS',
+  'securityService',
+  'AlertService',
   function(
       $scope,
       $stateParams,
       strataService,
       CaseService,
-      CaseListService) {
+      CaseListService,
+      $rootScope,
+      AUTH_EVENTS,
+      securityService,
+      AlertService) {
 
+    $scope.securityService = securityService;
     $scope.CaseService = CaseService;
     $scope.CaseListService = CaseListService;
     $scope.loadingCaseList = true;
@@ -14847,10 +14806,16 @@ angular.module('RedhatAccess.cases')
             $scope.domReady = true;
           },
           function(error) {
-            console.log(error);
+            AlertService.addStrataErrorMessage(error);
           }
       );
     };
+
+    $rootScope.$on(AUTH_EVENTS.loginSuccess, function() {
+      CaseService.populateGroups();
+      $scope.filterCases();
+      AlertService.clearAlerts();
+    });
 
     /**
      * Passed to rha-list-filter as a callback after filtering
@@ -14864,7 +14829,6 @@ angular.module('RedhatAccess.cases')
     };
 
     CaseService.populateGroups();
-
     $scope.filterCases();
   }
 ]);
@@ -14878,41 +14842,60 @@ angular.module('RedhatAccess.cases')
   '$stateParams',
   'CaseService',
   'AttachmentsService',
+  '$rootScope',
+  'AUTH_EVENTS',
+  'securityService',
+  'AlertService',
   function(
       $scope,
       strataService,
       $stateParams,
       CaseService,
-      AttachmentsService) {
+      AttachmentsService,
+      $rootScope,
+      AUTH_EVENTS,
+      securityService,
+      AlertService) {
+
+    $scope.securityService = securityService;
 
     $scope.caseLoading = true;
     $scope.domReady = false;
 
-    strataService.cases.get($stateParams.id).then(
-      function(caseJSON) {
-        CaseService.defineCase(caseJSON);
-        $scope.caseLoading = false;
+    $scope.init = function() {
+      strataService.cases.get($stateParams.id).then(
+          function(caseJSON) {
+            CaseService.defineCase(caseJSON);
+            $scope.caseLoading = false;
 
-        strataService.products.versions(caseJSON.product.name).then(
-            function(versions) {
-              CaseService.versions = versions;
-            }
-        );
+            strataService.products.versions(caseJSON.product.name).then(
+                function(versions) {
+                  CaseService.versions = versions;
+                },
+                function(error) {
+                  AlertService.addStrataErrorMessage(error);
+                }
+            );
 
-        $scope.domReady = true;
-      }
-    );
+            $scope.domReady = true;
+          }
+      );
 
-    strataService.cases.attachments.list($stateParams.id).then(
-        function(attachmentsJSON) {
-          AttachmentsService.defineOriginalAttachments(attachmentsJSON);
-        },
-        function(error) {
-          console.log(error);
-        }
-    );
+      strataService.cases.attachments.list($stateParams.id).then(
+          function(attachmentsJSON) {
+            AttachmentsService.defineOriginalAttachments(attachmentsJSON);
+          },
+          function(error) {
+            AlertService.addStrataErrorMessage(error);
+          }
+      );
+    }
+    $scope.init();
 
-
+    $rootScope.$on(AUTH_EVENTS.loginSuccess, function() {
+      $scope.init();
+      AlertService.clearAlerts();
+    });
   }
 ]);
 
@@ -14937,48 +14920,71 @@ angular.module('RedhatAccess.cases')
   '$scope',
   'strataService',
   'CaseService',
+  '$rootScope',
+  'AUTH_EVENTS',
+  'AlertService',
   function(
       $scope,
       strataService,
-      CaseService) {
+      CaseService,
+      $rootScope,
+      AUTH_EVENTS,
+      AlertService) {
 
     $scope.CaseService = CaseService;
 
-    if (!$scope.compact) {
+    $scope.init = function() {
+      if (!$scope.compact) {
 
-      strataService.values.cases.types().then(
+        strataService.values.cases.types().then(
+            function(response) {
+              $scope.caseTypes = response;
+            },
+            function(error) {
+              AlertService.addStrataErrorMessage(error);
+            }
+        );
+
+        strataService.groups.list().then(
+            function(response) {
+              $scope.groups = response;
+            },
+            function(error) {
+              AlertService.addStrataErrorMessage(error);
+            }
+        );
+      }
+
+      strataService.values.cases.status().then(
           function(response) {
-            $scope.caseTypes = response;
+            $scope.statuses = response;
+          },
+          function(error) {
+            AlertService.addStrataErrorMessage(error);
           }
       );
 
-      strataService.groups.list().then(
+      strataService.values.cases.severity().then(
           function(response) {
-            $scope.groups = response;
+            $scope.severities = response;
+          },
+          function(error) {
+            AlertService.addStrataErrorMessage(error);
+          }
+      );
+
+      strataService.products.list().then(
+          function(response) {
+            $scope.products = response;
+          },
+          function(error) {
+            AlertService.addStrataErrorMessage(error);
           }
       );
     }
-
-    strataService.values.cases.status().then(
-        function(response) {
-          $scope.statuses = response;
-        }
-    );
-
-    strataService.values.cases.severity().then(
-        function(response) {
-          $scope.severities = response;
-        }
-    );
-
-    strataService.products.list().then(
-        function(response) {
-          $scope.products = response;
-        }
-    );
+    $scope.init();
 
     $scope.updatingDetails = false;
-
     $scope.updateCase = function() {
       $scope.updatingDetails = true;
 
@@ -15009,16 +15015,14 @@ angular.module('RedhatAccess.cases')
           caseJSON.folderNumber = CaseService.case.group.number;
         }
 
-        strata.cases.put(
-            CaseService.case.case_number,
-            caseJSON,
+        strataService.cases.put(CaseService.case.case_number, caseJSON).then(
             function() {
               $scope.caseDetails.$setPristine();
               $scope.updatingDetails = false;
               $scope.$apply();
             },
             function(error) {
-              console.log(error);
+              AlertService.addStrataErrorMessage(error);
               $scope.updatingDetails = false;
               $scope.$apply();
             }
@@ -15032,9 +15036,17 @@ angular.module('RedhatAccess.cases')
       strataService.products.versions(CaseService.case.product.code).then(
           function(versions){
             CaseService.versions = versions;
+          },
+          function(error) {
+            AlertService.addStrataErrorMessage(error);
           }
       );
     };
+
+    $rootScope.$on(AUTH_EVENTS.loginSuccess, function() {
+      $scope.init();
+      AlertService.clearAlerts();
+    });
   }
 ]);
 
@@ -15050,6 +15062,10 @@ angular.module('RedhatAccess.cases')
   'CaseService',
   'strataService',
   'RecommendationsService',
+  '$rootScope',
+  'AUTH_EVENTS',
+  'AlertService',
+  'securityService',
   function(
       $scope,
       $stateParams,
@@ -15058,61 +15074,83 @@ angular.module('RedhatAccess.cases')
       AttachmentsService,
       CaseService,
       strataService,
-      RecommendationsService) {
+      RecommendationsService,
+      $rootScope,
+      AUTH_EVENTS,
+      AlertService,
+      securityService) {
 
+    $scope.securityService = securityService;
     $scope.AttachmentsService = AttachmentsService;
     $scope.CaseService = CaseService;
     CaseService.clearCase();
 
-    $scope.caseLoading = true;
-    $scope.recommendationsLoading = true;
+    $scope.init = function() {
+      $scope.caseLoading = true;
+      $scope.recommendationsLoading = true;
 
-    strataService.cases.get($stateParams.id).then(
-        function(caseJSON) {
-          CaseService.defineCase(caseJSON);
-          $scope.caseLoading = false;
+      strataService.cases.get($stateParams.id).then(
+          function(caseJSON) {
+            CaseService.defineCase(caseJSON);
+            $scope.caseLoading = false;
 
-          strataService.products.versions(caseJSON.product.name).then(
-              function(versions) {
-                CaseService.versions = versions;
-              }
-          );
+            strataService.products.versions(caseJSON.product.name).then(
+                function(versions) {
+                  CaseService.versions = versions;
+                },
+                function(error) {
+                  AlertService.addStrataErrorMessage(error);
+                }
+            );
 
-          if (caseJSON.account_number != null) {
-            strataService.accounts.get(caseJSON.account_number).then(
-                function(account) {
-                  CaseService.defineAccount(account);
+            if (caseJSON.account_number != null) {
+              strataService.accounts.get(caseJSON.account_number).then(
+                  function(account) {
+                    CaseService.defineAccount(account);
+                  },
+                  function(error) {
+                    AlertService.addStrataErrorMessage(error);
+                  }
+              );
+            }
+
+            RecommendationsService.populateRecommendations(25).then(
+                function() {
+                  $scope.recommendationsLoading = false;
+                },
+                function(error) {
+                  AlertService.addStrataErrorMessage(error);
                 }
             );
           }
+      );
 
-          RecommendationsService.populateRecommendations(25).then(
-              function() {
-                $scope.recommendationsLoading = false;
-              }
-          );
-        }
-    );
+      $scope.attachmentsLoading = true;
+      strataService.cases.attachments.list($stateParams.id).then(
+          function(attachmentsJSON) {
+            AttachmentsService.defineOriginalAttachments(attachmentsJSON);
+            $scope.attachmentsLoading = false;
+          },
+          function(error) {
+            AlertService.addStrataErrorMessage(error);
+          }
+      );
 
-    $scope.attachmentsLoading = true;
-    strataService.cases.attachments.list($stateParams.id).then(
-        function(attachmentsJSON) {
-          AttachmentsService.defineOriginalAttachments(attachmentsJSON);
-          $scope.attachmentsLoading = false;
-        },
-        function(error) {
-          console.log(error);
-        }
-    );
+      strataService.cases.comments.get($stateParams.id).then(
+          function(commentsJSON) {
+            $scope.comments = commentsJSON;
+          },
+          function(error) {
+            AlertService.addStrataErrorMessage(error);
+          }
+      );
+    };
+    $scope.init();
 
-    strataService.cases.comments.get($stateParams.id).then(
-        function(commentsJSON) {
-          $scope.comments = commentsJSON;
-        },
-        function(error) {
-          console.log(error);
-        }
-    );
+    $rootScope.$on(AUTH_EVENTS.loginSuccess, function() {
+      $scope.init();
+      AlertService.clearAlerts();
+    });
   }]);
 
 
@@ -15343,18 +15381,18 @@ angular.module('RedhatAccess.cases')
     'AUTH_EVENTS',
     '$location',
     function ($scope,
-              $state,
-              $q,
-              SearchResultsService,
-              AttachmentsService,
-              strataService,
-              RecommendationsService,
-              CaseService,
-              AlertService,
-              securityService,
-              $rootScope,
-              AUTH_EVENTS,
-              $location) {
+      $state,
+      $q,
+      SearchResultsService,
+      AttachmentsService,
+      strataService,
+      RecommendationsService,
+      CaseService,
+      AlertService,
+      securityService,
+      $rootScope,
+      AUTH_EVENTS,
+      $location) {
 
       $scope.versions = [];
       $scope.versionDisabled = true;
@@ -15371,75 +15409,87 @@ angular.module('RedhatAccess.cases')
       $scope.RecommendationsService = RecommendationsService;
       $scope.securityService = securityService;
 
-      $scope.getRecommendations = function() {
+      $scope.getRecommendations = function () {
         SearchResultsService.searchInProgress.value = true;
         RecommendationsService.populateRecommendations(5).then(
-            function() {
-              SearchResultsService.clear();
+          function () {
+            SearchResultsService.clear();
 
-              RecommendationsService.recommendations.forEach(
-                  function(recommendation) {
-                    SearchResultsService.add(recommendation);
-                  }
-              )
-              SearchResultsService.searchInProgress.value = false;
-            },
-            function(error) {
-              AlertService.addStrataErrorMessage(error);
-            }
+            RecommendationsService.recommendations.forEach(
+              function (recommendation) {
+                SearchResultsService.add(recommendation);
+              }
+            )
+            SearchResultsService.searchInProgress.value = false;
+          },
+          function (error) {
+            AlertService.addStrataErrorMessage(error);
+          }
         );
       };
 
       /**
        * Populate the selects
        */
-      $scope.initSelects = function() {
+      $scope.initSelects = function () {
         $scope.productsLoading = true;
         strataService.products.list().then(
-            function(products) {
-              $scope.products = products;
-              $scope.productsLoading = false;
-            },
-            function(error) {
-              AlertService.addStrataErrorMessage(error);
-            }
+          function (products) {
+            $scope.products = products;
+            $scope.productsLoading = false;
+          },
+          function (error) {
+            AlertService.addStrataErrorMessage(error);
+          }
         );
 
         $scope.severitiesLoading = true;
         strataService.values.cases.severity().then(
-            function(severities) {
-              $scope.severities = severities;
-              CaseService.case.severity = severities[severities.length - 1];
-              $scope.severitiesLoading = false;
-            },
-            function(error) {
-              AlertService.addStrataErrorMessage(error);
-            }
+          function (severities) {
+            $scope.severities = severities;
+            CaseService.
+          case .severity = severities[severities.length - 1];
+          $scope.severitiesLoading = false;
+          },
+          function (error) {
+            AlertService.addStrataErrorMessage(error);
+          }
         );
 
         $scope.groupsLoading = true;
         strataService.groups.list().then(
-            function(groups) {
-              $scope.groups = groups;
-              $scope.groupsLoading = false;
-            },
-            function(error) {
-              AlertService.addStrataErrorMessage(error);
-            }
+          function (groups) {
+            $scope.groups = groups;
+            $scope.groupsLoading = false;
+          },
+          function (error) {
+            AlertService.addStrataErrorMessage(error);
+          }
         );
       };
-      
-      $scope.initDescription = function() {
+
+      $scope.initDescription = function () {
         var searchObject = $location.search();
-        if (searchObject.data){
+        if (searchObject.data) {
           CaseService.case.description = searchObject.data;
-        };
+        } else {
+          //angular does not  handle params before hashbang
+          //@see https://github.com/angular/angular.js/issues/6172
+          var queryParamsStr = window.location.search.substring(1);
+          var parameters = queryParamsStr.split('&');
+          for (var i = 0; i < parameters.length; i++) {
+            var parameterName = parameters[i].split('=');
+            if (parameterName[0] == 'data') {
+              CaseService.case.description = decodeURIComponent(parameterName[1]);
+            }
+          }
+        }
       };
 
       $scope.initSelects();
       $scope.initDescription();
 
-      $rootScope.$on(AUTH_EVENTS.loginSuccess, function() {
+      $rootScope.$on(AUTH_EVENTS.loginSuccess, function () {
         $scope.initSelects();
         $scope.initDescription();
         AlertService.clearAlerts();
@@ -15449,10 +15499,14 @@ angular.module('RedhatAccess.cases')
        * Set $scope.incomplete to boolean based on state of form
        */
       $scope.validateForm = function () {
-        if (CaseService.case.product == null || CaseService.case.product == "" ||
-          CaseService.case.version == null || CaseService.case.version == "" ||
-          CaseService.case.summary == null || CaseService.case.summary == "" ||
-          CaseService.case.description == null || CaseService.case.description == "") {
+        if (CaseService.case.product == null ||
+          CaseService.case.product == "" ||
+          CaseService.case.version == null ||
+          CaseService.case.version == "" ||
+          CaseService.case.summary == null ||
+          CaseService.case.summary == "" ||
+          CaseService.case.description == null ||
+          CaseService.case.description == "") {
           $scope.incomplete = true;
         } else {
           $scope.incomplete = false;
@@ -15465,22 +15519,23 @@ angular.module('RedhatAccess.cases')
        * @param product
        */
       $scope.getProductVersions = function (product) {
-        CaseService.case.version = "";
-        $scope.versionDisabled = true;
-        $scope.versionLoading = true;
+        CaseService.
+      case .version = "";
+      $scope.versionDisabled = true;
+      $scope.versionLoading = true;
 
-        strata.products.versions(
-          product.code,
-          function (response) {
-            $scope.versions = response;
-            $scope.validateForm();
-            $scope.versionDisabled = false;
-            $scope.versionLoading = false;
-            $scope.$apply();
-          },
-          function (error) {
-            AlertService.addStrataErrorMessage(error);
-          });
+      strata.products.versions(
+        product.code,
+        function (response) {
+          $scope.versions = response;
+          $scope.validateForm();
+          $scope.versionDisabled = false;
+          $scope.versionLoading = false;
+          $scope.$apply();
+        },
+        function (error) {
+          AlertService.addStrataErrorMessage(error);
+        });
       };
 
       /**
@@ -15514,11 +15569,11 @@ angular.module('RedhatAccess.cases')
       $scope.doSubmit = function () {
         var caseJSON = {
           'product': CaseService.case.product.code,
-          'version': CaseService.case.version,
-          'summary': CaseService.case.summary,
-          'description': CaseService.case.description,
-          'severity': CaseService.case.severity.name,
-          'folderNumber': CaseService.case.caseGroup == null ? '' : CaseService.case.caseGroup.number
+          'version':CaseService.case.version,
+          'summary':CaseService.case.summary,
+          'description':CaseService.case.description,
+          'severity':CaseService.case.severity.name,
+          'folderNumber':CaseService.case.caseGroup == null ? '' : CaseService.case.caseGroup.number
         };
         $scope.submittingCase = true;
         strata.cases.post(
@@ -15532,7 +15587,7 @@ angular.module('RedhatAccess.cases')
                   });
                   $scope.submittingCase = false;
                 },
-                function(error) {
+                function (error) {
                   AlertService.addStrataErrorMessage(error);
                 }
               );
@@ -16119,6 +16174,16 @@ angular.module('RedhatAccess.cases')
 
 angular.module('RedhatAccess.cases')
 .factory('strataService', ['$q', function ($q) {
+
+  var errorHandler = function(message, xhr, response, status) {
+    this.reject({
+      message: message,
+      xhr: xhr,
+      response: response,
+      status: status
+    });
+  }
+
   return {
     problems: function(data, max) {
       var deferred = $q.defer();
@@ -16128,9 +16193,7 @@ angular.module('RedhatAccess.cases')
           function(solutions) {
             deferred.resolve(solutions);
           },
-          function(error) {
-            deferred.reject(error);
-          },
+          angular.bind(deferred, errorHandler),
           max
       );
 
@@ -16166,9 +16229,7 @@ angular.module('RedhatAccess.cases')
             function (response) {
               deferred.resolve(response);
             },
-            function (error) {
-              deferred.reject(error);
-            }
+            angular.bind(deferred, errorHandler)
         );
 
         return deferred.promise;
@@ -16181,9 +16242,7 @@ angular.module('RedhatAccess.cases')
             function (response) {
               deferred.resolve(response);
             },
-            function (error) {
-              deferred.reject(error);
-            }
+            angular.bind(deferred, errorHandler)
         );
 
         return deferred.promise;
@@ -16197,9 +16256,7 @@ angular.module('RedhatAccess.cases')
             function (response) {
               deferred.resolve(response);
             },
-            function (error) {
-              deferred.reject(error);
-            }
+            angular.bind(deferred, errorHandler)
         );
 
         return deferred.promise;
@@ -16214,9 +16271,7 @@ angular.module('RedhatAccess.cases')
           function(response) {
             deferred.resolve(response);
           },
-          function(error) {
-            deferred.reject(error);
-          }
+          angular.bind(deferred, errorHandler)
         );
 
         return deferred.promise;
@@ -16232,9 +16287,7 @@ angular.module('RedhatAccess.cases')
               function (response) {
                 deferred.resolve(response);
               },
-              function (error) {
-                deferred.reject(error);
-              }
+              angular.bind(deferred, errorHandler)
           );
 
           return deferred.promise;
@@ -16248,10 +16301,7 @@ angular.module('RedhatAccess.cases')
               function(response, code, xhr) {
                 deferred.resolve(xhr.getResponseHeader('Location'));
               },
-              function(error) {
-                console.log(error);
-                deferred.reject(error);
-              }
+              angular.bind(deferred, errorHandler)
           );
 
           return deferred.promise;
@@ -16266,9 +16316,7 @@ angular.module('RedhatAccess.cases')
               function(response) {
                 deferred.resolve(response);
               },
-              function(error) {
-                deferred.reject(error);
-              }
+              angular.bind(deferred, errorHandler)
           );
 
           return deferred.promise;
@@ -16283,9 +16331,21 @@ angular.module('RedhatAccess.cases')
               function (response) {
                 deferred.resolve(response);
               },
-              function (error) {
-                deferred.reject(error);
-              }
+              angular.bind(deferred, errorHandler)
+          );
+
+          return deferred.promise;
+        },
+        post: function(case_number, text) {
+          var deferred = $q.defer();
+
+          strata.cases.comments.post(
+              case_number,
+              {'text': text},
+              function(response) {
+                deferred.resolve(response);
+              },
+              angular.bind(deferred, errorHandler)
           );
 
           return deferred.promise;
@@ -16299,9 +16359,7 @@ angular.module('RedhatAccess.cases')
             function (response) {
               deferred.resolve(response);
             },
-            function (error) {
-              deferred.reject(error);
-            }
+            angular.bind(deferred, errorHandler)
         );
 
         return deferred.promise;
@@ -16320,9 +16378,21 @@ angular.module('RedhatAccess.cases')
             function(allCases) {
               deferred.resolve(allCases);
             },
-            function(error) {
-              deferred.reject(error);
-            }
+            angular.bind(deferred, errorHandler)
+        );
+
+        return deferred.promise;
+      },
+      put: function(case_number, caseJSON) {
+        var deferred = $q.defer();
+
+        strata.cases.put(
+            case_number,
+            caseJSON,
+            function(response) {
+              deferred.resolve(response);
+            },
+            angular.bind(deferred, errorHandler)
         );
 
         return deferred.promise;
@@ -16337,9 +16407,7 @@ angular.module('RedhatAccess.cases')
               function (response) {
                 deferred.resolve(response);
               },
-              function (error) {
-                deferred.reject(error);
-              }
+              angular.bind(deferred, errorHandler)
           );
 
           return deferred.promise;
@@ -16351,9 +16419,7 @@ angular.module('RedhatAccess.cases')
               function (response) {
                 deferred.resolve(response);
               },
-              function (error) {
-                deferred.reject(error);
-              }
+              angular.bind(deferred, errorHandler)
           );
 
           return deferred.promise;
@@ -16365,9 +16431,7 @@ angular.module('RedhatAccess.cases')
               function (response) {
                 deferred.resolve(response);
               },
-              function (error) {
-                deferred.reject(error);
-              }
+              angular.bind(deferred, errorHandler)
           );
 
           return deferred.promise;
@@ -16775,7 +16839,7 @@ angular.module('RedhatAccess.template', ['common/views/alert.html', 'common/view
 
 angular.module("common/views/alert.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/views/alert.html",
-    "<alert ng-repeat='alert in AlertService.alerts' type='alert.type'>{{alert.message}}</alert>\n" +
+    "<alert ng-repeat='alert in AlertService.alerts' type='alert.type' close='closeAlert($index)'>{{alert.message}}</alert>\n" +
     "");
 }]);
 
@@ -16806,7 +16870,7 @@ angular.module("common/views/header.html", []).run(["$templateCache", function($
 
 angular.module("common/views/title.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/views/title.html",
-    "<h4 ng-show='showTitle'>Red Hat Access: {{pageTitle}}</h4>\n" +
+    "<h1 ng-show='showTitle'>Red Hat Access: {{pageTitle}}</h1>\n" +
     "");
 }]);
 
@@ -16911,10 +16975,6 @@ angular.module("search/views/accordion_search_results.html", []).run(["$template
     "</div>\n" +
     "<div class=\"row \">\n" +
     "    <div class=\"col-xs-12\">\n" +
-    "        <div class=\"alert alert-info\" ng-show=\"searchResultInfo.msg\">\n" +
-    "            <a class=\"close\" ng-click=\"searchResultInfo.msg=null\">×</a>\n" +
-    "            {{searchResultInfo.msg}}\n" +
-    "        </div>\n" +
     "        <accordion>\n" +
     "            <accordion-group is-open=\"isopen\" ng-repeat=\"result in results\">\n" +
     "                <accordion-heading>\n" +
@@ -16931,10 +16991,6 @@ angular.module("search/views/accordion_search_results.html", []).run(["$template
 angular.module("search/views/list_search_results.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("search/views/list_search_results.html",
     "<div class=\"col-sm-4\">\n" +
-    "    <div class=\"alert alert-info\" ng-show=\"searchResultInfo.msg\">\n" +
-    "        <a class=\"close\" ng-click=\"searchResultInfo.msg=null\">×</a>\n" +
-    "        {{searchResultInfo.msg}}\n" +
-    "    </div>\n" +
     "    <div class=\"panel panel-default\" ng-show='results.length > 0'>\n" +
     "        <!--pagination on-select-page=\"pageChanged(page)\" total-items=\"totalItems\" page=\"currentPage\" max-size=\"maxSize\"></pagination-->\n" +
     "\n" +
@@ -16989,7 +17045,9 @@ angular.module("search/views/search_form.html", []).run(["$templateCache", funct
     "            <div class=\"input-group\">\n" +
     "                <input type=\"text\" class=\"form-control\" id=\"rhSearchStr\" name=\"searchString\" ng-model=\"searchStr\" class=\"input-xxlarge\" placeholder=\"Search Articles and Solutions\">\n" +
     "                <span class=\"input-group-btn\">\n" +
-    "                    <button ng-disabled=\"(searchStr === undefined || searchStr.trim()==='' || searchInProgress.value === true)\" class=\"btn btn-default btn-primary\" type='submit' ng-click=\"search(searchStr)\">Search</button>\n" +
+    "                    <button ng-disabled=\"(searchStr === undefined || searchStr.trim()==='' || searchInProgress.value === true)\" class=\"btn btn-default btn-primary\" type='submit' ng-click=\"search(searchStr)\">\n" +
+    "                        <i class=\"glyphicon glyphicon-search \"></i>\n" +
+    "                        Search</button>\n" +
     "                </span>\n" +
     "\n" +
     "            </div>\n" +
@@ -17042,11 +17100,15 @@ angular.module("cases/views/commentsSection.html", []).run(["$templateCache", fu
 angular.module("cases/views/compact.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/compact.html",
     "<div class=\"container-offset\">\n" +
-    "    <x-rha-header title=\"My Cases\"/>\n" +
     "    <div class=\"container-fluid\">\n" +
     "        <div class=\"row\">\n" +
+    "            <div class=\"col-xs-12\">\n" +
+    "                <x-rha-header title=\"My Cases\"/>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"row\">\n" +
     "            <div class=\"col-xs-4\" style=\"height: 100%;\">\n" +
-    "                <rha-compact-case-list></rha-compact-case-list>\n" +
+    "                <x-rha-compact-case-list></x-rha-compact-case-list>\n" +
     "            </div>\n" +
     "            <div class=\"col-xs-8\" style=\"padding: 0px; \">\n" +
     "                <!-- Jade can't create the ui-view attribute in the form\n" +
@@ -17061,12 +17123,12 @@ angular.module("cases/views/compact.html", []).run(["$templateCache", function($
 
 angular.module("cases/views/compactCaseList.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/compactCaseList.html",
-    "<div id=\"redhat-access-case\"><div class=\"container-fluid\"><div class=\"row\"><div class=\"col-xs-12 col-no-padding\"><rha-list-filter postfilter=\"filterCallback\" prefilter=\"onFilter\"></rha-list-filter></div></div><div class=\"row\"><div class=\"col-xs-12\"><div ng-show=\"CaseListService.cases.length == 0 &amp;&amp; !loadingCaseList\">No cases found with given filters.</div><span ng-show=\"loadingCaseList\" class=\"rha-search-spinner\"></span></div></div><div ng-hide=\"CaseListService.cases.length ==0 || loadingCaseList\" style=\"border-top: 1px solid #dddddd;\" class=\"row\"><div style=\"overflow: auto;\" rha-resizable=\"rha-resizable\" rha-dom-ready=\"domReady\" class=\"col-xs-12 col-no-padding\"><div style=\"margin-bottom: 0px; overflow: auto;\"><ul style=\"margin-bottom: 0px;\" class=\"list-group\"><a ng-repeat=\"case in CaseListService.cases\" ui-sref=\".edit({id: &quot;{{case.case_number}}&quot;})\" ng-class=\"{&quot;active&quot;: $index == selectedCaseIndex}\" ng-click=\"selectCase($index)\" class=\"list-group-item\">{{case.case_number}} {{case.summary}}</a></ul></div></div></div></div></div>");
+    "<div id=\"redhat-access-case\"><div class=\"container-fluid\"><div class=\"row\"><div class=\"col-xs-12 col-no-padding\"><rha-list-filter postfilter=\"filterCallback\" prefilter=\"onFilter\"></rha-list-filter></div></div><div class=\"row\"><div class=\"col-xs-12\"><div ng-show=\"CaseListService.cases.length == 0 &amp;&amp; !loadingCaseList\">No cases found with given filters.</div><span ng-show=\"loadingCaseList &amp;&amp; securityService.isLoggedIn\" class=\"rha-search-spinner\"></span></div></div><div ng-hide=\"CaseListService.cases.length ==0 || loadingCaseList\" style=\"border-top: 1px solid #dddddd;\" class=\"row\"><div style=\"overflow: auto;\" rha-resizable=\"rha-resizable\" rha-dom-ready=\"domReady\" class=\"col-xs-12 col-no-padding\"><div style=\"margin-bottom: 0px; overflow: auto;\"><ul style=\"margin-bottom: 0px;\" class=\"list-group\"><a ng-repeat=\"case in CaseListService.cases\" ui-sref=\".edit({id: &quot;{{case.case_number}}&quot;})\" ng-class=\"{&quot;active&quot;: $index == selectedCaseIndex}\" ng-click=\"selectCase($index)\" class=\"list-group-item\">{{case.case_number}} {{case.summary}}</a></ul></div></div></div></div></div>");
 }]);
 
 angular.module("cases/views/compactEdit.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/compactEdit.html",
-    "<!DOCTYPE html><div id=\"redhat-access-case\"><div ng-show=\"caseLoading\" class=\"container-fluid\"><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><span class=\"rha-search-spinner\"></span></div></div></div><div ng-hide=\"caseLoading\" rha-resizable rha-dom-ready=\"domReady\" style=\"overflow: auto; padding-left: 15px;border-top: 1px solid #dddddd; border-left: 1px solid #dddddd;\" class=\"container-fluid\"><div style=\"margin-right: 0px; padding-top: 10px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-details compact=\"true\"></rha-case-details></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-description></rha-case-description></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-attachments></rha-case-attachments></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-comments></rha-case-comments></div></div></div></div>");
+    "<!DOCTYPE html><div id=\"redhat-access-case\"><div ng-show=\"caseLoading &amp;&amp; securityService.isLoggedIn\" class=\"container-fluid\"><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><span class=\"rha-search-spinner\"></span></div></div></div><div ng-hide=\"caseLoading\" rha-resizable rha-dom-ready=\"domReady\" style=\"overflow: auto; padding-left: 15px;border-top: 1px solid #dddddd; border-left: 1px solid #dddddd;\" class=\"container-fluid\"><div style=\"margin-right: 0px; padding-top: 10px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-details compact=\"true\"></rha-case-details></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-description></rha-case-description></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-attachments></rha-case-attachments></div></div><div style=\"margin-right: 0px;\" class=\"row\"><div class=\"col-xs-12\"><rha-case-comments></rha-case-comments></div></div></div></div>");
 }]);
 
 angular.module("cases/views/descriptionSection.html", []).run(["$templateCache", function($templateCache) {
@@ -17081,7 +17143,7 @@ angular.module("cases/views/detailsSection.html", []).run(["$templateCache", fun
 
 angular.module("cases/views/edit.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/edit.html",
-    "<!DOCTYPE html><div id=\"redhat-access-case\" class=\"container-offset\"><x-rha-header title=\"Edit Case\"></x-rha-header><div class=\"container-fluid side-padding\"><div class=\"row\"><div ng-hide=\"caseLoading\" class=\"col-xs-12\"><rha-case-details compact=\"false\"></rha-case-details></div><div ng-show=\"caseLoading\" class=\"col-xs-12\"><div>Loading Details...</div></div></div><div class=\"row\"><div ng-hide=\"caseLoading\" class=\"col-xs-12\"><rha-case-description></rha-case-description></div></div><div class=\"row\"><div ng-hide=\"attachmentsLoading\" class=\"col-xs-12\"><rha-case-attachments></rha-case-attachments></div><div ng-show=\"attachmentsLoading\" class=\"col-xs-12\"><div>Loading Attachments...</div></div></div><div class=\"row\"><div ng-hide=\"recommendationsLoading\" class=\"col-xs-12\"><rha-case-recommendations></rha-case-recommendations></div><div ng-show=\"recommendationsLoading\" class=\"col-xs-12\"><div>Loading Recommendations...</div></div></div><div class=\"row\"><div class=\"col-xs-12\"><rha-case-comments></rha-case-comments></div></div></div></div>");
+    "<!DOCTYPE html><div id=\"redhat-access-case\" class=\"container-offset\"><x-rha-header title=\"Edit Case\"></x-rha-header><div ng-show=\"securityService.isLoggedIn\" class=\"container-fluid side-padding\"><div class=\"row\"><div ng-hide=\"caseLoading\" class=\"col-xs-12\"><rha-case-details compact=\"false\"></rha-case-details></div><div ng-show=\"caseLoading\" class=\"col-xs-12\"><div>Loading Details...</div></div></div><div class=\"row\"><div ng-hide=\"caseLoading\" class=\"col-xs-12\"><rha-case-description></rha-case-description></div></div><div class=\"row\"><div ng-hide=\"attachmentsLoading\" class=\"col-xs-12\"><rha-case-attachments></rha-case-attachments></div><div ng-show=\"attachmentsLoading\" class=\"col-xs-12\"><div>Loading Attachments...</div></div></div><div class=\"row\"><div ng-hide=\"recommendationsLoading\" class=\"col-xs-12\"><rha-case-recommendations></rha-case-recommendations></div><div ng-show=\"recommendationsLoading\" class=\"col-xs-12\"><div>Loading Recommendations...</div></div></div><div class=\"row\"><div class=\"col-xs-12\"><rha-case-comments></rha-case-comments></div></div></div></div>");
 }]);
 
 angular.module("cases/views/list.html", []).run(["$templateCache", function($templateCache) {
