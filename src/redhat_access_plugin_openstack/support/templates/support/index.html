@@ -17,7 +17,11 @@
 <script>
 strata.setRedhatClientID("redhat_access_plugin_openstack-5.0");
 angular.module('RedhatAccess.cases')
-.config(function ($urlRouterProvider) {$urlRouterProvider.otherwise('case/list')})
+.config(function ($urlRouterProvider, $httpProvider) {
+	$urlRouterProvider.otherwise('case/list');
+	$httpProvider.defaults.xsrfHeaderName= 'X-CSRFToken';
+	$httpProvider.defaults.xsrfCookieName = 'csrftoken';
+})
 .value('NEW_DEFAULTS', {product: "Red Hat OpenStack", version: "5.0"});
 angular.element(document).ready(function() {
 	angular.bootstrap(document.getElementById("redhat-access-cases"), ['RedhatAccess.cases']);

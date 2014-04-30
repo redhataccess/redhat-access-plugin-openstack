@@ -2,8 +2,6 @@ import logging
 
 from django import http
 from horizon import views
-#TODO: Remove this
-from django.views.decorators.csrf import csrf_exempt
 
 import shlex
 import subprocess
@@ -22,8 +20,6 @@ class IndexView(views.APIView):
         return context
 
 
-#TODO: Remove this!
-@csrf_exempt
 def attachments(request):
     if request.method == 'GET':
         response = http.HttpResponse(content_type='text/plain')

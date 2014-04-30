@@ -13849,6 +13849,19 @@ angular.module('RedhatAccess.header', [])
         AlertService.alerts.splice(index, 1);
       }
     }
+  ]).factory('configurationService', ['$q',
+    function ($q) {
+      var defer = $q.defer();
+      var service = {
+        setConfig: function (config) {
+            defer.resolve(config);
+        },
+        getConfig: function () {
+          return defer.promise;
+        }
+      };
+      return service;
+    }
   ]);
 var app = angular.module('RedhatAccess.tree-selector', []);
 
@@ -14051,7 +14064,7 @@ angular.module('RedhatAccess.security', ['ui.bootstrap', 'RedhatAccess.template'
   .controller('SecurityController', ['$scope', '$rootScope', 'securityService', 'AUTH_EVENTS',
     function ($scope, $rootScope, securityService, AUTH_EVENTS) {
       $scope.securityService = securityService;
-//      securityService.validateLogin(false); //chenge to false to force login
+      securityService.validateLogin(false); //change to false to force login
     }
   ])
   .service('securityService', ['$rootScope', '$modal', 'AUTH_EVENTS', '$q',
@@ -14279,8 +14292,8 @@ angular.module('RedhatAccess.search', [
     }
   ])
   .controller('SearchController', ['$scope',
-    'SearchResultsService', 'SEARCH_CONFIG',
-    function ($scope, SearchResultsService, SEARCH_CONFIG) {
+    'SearchResultsService', 'SEARCH_CONFIG', 'securityService', 'AlertService',
+    function ($scope, SearchResultsService, SEARCH_CONFIG,securityService, AlertService) {
       $scope.results = SearchResultsService.results;
       $scope.selectedSolution = SearchResultsService.currentSelection;
       $scope.searchInProgress = SearchResultsService.searchInProgress;
@@ -14307,11 +14320,23 @@ angular.module('RedhatAccess.search', [
 
       $scope.search = function (searchStr, limit) {
 
-        SearchResultsService.search(searchStr, limit);
+        securityService.validateLogin(true).then(
+          function (authedUser) {
+            SearchResultsService.search(searchStr, limit);
+          },
+          function (error) {
+             AlertService.addDangerMessage("You must be logged in to use this functionality.");
+          });
       };
 
       $scope.diagnose = function (data, limit) {
-        SearchResultsService.diagnose(data, limit);
+        securityService.validateLogin(true).then(
+          function (authedUser) {
+            SearchResultsService.diagnose(data, limit);
+          },
+          function (error) {
+             AlertService.addDangerMessage("You must be logged in to use this functionality.");
+          });
       };
 
 
@@ -14615,7 +14640,7 @@ angular.module('RedhatAccess.search', [
       $rootScope.$on(AUTH_EVENTS.logoutSuccess, function () {
         service.clear.apply(service);
       });
-      
+
       return service;
     }
   ]);
@@ -17078,7 +17103,7 @@ angular.module("security/login_form.html", []).run(["$templateCache", function($
     "    </h5>\n" +
     "</div>\n" +
     "<div class=\"modal-body form-horizontal\" id=\"rha-login-modal-body\" >\n" +
-    "    <form ng-submit=\"modalOptions.ok()\">\n" +
+    "    <!--form ng-submit=\"modalOptions.ok()\"  method=\"post\"-->\n" +
     "        <div class=\"alert alert-info\" ng-show=\"authError\">\n" +
     "            {{authError}}\n" +
     "        </div>\n" +
@@ -17099,7 +17124,7 @@ angular.module("security/login_form.html", []).run(["$templateCache", function($
     "                <button class=\"btn btn-primary btn-md login\" ng-click=\"modalOptions.ok()\" type=\"submit\">Sign in</button> <button class=\"btn btn-primary btn-md cancel\" ng-click=\"modalOptions.close()\" type=\"submit\">Cancel</button>\n" +
     "            </div>\n" +
     "        </div>\n" +
-    "    </form>\n" +
+    "    <!--/form-->\n" +
     "</div>");
 }]);
 
