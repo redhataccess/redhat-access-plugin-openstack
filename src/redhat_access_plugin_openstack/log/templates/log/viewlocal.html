@@ -16,6 +16,7 @@
 	</div>
 </div>
 <script>
+strata.setRedhatClientID("redhat_access_plugin_openstack-5.0");
 angular.module('RedhatAccess.logViewer').config(function($urlRouterProvider) {
 	$urlRouterProvider.otherwise('/logviewer')
 }).value('hideMachinesDropdown', {value: true});
@@ -25,6 +26,5 @@ angular.module('RedhatAccess.search').value('SEARCH_CONFIG',
 angular.element(document).ready(function() {
 	angular.bootstrap(document.getElementById("redhat-access-logs"), ['RedhatAccess.logViewer']);
 });
-strata.setRedhatClientID("redhat_access_plugin_openstack-5.0");
 </script>
 {% endblock %}
