@@ -18,7 +18,7 @@
 <script>
 angular.module('RedhatAccess.logViewer').config(function($urlRouterProvider) {
 	$urlRouterProvider.otherwise('/logviewer')
-}).value('hideMachinesDropdown', true);
+}).value('hideMachinesDropdown', {value: true});
 angular.module('RedhatAccess.search').value('SEARCH_CONFIG',
     { openCaseRef: "/dashboard/redhat_access_plugin_openstack/support/#/case/new", showOpenCaseBtn: true }
     );

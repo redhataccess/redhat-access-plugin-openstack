@@ -16,7 +16,7 @@
 <script>
 angular.module('RedhatAccess.search').config(function($urlRouterProvider) {
         $urlRouterProvider.otherwise('/search')
-});
+}).value('NEW_DEFAULTS', {product: "Red Hat OpenStack", version: "5.0"});
 angular.element(document).ready(function() {
 	angular.bootstrap(document.getElementById("redhat-access-search"), ['RedhatAccess.search']);
 });
