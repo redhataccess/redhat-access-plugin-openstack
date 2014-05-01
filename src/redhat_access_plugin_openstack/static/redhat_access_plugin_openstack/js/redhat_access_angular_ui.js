@@ -13773,7 +13773,7 @@ angular.module('RedhatAccess.header', [])
         };
         this.addAlert(alert);
 
-        $('body').animate({scrollTop: $('body').offset().top}, 100);
+        $('body,html').animate({scrollTop: $('body').offset().top}, 100);
 
         //Angular adds a unique hash to each alert during data binding,
         //so the returned alert will be unique even if the
@@ -13833,7 +13833,11 @@ angular.module('RedhatAccess.header', [])
 
       $scope.closeAlert = function (index) {
         AlertService.alerts.splice(index, 1);
-      }
+      };
+
+      $scope.dismissAlerts = function() {
+        AlertService.clearAlerts();
+      };
     }
   ])
   .directive('rhaHeader',
@@ -13860,7 +13864,11 @@ angular.module('RedhatAccess.header', [])
 
       $scope.closeAlert = function (index) {
         AlertService.alerts.splice(index, 1);
-      }
+      };
+
+      $scope.dismissAlerts = function() {
+        AlertService.clearAlerts();
+      };
     }
   ]).factory('configurationService', ['$q',
     function ($q) {
@@ -16811,7 +16819,7 @@ angular.module('RedhatAccess.logViewer',
 			}).success(function(data, status, headers, config) {
 				$scope.items = data;
 			}).error(function(data, status, headers, config) {
-				AlertService.addStrataErrorMessage(data);
+				AlertService.addDangerMessage(data);
 			});
 		};
 		$scope.machineSelected = function() {
@@ -16833,7 +16841,7 @@ angular.module('RedhatAccess.logViewer',
 				files.setFileList(tree);
 			}).error(function(data, status, headers, config) {
 				$scope.loading = false;
-				AlertService.addStrataErrorMessage(data);
+				AlertService.addDangerMessage(data);
 			});
 		};
 		if($scope.hideDropdown){
@@ -16868,7 +16876,7 @@ angular.module('RedhatAccess.logViewer',
 			}).success(function(data, status, headers, config) {
 				files.file = data;
 			}).error(function(data, status, headers, config) {
-				AlertService.addStrataErrorMessage(data);
+				AlertService.addDangerMessage(data);
 			});
 		};
 }])
@@ -16984,7 +16992,7 @@ angular.module('RedhatAccess.logViewer',
 			}).success(function(data, status, headers, config) {
 				$scope.tabs[index].content = data;
 			}).error(function(data, status, headers, config) {
-				AlertService.addStrataErrorMessage(data);
+				AlertService.addDangerMessage(data);
 			});
 		};
 }])
@@ -17081,7 +17089,18 @@ angular.module('RedhatAccess.template', ['common/views/alert.html', 'common/view
 
 angular.module("common/views/alert.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/views/alert.html",
-    "<alert ng-repeat='alert in AlertService.alerts' type='alert.type' close='closeAlert($index)'>{{alert.message}}</alert>\n" +
+    "<div class=\"container-fluid\">\n" +
+    "    <div class=\"row\" style=\"padding-bottom: 5px;\">\n" +
+    "        <div class=\"col-xs-12\">\n" +
+    "            <a style=\"float: right\" ng-show=\"AlertService.alerts.length > 1\" ng-href=\"\" ng-click=\"dismissAlerts()\" >Close messages</a>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-xs-12\">\n" +
+    "            <alert ng-repeat='alert in AlertService.alerts' type='alert.type' close='closeAlert($index)'>{{alert.message}}</alert>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n" +
     "");
 }]);
 
@@ -17248,7 +17267,7 @@ angular.module("search/views/list_search_results.html", []).run(["$templateCache
     "</div>\n" +
     "<div class=\"col-sm-8\">\n" +
     "    <div class=\"alert alert-info\" ng-show='selectedSolution.index === -1 && results.length > 0' >\n" +
-    "        Please select a recommendation to view.\n" +
+    "        To view a recommendation, click on it.\n" +
     "    </div>\n" +
     "    <x-rha-result-detail-display result='selectedSolution.data' />\n" +
     "</div>");
