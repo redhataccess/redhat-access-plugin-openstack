@@ -1,4 +1,4 @@
-/*! redhat_access_angular_ui - v0.0.0 - 2014-04-30
+/*! redhat_access_angular_ui - v0.0.0 - 2014-05-01
  * Copyright (c) 2014 ;
  * Licensed 
  */
@@ -13766,7 +13766,9 @@ angular.module('RedhatAccess.header', [])
         this.alerts.push({
           message: message,
           type: type == null ? 'warning' : type
-        })
+        });
+
+        $('body').animate({scrollTop: $('body').offset().top}, 100);
       };
 
       this.getErrors = function () {
@@ -14768,8 +14770,11 @@ angular.module('RedhatAccess.cases')
         case .case_number).then(
           function () {
             $scope.updatingAttachments = false;
-          }
-        );
+          },
+          function (error) {
+            $scope.updatingAttachments = false;
+            console.log("Error posting attachment");
+          });
       };
     }
   ]);
@@ -15230,7 +15235,7 @@ angular.module('RedhatAccess.cases')
               );
             }
 
-            RecommendationsService.populateRecommendations(25).then(
+            RecommendationsService.populateRecommendations(12).then(
                 function() {
                   $scope.recommendationsLoading = false;
                 },
@@ -16086,16 +16091,29 @@ angular.module('RedhatAccess.cases')
                 caseNum: caseId
               };
               var deferred = $q.defer();
-              $http.post('attachments', jsonData).success(function (data) {
+              $http.post('attachments', jsonData).success(function (data, status, headers, config) {
                 deferred.resolve(data);
                 AlertService.addSuccessMessage(
                   'Successfully uploaded attachment ' +
                   jsonData.attachment + ' to case ' + caseId);
-              }).error(function (error) {
-                 AlertService.addSuccessMessage(
+              }).error(function (data, status, headers, config) {
+                console.log(data);
+                var error_msg = '';
+                switch (status){
+                  case 401:
+                    error_msg = ' : Unauthorised.';
+                    break;
+                  case 409:
+                    error_msg = ' : Invalid username/password.';
+                    break;
+                  case 500:
+                    error_msg = ' : Internal server error';
+                    break;
+                }
+                 AlertService.addDangerMessage(
                   'Failed to upload attachment ' +
-                  jsonData.attachment + ' to case ' + caseId);
-                deferred.reject();
+                  jsonData.attachment + ' to case ' + caseId + error_msg);
+                deferred.reject(data);
               });
               promises.push(deferred.promise);
             });
@@ -17373,7 +17391,7 @@ angular.module("cases/views/pageHeader.html", []).run(["$templateCache", functio
 
 angular.module("cases/views/recommendationsSection.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/recommendationsSection.html",
-    "<h4 class=\"section-header\">Recommendations</h4><div class=\"container-fluid side-padding\"><div class=\"row\"><div ng-repeat=\"recommendation in recommendationsOnScreen\"><div class=\"col-xs-3\"><div class=\"bold\">{{recommendation.title}}</div><div style=\"padding: 8px 0;word-wrap:break-word;\">{{recommendation.resolution.text | recommendationsResolution}}</div><a href=\"{{recommendation.uri}}\" target=\"_blank\">View full article in new window</a></div></div></div><div class=\"row\"><div class=\"col-xs-12\"><pagination boundary-links=\"true\" total-items=\"RecommendationsService.recommendations.length\" on-select-page=\"selectRecommendationsPage(page)\" items-per-page=\"recommendationsPerPage\" page=\"currentRecommendationPage\" max-size=\"maxRecommendationsSize\" previous-text=\"&lt;\" next-text=\"&gt;\" first-text=\"&lt;&lt;\" last-text=\"&gt;&gt;\" class=\"pagination-sm\"></pagination></div></div></div>");
+    "<h4 class=\"section-header\">Recommendations</h4><div class=\"container-fluid side-padding\"><div class=\"row\"><div ng-repeat=\"recommendation in recommendationsOnScreen\"><div class=\"col-xs-3\"><div class=\"bold\">{{recommendation.title}}</div><div style=\"padding: 8px 0;word-wrap:break-word;\">{{recommendation.resolution.text | recommendationsResolution}}</div><a href=\"{{recommendation.view_uri}}\" target=\"_blank\">View full article in new window</a></div></div></div><div class=\"row\"><div class=\"col-xs-12\"><pagination boundary-links=\"true\" total-items=\"RecommendationsService.recommendations.length\" on-select-page=\"selectRecommendationsPage(page)\" items-per-page=\"recommendationsPerPage\" page=\"currentRecommendationPage\" max-size=\"maxRecommendationsSize\" previous-text=\"&lt;\" next-text=\"&gt;\" first-text=\"&lt;&lt;\" last-text=\"&gt;&gt;\" class=\"pagination-sm\"></pagination></div></div></div>");
 }]);
 
 angular.module("log_viewer/views/log_viewer.html", []).run(["$templateCache", function($templateCache) {
