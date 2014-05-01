@@ -16371,6 +16371,8 @@ angular.module('RedhatAccess.cases')
               );
             })
         );
+      } else {
+        masterDeferred.resolve();
       }
 
       return masterDeferred.promise;
