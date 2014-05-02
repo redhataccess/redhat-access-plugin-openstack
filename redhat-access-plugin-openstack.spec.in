@@ -79,7 +79,7 @@ python /usr/share/openstack-dashboard/manage.py collectstatic --noinput
 %changelog
 * Wed Mar 05 2014 Dan Varga <dvarga@redhat.com> - 5.0.0-0
 - RHOS 5.0 and RCUE Updates
-- Resolves:
+- Resolves: bz1082762
 
 * Tue Oct 22 2013 Dan Varga <dvarga@redhat.com> - 4.0.0-0
 - Better handling of login issues
