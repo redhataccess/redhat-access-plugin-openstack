@@ -77,6 +77,10 @@ python /usr/share/openstack-dashboard/manage.py collectstatic --noinput
 /usr/share/openstack-dashboard/openstack_dashboard/
 
 %changelog
+* Wed May 07 2014 Dan Varga <dvarga@redhat.com> - 5.0.0-1
+- Fix django url import
+- Resolves: bz1095310
+
 * Wed Mar 05 2014 Dan Varga <dvarga@redhat.com> - 5.0.0-0
 - RHOS 5.0 and RCUE Updates
 - Resolves: bz1082762
