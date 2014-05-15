@@ -37,7 +37,7 @@ BuildArch: noarch
 Requires: python
 Requires: python-lxml
 Requires: python-dateutil
-Requires: openstack-dashboard
+Requires(pre): openstack-dashboard
 
 %if 0%{?rhel} && 0%{?rhel} <= 5
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -77,6 +77,10 @@ python /usr/share/openstack-dashboard/manage.py collectstatic --noinput
 /usr/share/openstack-dashboard/openstack_dashboard/
 
 %changelog
+* Thu May 08 2014 Dan Varga <dvarga@redhat.com> - 5.0.0-2
+- Use Require(pre) instead of require
+- Resolves: bz1095828
+
 * Wed May 07 2014 Dan Varga <dvarga@redhat.com> - 5.0.0-1
 - Fix django url import
 - Resolves: bz1095310
