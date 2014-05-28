@@ -13786,6 +13786,60 @@ angular.module('ngTable').run(['$templateCache', function ($templateCache) {
     return app;
 }));
 'use strict';
+angular.module('RedhatAccess.cases', [
+  'ui.router',
+  'ui.bootstrap',
+  'ngTable',
+  'RedhatAccess.template',
+  'RedhatAccess.security',
+  'RedhatAccess.search',
+  'RedhatAccess.ui-utils',
+  'RedhatAccess.header'
+])
+  .constant('STATUS', {
+    open: 'open',
+    closed: 'closed',
+    both: 'both'
+  })
+  .value('NEW_DEFAULTS', {
+    'product': '',
+    'version': ''
+  })
+  .config([
+    '$stateProvider',
+    function ($stateProvider) {
+
+      $stateProvider.state('compact', {
+        url: '/case/compact?sessionId',
+        templateUrl: 'cases/views/compact.html'
+      });
+
+      $stateProvider.state('compact.edit', {
+        url: '/{id:[0-9]{1,8}}',
+        templateUrl: 'cases/views/compactEdit.html',
+        controller: 'CompactEdit'
+      });
+
+      $stateProvider.state('edit', {
+        url: '/case/{id:[0-9]{1,8}}',
+        templateUrl: 'cases/views/edit.html',
+        controller: 'Edit'
+      });
+
+      $stateProvider.state('new', {
+        url: '/case/new',
+        templateUrl: 'cases/views/new.html',
+        controller: 'New'
+      });
+
+      $stateProvider.state('list', {
+        url: '/case/list',
+        templateUrl: 'cases/views/list.html',
+        controller: 'List'
+      });
+    }
+  ]);
+'use strict';
  /*global $ */
 
 angular.module('RedhatAccess.header', [])
@@ -14233,216 +14287,63 @@ app.directive('rhaResizable', [
     };
   }
 ]);
-'use strict';
-/*global strata,$*/
-/*jshint unused:vars */
-angular.module('RedhatAccess.security', ['ui.bootstrap', 'RedhatAccess.template', 'ui.router'])
-  .constant('AUTH_EVENTS', {
-    loginSuccess: 'auth-login-success',
-    loginFailed: 'auth-login-failed',
-    logoutSuccess: 'auth-logout-success',
-    sessionTimeout: 'auth-session-timeout',
-    notAuthenticated: 'auth-not-authenticated',
-    notAuthorized: 'auth-not-authorized'
+//var testURL = 'http://localhost:8080/LogCollector/';
+// angular module
+angular.module('RedhatAccess.logViewer',
+	[ 'angularTreeview', 'ui.bootstrap', 'RedhatAccess.search', 'RedhatAccess.header'])
+.config([ '$stateProvider', function($stateProvider) {
+	$stateProvider.state('logviewer', {
+		url : "/logviewer",
+		templateUrl : 'log_viewer/views/log_viewer.html'
+	})
+}])
+.constant('LOGVIEWER_EVENTS', {
+    allTabsClosed: 'allTabsClosed'
   })
-  .directive('rhaLoginStatus', function () {
-    return {
-      restrict: 'AE',
-      scope: false,
-      templateUrl: 'security/login_status.html'
-    };
-  })
-  .controller('SecurityController', ['$scope', '$rootScope', 'securityService',
-    function ($scope, $rootScope, securityService) {
-      $scope.securityService = securityService;
-      securityService.validateLogin(false); //change to false to force login
-    }
-  ])
-  .value('LOGIN_VIEW_CONFIG', {
-    verbose: true,
-  })
-  .service('securityService', ['$rootScope', '$modal', 'AUTH_EVENTS', '$q', 'LOGIN_VIEW_CONFIG',
-    function ($rootScope, $modal, AUTH_EVENTS, $q, LOGIN_VIEW_CONFIG) {
+.value('hideMachinesDropdown', {value:false});
 
-      this.loginStatus = {
-        isLoggedIn: false,
-        loggedInUser: '',
-        verifying: false
-      };
+function parseList(tree, data) {
+	var files = data.split("\n");
+	for ( var i in files) {
+		var file = files[i];
+		var splitPath = file.split("/");
+		returnNode(splitPath, tree, file);
+	}
+}
 
-      this.setLoginStatus = function (isLoggedIn, userName, verifying) {
-        this.loginStatus.isLoggedIn = isLoggedIn;
-        this.loginStatus.loggedInUser = userName;
-        this.loginStatus.verifying = verifying;
-      };
+function returnNode(splitPath, tree, fullFilePath) {
+	if (splitPath[0] != null) {
+		if (splitPath[0] != "") {
+			var node = splitPath[0];
+			var match = false;
+			var index = 0;
+			for ( var i in tree) {
+				if (tree[i].roleName == node) {
+					match = true;
+					index = i;
+					break;
+				}
+			}
+			if (!match) {
+				var object = new Object();
+				object.roleName = node;
+				object.roleId = node;
+				if (splitPath.length == 1) {
+					object.fullPath = fullFilePath;
+				}
+				object.children = new Array();
+				tree.push(object);
+				index = tree.length - 1;
+			}
 
-      var modalDefaults = {
-        backdrop: 'static',
-        keyboard: true,
-        modalFade: true,
-        templateUrl: 'security/login_form.html',
-        windowClass: 'rha-login-modal'
-      };
-
-      var modalOptions = {
-        closeButtonText: 'Close',
-        actionButtonText: 'OK',
-        headerText: 'Proceed?',
-        bodyText: 'Perform this action?',
-        backdrop: 'static'
-
-      };
-
-      this.getBasicAuthToken = function () {
-        var defer = $q.defer();
-        var token = localStorage.getItem('rhAuthToken');
-        if (token !== undefined && token !== '') {
-          defer.resolve(token);
-          return defer.promise;
-        } else {
-          this.login().then(
-            function (authedUser) {
-              defer.resolve(localStorage.getItem('rhAuthToken'));
-            },
-            function (error) {
-              console.log('Unable to get user credentials');
-              defer.resolve(error);
-            });
-          return defer.promise;
-        }
-      };
-
-      this.initLoginStatus = function () {
-        var defer = $q.defer();
-        var that = this;
-        this.loginStatus.verifying = true;
-        strata.checkLogin(
-          function (result, authedUser) {
-            if (result) {
-              that.setLoginStatus(true, authedUser.name, false);
-              defer.resolve(authedUser.name);
-            } else {
-              that.setLoginStatus(false, '', false);
-              defer.reject('');
-            }
-          }
-        );
-        return defer.promise;
-      };
-
-      this.validateLogin = function (forceLogin) {
-        var defer = $q.defer();
-        var that = this;
-        if (!forceLogin) {
-          this.initLoginStatus().then(
-            function (username) {
-              defer.resolve(username);
-            },
-            function (error) {
-              defer.reject(error);
-            }
-          );
-          return defer.promise;
-        } else {
-          this.initLoginStatus().then(
-            function (username) {
-              console.log('User name is ' + username);
-              defer.resolve(username);
-            },
-            function (error) {
-              that.login().then(
-                function (authedUser) {
-                  defer.resolve(authedUser.name);
-                },
-                function (error) {
-                  defer.reject(error);
-                });
-            }
-          );
-          return defer.promise;
-        }
-      };
-
-      this.login = function () {
-        var that = this;
-        var result = this.showLogin(modalDefaults, modalOptions);
-        result.then(
-          function (authedUser) {
-            console.log('User logged in : ' + authedUser.name);
-            that.setLoginStatus(true, authedUser.name, false);
-          },
-          function (error) {
-            console.log('Unable to login user');
-            that.setLoginStatus(false, '', false);
-          });
-        return result; // pass on the promise
-      };
-
-      this.logout = function () {
-        strata.clearCredentials();
-        this.setLoginStatus(false, '', false);
-        $rootScope.$broadcast(AUTH_EVENTS.logoutSuccess);
-      };
-
-      this.getLoggedInUserName = function () {
-        return strata.getAuthInfo().name;
-      };
-
-      this.showLogin = function (customModalDefaults, customModalOptions) {
-        //Create temp objects to work with since we're in a singleton service
-        var tempModalDefaults = {};
-        var tempModalOptions = {};
-        //Map angular-ui modal custom defaults to modal defaults defined in service
-        angular.extend(tempModalDefaults, modalDefaults, customModalDefaults);
-        //Map modal.html $scope custom properties to defaults defined in service
-        angular.extend(tempModalOptions, modalOptions, customModalOptions);
-        if (!tempModalDefaults.controller) {
-          tempModalDefaults.controller = ['$scope', '$modalInstance',
-            function ($scope, $modalInstance) {
-              $scope.user = {
-                user: null,
-                password: null
-              };
-              $scope.useVerboseLoginView = LOGIN_VIEW_CONFIG.verbose;
-              $scope.modalOptions = tempModalOptions;
-              $scope.modalOptions.ok = function (result) {
-                //Hack below is needed to handle autofill issues
-                //@see https://github.com/angular/angular.js/issues/1460
-                //BEGIN HACK
-                $scope.user.user = $('#rha-login-user-id').val();
-                $scope.user.password = $('#rha-login-password').val();
-                //END HACK
-                strata.setCredentials($scope.user.user, $scope.user.password,
-                  function (passed, authedUser) {
-                    if (passed) {
-                      $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
-                      $scope.user.password = '';
-                      $scope.authError = null;
-                      try {
-                        $modalInstance.close(authedUser);
-                      } catch (err) {}
-                    } else {
-                      // alert("Login failed!");
-                      $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
-                      $scope.$apply(function () {
-                        $scope.authError = 'Login Failed!';
-                      });
-                    }
-                  });
-
-              };
-              $scope.modalOptions.close = function () {
-                $modalInstance.dismiss();
-              };
-            }
-          ];
-        }
-
-        return $modal.open(tempModalDefaults).result;
-      };
-
-    }
-  ]);
+			splitPath.shift();
+			returnNode(splitPath, tree[index].children, fullFilePath);
+		} else {
+			splitPath.shift();
+			returnNode(splitPath, tree, fullFilePath);
+		}
+	}
+}
 /*jshint camelcase: false */
 'use strict';
 /*global strata */
@@ -14821,57 +14722,213 @@ angular.module('RedhatAccess.search', [
     }
   ]);
 'use strict';
-angular.module('RedhatAccess.cases', [
-  'ui.router',
-  'ui.bootstrap',
-  'ngTable',
-  'RedhatAccess.template',
-  'RedhatAccess.security',
-  'RedhatAccess.search',
-  'RedhatAccess.ui-utils',
-  'RedhatAccess.header'
-])
-  .constant('STATUS', {
-    open: 'open',
-    closed: 'closed',
-    both: 'both'
+/*global strata,$*/
+/*jshint unused:vars */
+angular.module('RedhatAccess.security', ['ui.bootstrap', 'RedhatAccess.template', 'ui.router'])
+  .constant('AUTH_EVENTS', {
+    loginSuccess: 'auth-login-success',
+    loginFailed: 'auth-login-failed',
+    logoutSuccess: 'auth-logout-success',
+    sessionTimeout: 'auth-session-timeout',
+    notAuthenticated: 'auth-not-authenticated',
+    notAuthorized: 'auth-not-authorized'
   })
-  .value('NEW_DEFAULTS', {
-    'product': '',
-    'version': ''
+  .directive('rhaLoginStatus', function () {
+    return {
+      restrict: 'AE',
+      scope: false,
+      templateUrl: 'security/login_status.html'
+    };
   })
-  .config([
-    '$stateProvider',
-    function ($stateProvider) {
+  .controller('SecurityController', ['$scope', '$rootScope', 'securityService',
+    function ($scope, $rootScope, securityService) {
+      $scope.securityService = securityService;
+      securityService.validateLogin(false); //change to false to force login
+    }
+  ])
+  .value('LOGIN_VIEW_CONFIG', {
+    verbose: true,
+  })
+  .service('securityService', ['$rootScope', '$modal', 'AUTH_EVENTS', '$q', 'LOGIN_VIEW_CONFIG',
+    function ($rootScope, $modal, AUTH_EVENTS, $q, LOGIN_VIEW_CONFIG) {
 
-      $stateProvider.state('compact', {
-        url: '/case/compact?sessionId',
-        templateUrl: 'cases/views/compact.html'
-      });
+      this.loginStatus = {
+        isLoggedIn: false,
+        loggedInUser: '',
+        verifying: false
+      };
 
-      $stateProvider.state('compact.edit', {
-        url: '/{id:[0-9]{1,8}}',
-        templateUrl: 'cases/views/compactEdit.html',
-        controller: 'CompactEdit'
-      });
+      this.setLoginStatus = function (isLoggedIn, userName, verifying) {
+        this.loginStatus.isLoggedIn = isLoggedIn;
+        this.loginStatus.loggedInUser = userName;
+        this.loginStatus.verifying = verifying;
+      };
 
-      $stateProvider.state('edit', {
-        url: '/case/{id:[0-9]{1,8}}',
-        templateUrl: 'cases/views/edit.html',
-        controller: 'Edit'
-      });
+      var modalDefaults = {
+        backdrop: 'static',
+        keyboard: true,
+        modalFade: true,
+        templateUrl: 'security/login_form.html',
+        windowClass: 'rha-login-modal'
+      };
 
-      $stateProvider.state('new', {
-        url: '/case/new',
-        templateUrl: 'cases/views/new.html',
-        controller: 'New'
-      });
+      var modalOptions = {
+        closeButtonText: 'Close',
+        actionButtonText: 'OK',
+        headerText: 'Proceed?',
+        bodyText: 'Perform this action?',
+        backdrop: 'static'
 
-      $stateProvider.state('list', {
-        url: '/case/list',
-        templateUrl: 'cases/views/list.html',
-        controller: 'List'
-      });
+      };
+
+      this.getBasicAuthToken = function () {
+        var defer = $q.defer();
+        var token = localStorage.getItem('rhAuthToken');
+        if (token !== undefined && token !== '') {
+          defer.resolve(token);
+          return defer.promise;
+        } else {
+          this.login().then(
+            function (authedUser) {
+              defer.resolve(localStorage.getItem('rhAuthToken'));
+            },
+            function (error) {
+              console.log('Unable to get user credentials');
+              defer.resolve(error);
+            });
+          return defer.promise;
+        }
+      };
+
+      this.initLoginStatus = function () {
+        var defer = $q.defer();
+        var that = this;
+        this.loginStatus.verifying = true;
+        strata.checkLogin(
+          function (result, authedUser) {
+            if (result) {
+              that.setLoginStatus(true, authedUser.name, false);
+              defer.resolve(authedUser.name);
+            } else {
+              that.setLoginStatus(false, '', false);
+              defer.reject('');
+            }
+          }
+        );
+        return defer.promise;
+      };
+
+      this.validateLogin = function (forceLogin) {
+        var defer = $q.defer();
+        var that = this;
+        if (!forceLogin) {
+          this.initLoginStatus().then(
+            function (username) {
+              defer.resolve(username);
+            },
+            function (error) {
+              defer.reject(error);
+            }
+          );
+          return defer.promise;
+        } else {
+          this.initLoginStatus().then(
+            function (username) {
+              console.log('User name is ' + username);
+              defer.resolve(username);
+            },
+            function (error) {
+              that.login().then(
+                function (authedUser) {
+                  defer.resolve(authedUser.name);
+                },
+                function (error) {
+                  defer.reject(error);
+                });
+            }
+          );
+          return defer.promise;
+        }
+      };
+
+      this.login = function () {
+        var that = this;
+        var result = this.showLogin(modalDefaults, modalOptions);
+        result.then(
+          function (authedUser) {
+            console.log('User logged in : ' + authedUser.name);
+            that.setLoginStatus(true, authedUser.name, false);
+          },
+          function (error) {
+            console.log('Unable to login user');
+            that.setLoginStatus(false, '', false);
+          });
+        return result; // pass on the promise
+      };
+
+      this.logout = function () {
+        strata.clearCredentials();
+        this.setLoginStatus(false, '', false);
+        $rootScope.$broadcast(AUTH_EVENTS.logoutSuccess);
+      };
+
+      this.getLoggedInUserName = function () {
+        return strata.getAuthInfo().name;
+      };
+
+      this.showLogin = function (customModalDefaults, customModalOptions) {
+        //Create temp objects to work with since we're in a singleton service
+        var tempModalDefaults = {};
+        var tempModalOptions = {};
+        //Map angular-ui modal custom defaults to modal defaults defined in service
+        angular.extend(tempModalDefaults, modalDefaults, customModalDefaults);
+        //Map modal.html $scope custom properties to defaults defined in service
+        angular.extend(tempModalOptions, modalOptions, customModalOptions);
+        if (!tempModalDefaults.controller) {
+          tempModalDefaults.controller = ['$scope', '$modalInstance',
+            function ($scope, $modalInstance) {
+              $scope.user = {
+                user: null,
+                password: null
+              };
+              $scope.useVerboseLoginView = LOGIN_VIEW_CONFIG.verbose;
+              $scope.modalOptions = tempModalOptions;
+              $scope.modalOptions.ok = function (result) {
+                //Hack below is needed to handle autofill issues
+                //@see https://github.com/angular/angular.js/issues/1460
+                //BEGIN HACK
+                $scope.user.user = $('#rha-login-user-id').val();
+                $scope.user.password = $('#rha-login-password').val();
+                //END HACK
+                strata.setCredentials($scope.user.user, $scope.user.password,
+                  function (passed, authedUser) {
+                    if (passed) {
+                      $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+                      $scope.user.password = '';
+                      $scope.authError = null;
+                      try {
+                        $modalInstance.close(authedUser);
+                      } catch (err) {}
+                    } else {
+                      // alert("Login failed!");
+                      $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+                      $scope.$apply(function () {
+                        $scope.authError = 'Login Failed!';
+                      });
+                    }
+                  });
+
+              };
+              $scope.modalOptions.close = function () {
+                $modalInstance.dismiss();
+              };
+            }
+          ];
+        }
+
+        return $modal.open(tempModalDefaults).result;
+      };
+
     }
   ]);
 'use strict';
@@ -17197,63 +17254,6 @@ angular.module('RedhatAccess.logViewer')
     }
   };
 });
-//var testURL = 'http://localhost:8080/LogCollector/';
-// angular module
-angular.module('RedhatAccess.logViewer',
-	[ 'angularTreeview', 'ui.bootstrap', 'RedhatAccess.search', 'RedhatAccess.header'])
-.config([ '$stateProvider', function($stateProvider) {
-	$stateProvider.state('logviewer', {
-		url : "/logviewer",
-		templateUrl : 'log_viewer/views/log_viewer.html'
-	})
-}])
-.constant('LOGVIEWER_EVENTS', {
-    allTabsClosed: 'allTabsClosed'
-  })
-.value('hideMachinesDropdown', {value:false});
-
-function parseList(tree, data) {
-	var files = data.split("\n");
-	for ( var i in files) {
-		var file = files[i];
-		var splitPath = file.split("/");
-		returnNode(splitPath, tree, file);
-	}
-}
-
-function returnNode(splitPath, tree, fullFilePath) {
-	if (splitPath[0] != null) {
-		if (splitPath[0] != "") {
-			var node = splitPath[0];
-			var match = false;
-			var index = 0;
-			for ( var i in tree) {
-				if (tree[i].roleName == node) {
-					match = true;
-					index = i;
-					break;
-				}
-			}
-			if (!match) {
-				var object = new Object();
-				object.roleName = node;
-				object.roleId = node;
-				if (splitPath.length == 1) {
-					object.fullPath = fullFilePath;
-				}
-				object.children = new Array();
-				tree.push(object);
-				index = tree.length - 1;
-			}
-
-			splitPath.shift();
-			returnNode(splitPath, tree[index].children, fullFilePath);
-		} else {
-			splitPath.shift();
-			returnNode(splitPath, tree, fullFilePath);
-		}
-	}
-}
 'use strict';
 
 angular.module('RedhatAccess.logViewer')

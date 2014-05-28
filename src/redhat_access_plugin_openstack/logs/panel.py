@@ -7,7 +7,7 @@ from openstack_dashboard.dashboards.redhat_access_plugin_openstack import dashbo
 
 class Log(horizon.Panel):
     name = _("Logs")
-    slug = "log"
+    slug = "logs"
 
 
 dashboard.Redhat_Access.register(Log)
