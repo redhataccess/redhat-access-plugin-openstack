@@ -24,7 +24,7 @@ MAINTAINERCLEANFILES = \
 EXTRA_DIST = \
 	$(NULL)
 
-SUBDIRS = log search support static templates
+SUBDIRS = logs search support static templates
 
 dashboarddir=$(rhsupporttoollibdir)/dashboards/redhat_access_plugin_openstack
 dist_dashboard_PYTHON = \

@@ -44,11 +44,11 @@ class ListTable(InstancesTable):
 
 class IndexView(InstanceView):
     table_class = ListTable
-    template_name = 'redhat_access_plugin_openstack/log/index.html'
+    template_name = 'redhat_access_plugin_openstack/logs/index.html'
 
 
 class LocalLogView(views.APIView):
-    template_name = 'redhat_access_plugin_openstack/log/viewlocal.html'
+    template_name = 'redhat_access_plugin_openstack/logs/viewlocal.html'
 
     def get_data(self, request, *args, **kwargs):
         instance_id = request.GET.get('id', None)
@@ -102,7 +102,7 @@ def logs(request):
 
 
 class LogView(views.APIView):
-    template_name = 'redhat_access_plugin_openstack/log/view.html'
+    template_name = 'redhat_access_plugin_openstack/logs/view.html'
 
     def get_data(self, request, *args, **kwargs):
         instance_id = request.GET.get('id', None)

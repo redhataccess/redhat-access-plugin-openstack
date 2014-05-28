@@ -24,4 +24,15 @@ MAINTAINERCLEANFILES = \
 EXTRA_DIST = \
 	$(NULL)
 
-SUBDIRS = log
+SUBDIRS =
+
+htmldir=$(rhsupporttoollibdir)/dashboards/redhat_access_plugin_openstack/logs/templates/logs
+dist_html_DATA = \
+	*.html \
+	$(NULL)
+
+all-local: \
+	$(NULL)
+
+clean-local: \
+	$(NULL)

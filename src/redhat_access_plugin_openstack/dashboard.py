@@ -4,8 +4,8 @@ import horizon
 
 class ActionPanels(horizon.PanelGroup):
     slug = "redhat_access_plugin_openstack"
-    name = _("Actions Panel")
-    panels = ('search', 'log', 'support')
+    name = _("Red Hat Access")
+    panels = ('search', 'logs', 'support')
 
 
 class Redhat_Access(horizon.Dashboard):

@@ -6,7 +6,7 @@ from openstack_dashboard.dashboards.redhat_access_plugin_openstack import dashbo
 
 
 class Log(horizon.Panel):
-    name = _("Log")
+    name = _("Logs")
     slug = "log"
 
 
