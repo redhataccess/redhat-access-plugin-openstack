@@ -23,3 +23,9 @@
         top: auto;
         right: auto;
 }
+
+h2 .h2 {
+	color: inherit;
+	font-size: 26px;
+	font-weight: 300;
+}

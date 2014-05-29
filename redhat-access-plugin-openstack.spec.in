@@ -79,7 +79,7 @@ python /usr/share/openstack-dashboard/manage.py collectstatic --noinput
 %changelog
 * Wed May 28 2014 Dan Varga <dvarga@redhat.com> - 5.0.0-3
 - Rename log to logs
-- Resolves: bz1091367
+- Resolves: bz1102302
 
 * Thu May 08 2014 Dan Varga <dvarga@redhat.com> - 5.0.0-2
 - Use Require(pre) instead of require
