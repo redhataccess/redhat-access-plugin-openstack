@@ -1,4 +1,4 @@
-/*! redhat_access_angular_ui - v0.0.0 - 2014-05-28
+/*! redhat_access_angular_ui - v0.0.0 - 2014-06-02
  * Copyright (c) 2014 ;
  * Licensed 
  */
@@ -14519,7 +14519,13 @@ angular.module('RedhatAccess.search', [
               return '';
             }
             if (scope.result.body !== undefined) {
-              return scope.result.body;
+              if (scope.result.body.html !== undefined) {
+                //this is for newer version of strata
+                return scope.result.body.html;
+              } else {
+                //handle old markdown format
+                return scope.result.body;
+              }
             } else {
               return '';
             }
