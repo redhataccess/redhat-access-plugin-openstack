@@ -1,0 +1,31 @@
+/* Additional CSS for redhat_access. */
+
+.rha-login-modal {
+	bottom: auto;
+	margin-left: 33%;
+}
+
+.modal.fade.in {
+	top: 33%;
+	width: 635px;
+}
+
+.form-horizontal .control-label {
+	width: auto;
+}
+
+.popover-inner {
+	padding: 0px;
+	width: auto;
+}
+
+.alert .close {
+        top: auto;
+        right: auto;
+}
+
+h2 .h2 {
+	color: inherit;
+	font-size: 26px;
+	font-weight: 300;
+}

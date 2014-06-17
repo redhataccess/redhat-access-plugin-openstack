@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block sidebar %}
+  {% include 'horizon/common/_sidebar.html' %}
+{% endblock %}
+
+{% block main %}
+    {% include "horizon/_messages.html" %}
+    <div id="logged-in" ></div>
+    {% block redhat_access_plugin_openstack_main %}{% endblock %}
+{% endblock %}
+

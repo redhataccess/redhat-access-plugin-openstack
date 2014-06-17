@@ -1,0 +1,122 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+%global         package_version @PACKAGE_VERSION@
+%global         package_name @PACKAGE_NAME@
+
+Name:           %{package_name}
+Version:        @PACKAGE_RPM_VERSION@
+Release:        @PACKAGE_RPM_RELEASE@%{?release_suffix}%{?dist}
+Summary:        Plugin for OpenStack to allow access Red Hat subscriber services
+Vendor:         Red Hat, Inc.
+Group:          Development/Libraries
+License:        ASL 2.0
+URL:            https://api.access.redhat.com
+Source0:        http://people.redhat.com/dvarga/projects/redhat-access-plugin-openstack/%{package_name}-%{package_version}.tar.gz
+
+BuildRequires: python2-devel
+BuildRequires: gettext-devel
+BuildRequires: python-setuptools
+BuildArch: noarch
+%{!?dist:BuildRequires: buildsys-macros}
+
+Requires: python
+Requires: python-lxml
+Requires: python-dateutil
+Requires(pre): openstack-dashboard
+
+%if 0%{?rhel} && 0%{?rhel} <= 5
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+BuildRoot: %{_topdir}/BUILDROOT/%{name}-%{version}-%{release}.%{_arch}
+%endif
+
+%description
+This package contains the Red Hat Access OpenStack Horizon Plugin.
+The Red Hat Access OpenStack Plugin provides web based access to 
+Red Hat's subscriber services.
+These services include, but are not limited to, 
+access to knowledge-base solutions, case management, 
+automated diagnostic services, etc.
+
+%prep
+%setup -q -n %{package_name}-%{package_version}
+
+%build
+%configure \
+        --disable-python-syntax-check
+
+make %{?_smp_mflags}
+
+%pre
+#Remove django copied static files before install
+rm -rf /usr/share/openstack-dashboard/static/redhat-access-plugin-openstack
+
+%install
+rm -rf "%{buildroot}"
+make %{?_smp_mflags} install DESTDIR="%{buildroot}"
+
+%post
+python /usr/share/openstack-dashboard/manage.py collectstatic --noinput
+
+%files
+%doc AUTHORS 
+/usr/share/openstack-dashboard/openstack_dashboard/
+
+%changelog
+* Wed May 28 2014 Dan Varga <dvarga@redhat.com> - 5.0.0-3
+- Rename log to logs
+- Resolves: bz1102302
+
+* Thu May 08 2014 Dan Varga <dvarga@redhat.com> - 5.0.0-2
+- Use Require(pre) instead of require
+- Resolves: bz1095828
+
+* Wed May 07 2014 Dan Varga <dvarga@redhat.com> - 5.0.0-1
+- Fix django url import
+- Resolves: bz1095310
+
+* Wed Mar 05 2014 Dan Varga <dvarga@redhat.com> - 5.0.0-0
+- RHOS 5.0 and RCUE Updates
+- Resolves: bz1082762
+
+* Tue Oct 22 2013 Dan Varga <dvarga@redhat.com> - 4.0.0-0
+- Better handling of login issues
+- Resolves: bz1021576
+
+* Tue Oct 08 2013 Dan Varga <dvarga@redhat.com> - 1.2.0-5
+- Allow forms to be submitted multiple times
+- Resolves: bz1016737
+
+* Tue Sep 10 2013 Dan Varga <dvarga@redhat.com> - 1.2.0-4
+- JS Fix, Require openstack-dashboard
+- Resolves: bz1006387, bz1005907
+
+* Tue Sep 3 2013 Dan Varga <dvarga@redhat.com> - 1.2.0-3
+- Browser Bug fix
+- Resolves: bz999082
+
+* Wed Aug 28 2013 Dan Varga <dvarga@redhat.com> - 1.2.0-2
+- Bug fixes
+- Resolves: bz999082
+
+* Wed Aug 28 2013 Dan Varga <dvarga@redhat.com> - 1.2.0-1
+- Minor bug fixes
+- Resolves: bz999082
+
+* Thu Jul 18 2013 Dan Varga <dvarga@redhat.com> - 1.2.0-0
+- Initial build
+- Resolves: bz999082
