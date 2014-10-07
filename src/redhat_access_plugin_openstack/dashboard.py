@@ -1,4 +1,5 @@
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 
 import horizon
 
@@ -14,5 +15,8 @@ class Redhat_Access(horizon.Dashboard):
     panels = (ActionPanels,)
     default_panel = 'search'
     nav = False
+    if getattr(settings, 'REDHAT_ACCESS_ADMIN_ONLY', False):
+        permissions = ('openstack.roles.admin',)
+
 
 horizon.register(Redhat_Access)

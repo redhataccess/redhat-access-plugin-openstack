@@ -8,6 +8,7 @@
 .modal.fade.in {
 	top: 33%;
 	width: 635px;
+	overflow-y: auto;
 }
 
 .form-horizontal .control-label {
