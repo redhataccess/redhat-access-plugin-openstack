@@ -77,6 +77,9 @@ python /usr/share/openstack-dashboard/manage.py collectstatic --noinput
 /usr/share/openstack-dashboard/openstack_dashboard/
 
 %changelog
+* Wed Nov 2 2014 Dan Varga <dvarga@redhat.com> - 6.0.1-0
+- i18n Support
+
 * Wed May 28 2014 Dan Varga <dvarga@redhat.com> - 6.0.0-0
 - Updates for RHOS 6.0
 
