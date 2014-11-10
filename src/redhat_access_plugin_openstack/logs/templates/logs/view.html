@@ -30,16 +30,35 @@ angular.module('RedhatAccess.openstack_search', [
 	'RedhatAccess.search',
 	'ui.bootstrap',
 	'ngSanitize'
-]).config(['$urlRouterProvider', function($urlRouterProvider) {
+])
+.config(['$urlRouterProvider', function($urlRouterProvider) {
 	$urlRouterProvider.otherwise('/search_openstack')
-}]).config(['$stateProvider',
+}])
+.config(['$stateProvider',
 		function ($stateProvider) {
 			$stateProvider.state('search_openstack', {
 				url: '/search_openstack',
 				template: '<div class="row" rha-loginstatus ng-controller="SecurityController" style="padding: 10px;" /><div id="diagbutton" class="row"><button id="diagnoseButton" style="margin-bottom: 15px; margin-right: 15px; type="button" class="btn btn-primary" ">Red Hat Diagnose</button></div><div class="row"><div id="log-contents" class="col-sm-12" /><div id="accordion-results" class="container col-sm-6" style="display: none;" rha-accordionsearchresults="" opencase="true" ng-controller="SearchController" /></div>'
 			});
 		}
-	]);
+	])
+  .run(['gettextCatalog', function (gettextCatalog) {
+    function getCookie(cname) {
+      var name = cname + "=";
+      var ca = document.cookie.split(';');
+      for(var i=0; i<ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0)==' ') c = c.substring(1);
+          if (c.indexOf(name) != -1) return c.substring(name.length,c.length);
+      }
+      return "";
+    }
+    var horizon_lang = getCookie('horizon_language');
+    if (horizon_lang === '') {
+      horizon_lang = 'en';
+    }
+    gettextCatalog.currentLanguage = horizon_lang;
+  }]);
 angular.element(document).ready(function() {
 	angular.bootstrap(document.getElementById("openstack-search"), ['RedhatAccess.openstack_search']);
 	$('#log-text').clone().appendTo('#log-contents');

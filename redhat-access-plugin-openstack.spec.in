@@ -78,8 +78,7 @@ python /usr/share/openstack-dashboard/manage.py collectstatic --noinput
 
 %changelog
 * Wed May 28 2014 Dan Varga <dvarga@redhat.com> - 6.0.0-0
-- FIX ME 
-- Resolves: poop
+- Updates for RHOS 6.0
 
 * Wed May 28 2014 Dan Varga <dvarga@redhat.com> - 5.0.0-3
 - Rename log to logs

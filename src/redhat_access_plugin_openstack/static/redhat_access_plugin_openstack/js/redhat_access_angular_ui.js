@@ -1,9 +1,18 @@
-/*! redhat_access_angular_ui - v0.9.15 - 2014-10-07
+/*! redhat_access_angular_ui - v0.9.56 - 2014-11-10
  * Copyright (c) 2014 ;
  * Licensed 
  */
 angular.module('gettext').run(['gettextCatalog', function (gettextCatalog) {
 /* jshint -W100 */
+    gettextCatalog.setStrings('de', {"24x7 Contact:":"24x7 Kontakt:","24x7 Support:":"24x7 Support:","<span class=\"glyphicon glyphicon-plus\"></span>&nbsp;Open a New Support Case":"<span class=\"glyphicon glyphicon-plus\"></span>&nbsp;Neues Support-Ticket erstellen","<span class=\"glyphicon glyphicon-refresh\"></span>&nbsp;Select Log":"<span class=\"glyphicon glyphicon-refresh\"></span>&nbsp;Protokoll auswählen","Account Name:":"Accountname:","Account Number:":"Accountnummer:","Account:":"Account:","Add":"Hinzufügen","Add Comment":"Kommentar hinzufügen","Advanced Mission Critical":"Advanced Mission Critical","Alternate Case ID:":"Alternative Ticket-ID:","Attach Foreman logs:":"Foreman-Protokolle anhängen:","Attach local file":"Lokale Datei anhängen","Attached":"Angehängt","Attached By":"Angehängt durch","Attached Files":"Angehängte Dateien","Attachments":"Anhänge","Attachments:":"Anhänge:","Available Log Files":"Verfügbare Protokolldateien","Bugzilla Number":"Bugzilla-Nummer","Bugzilla Tickets":"Bugzilla-Tickets","Cancel":"Abbrechen","Case Discussion":"Ticketdiskussion","Case Group:":"Ticketgruppe:","Case Type:":"Tickettyp:","Chat offline":"Offline chatten","Chat with support":"Mit Support-Team chatten","Choose File(s) To Attach:":"Wählen Sie die anzuhängenden Dateien:","Close messages":"Nachrichten schließen","Comment:":"Kommentar:","Create Case Group":"Ticketgruppe erstellen","Create New Case Group":"Neue Ticketgruppe erstellen","Delete":"Löschen","Delete Group":"Gruppe löschen","Deleting attachment:":"Anhang löschen:","Description":"Beschreibung","Description:":"Beschreibung:","Details":"Details","Diagnose":"Diagnose","Draft saved":"Entwurf gespeichert","Email Notification Recipients":"Empfänger von E-Mail-Benachrichtigungen","Environment":"Umgebung","Export All as CSV":"Alle als CSV exportieren","Exporting CSV...":"CSV wird exportiert...","File names must be less than 80 characters. Maximum file size for web-uploaded attachments is 250 MB. Please FTP larger files to dropbox.redhat.com.":"Dateinamen sind auf 80&nbsp;Zeichen beschränkt. Maximale Dateigröße für Anhänge zum Web-Upload ist 250&nbsp;MB. Für größere Dateien bitte FTP verwenden (dropbox.redhat.com).","Filename":"Dateiname","Files to Attach":"Anzuhängende Dateien","First Name":"Vorname","Group":"Gruppe","Group:":"Gruppe:","If you feel the issue has become more severe or the case should be a higher priority, please provide a detailed comment, and the case will be reviewed by a support manager.":"Wenn das Problem schwerwiegender ist oder dem Ticket eine höhere Priorität zugeordnet werden soll, fügen Sie bitte einen ausführlichen Kommentar hinzu. Das Ticket wird anschließend von einem Support-Manager überprüft.","In the event that you would still like to open a support case, select 'Open a New Support Case'. The case will be pre-populated with the portion of the log previously selected.":"Falls Sie dennoch ein Support-Ticket einreichen möchten, klicken Sie auf \"Neues Support-Ticket erstellen\". In das Ticket werden Informationen aus dem Protokoll eingefügt, das Sie zuvor ausgewählt haben.","Is Public:":"Ist öffentlich:","Last Name":"Nachname","Last Updated:":"Zuletzt aktualisiert:","Learn more":"Mehr dazu","Log File Viewer":"Protokollbetrachter","Log In":"Anmelden","Log Out":"Abmelden","Logged into the Red Hat Customer Portal as":"Beim Red Hat Kundenportal angemeldet als","My Account":"Mein Account","Name":"Name","Next":"Weiter","No attachments added":"Keine Anhänge hinzugefügt","No cases found with given filters.":"Keine Tickets gefunden mit diesen Filtern.","No cases found with given search criteria.":"Keine Tickets gefunden mit diesen Suchkriterien.","No groups found.":"Keine Gruppen gefunden.","No linked bugzillas":"Keine verlinkten Bugzillas","Not Logged into the Red Hat Customer Portal":"Nicht beim Red Hat Kundenportal angemeldet","Note:":"Hinweis:","Notes:":"Hinweise:","Once you have selected your log file then you may diagnose any part of the log file and clicking the 'Red Hat Diagnose' button. This will then display relevant articles and solutons from our Red Hat Knowledge base.":"Nachdem Sie Ihre Protokolldatei ausgewählt haben, können Sie einen beliebigen Teil dieser Protokolldatei untersuchen, indem Sie auf die Schaltfläche \"Red Hat Diagnose\" klicken. Daraufhin werden die relevanten Artikel und Lösungen aus der Red Hat Knowledgebase angezeigt.","Open a New Support Case":"Neues Support-Ticket erstellen","Opened:":"Erstellt:","Owner":"Besitzer","Owner:":"Besitzer:","Password":"Passwort","Previous":"Zurück","Product":"Produkt","Product Version:":"Produktversion:","Product:":"Produkt:","Recommendations":"Empfehlungen","Red Hat Access makes it easy for you to self-solve issues, diagnose problems, and engage with us via the Red Hat Customer Portal. To access Red Hat Customer Portal resources, you must enter valid portal credentials.":"Red Hat Access erleichtert Ihnen die Problemdiagnose, Selbsthilfe und Kommunikation mit uns über das Red Hat Kundenportal. Um auf die Ressourcen im Red Hat Kundenportal zugreifen zu können, müssen Sie Ihre gültige Anmeldedaten für das Kundenportal angeben.","Red Hat Customer Portal credentials differ from the credentials used to log into this product.":"Die Anmeldedaten für das Red Hat Kundenportal unterscheiden sich von den Anmeldedaten für dieses Produkt.","Red Hat Diagnose":"Red Hat Diagnose","Red Hat Login":"Red Hat Login","Red Hat Owner:":"Red Hat Besitzer:","Request Management Escalation":"Management-Eskalation beantragen","Resolution":"Lösung","Save":"Speichern","Save Group":"Gruppe speichern","Saving draft...":"Entwurf wird gespeichert...","Search":"Suchen","Searching...":"Suchen...","Select File":"Datei wählen","Server File(s) To Attach:":"Anzuhängende Server-Dateien:","Severity":" Schweregrad","Severity:":"Schweregrad:","Sign in":"Anmelden","Sign into the Red Hat Customer Portal":"Melden Sie sich beim Red Hat Kundenportal an","Simply navigate to and select a log file from the list on the left and click the 'Select File' button.":"Navigieren Sie zu einer Protokolldatei und wählen Sie diese aus der Liste links aus, klicken Sie anschließend auf die Schaltfläche \"Datei wählen\".","Size":"Größe","Status":"Status","Status:":"Status:","Submit":"Absenden","Submit Request":"Anfrage absenden","Successfully deleted attachment:":"Anhang erfolgreich gelöscht:","Successfully uploaded attachment":"Anhang erfolgreich hochgeladen","Summary of Request":"Zusammenfassung der Anfrage","Summary:":"Zusammenfassung:","Support Level:":"Support-Level:","The log file viewer gives the ability to diagnose application logs as well as file a support case with Red Hat Global Support Services.":"Mithilfe des Protokollbetrachters können Sie sowohl Protokolldateien von Applikationen untersuchen, als auch ein Support-Ticket bei Red Hat Global Support Services einreichen.","This release is now retired, please refer to the recommended FAQ prior to filing a case":"Diese Release ist veraltet, bitte werfen Sie einen Blick auf die empfohlenen FAQ, bevor Sie ein Ticket öffnen.","To view a recommendation, click on it.":"Klicken Sie auf eine Empfehlung, um sie anzusehen.","Type":"Typ","Unauthorized.":"Nicht autorisiert.","Update Details":"Details aktualisieren","Updated:":"Aktualisiert:","Upload Attachments":"Anhänge hochladen","User Name":"Benutzername","View full article in new window":"Vollständigen Artikel in neuem Fenster anzeigen","Would you like a Red Hat support manager to contact you regarding this case?":"Möchten Sie, dass sich ein Red Hat Support-Manager bezüglich dieses Tickets mit Ihnen in Verbindung setzt?","You have used 0% of the 32KB maximum description size.":"Sie haben 0 % der maximalen Beschreibungsgröße von 32 KB verwendet.","handpicked":"manuell ausgewählt","to case":"nach Ticket"});
+    gettextCatalog.setStrings('es', {"24x7 Contact:":"Contacto 24x7: ","24x7 Support:":"Soporte 24x7::","<span class=\"glyphicon glyphicon-plus\"></span>&nbsp;Open a New Support Case":"<span class=\"glyphicon glyphicon-plus\"></span>&nbsp;Abrir un nuevo caso de soporte","<span class=\"glyphicon glyphicon-refresh\"></span>&nbsp;Select Log":"<span class=\"glyphicon glyphicon-refresh\"></span>&nbsp;Seleccionar registro","Account Name:":"Nombre de cuenta","Account Number:":"Número de cuenta","Account:":"Cuenta:","Add":"Añadir   ","Add Comment":"Agregar un comentario","Advanced Mission Critical":"Misión crítica avanzada","Alternate Case ID:":"ID de caso alternativo: ","Attach Foreman logs:":"Adjuntar registros Foreman:","Attach local file":"Adjuntar archivos locales","Attached":"Adjuntado","Attached By":"Adjuntado por","Attached Files":"Archivos adjuntos","Attachments":"Adjuntos","Attachments:":"Adjuntos: ","Available Log Files":"Archivos de registro disponibles","Bugzilla Number":"Número de Bugzilla","Bugzilla Tickets":"Tiquetes de Bugzilla","Cancel":"Cancelar","Case Discussion":"Discusión del caso","Case Group:":"Grupo de caso:","Case Type:":"Tipo de caso","Chat offline":"Chat desconectado","Chat with support":"Chat sin soporte","Choose File(s) To Attach:":"Elegir  archivo(s) a adjuntar:","Close messages":"Cerrar mensajes","Comment:":"Comentario:","Create Case Group":"Crear un grupo de casos","Create New Case Group":"Crear un nuevo grupo de casos","Delete":"Borrar","Delete Group":"Borrar grupo","Deleting attachment:":"Borrar adjunto: ","Description":"Descripción","Description:":"Descripción","Details":"Información","Diagnose":"Diagnóstico","Draft saved":"Borrar guardado","Email Notification Recipients":"Destinatarios de notificación por correo-e","Environment":"Entorno","Export All as CSV":"Exportar todos como CSV","Exporting CSV...":"Exportando CSV..","File names must be less than 80 characters. Maximum file size for web-uploaded attachments is 250 MB. Please FTP larger files to dropbox.redhat.com.":"Los nombres de los archivos tienen un límite de 80 caracteres. El tamaño máximo para adjuntos de archivos cargados a la red es de 250 MB. Para archivos más grandes, por favor expórtelos en FTP a dropbox.redhat.com.","Filename":"Nombre de archivo","Files to Attach":"Archivos a adjuntar","First Name":"Nombre","Group":"Grupo","Group:":"Grupo:","If you feel the issue has become more severe or the case should be a higher priority, please provide a detailed comment, and the case will be reviewed by a support manager.":"Si siente que el problema se ha vuelto más grave o que su caso debiera tener mayor prioridad, por favor, proporcione un comentario detallado y su caso será revisado por un gerente de soporte.","In the event that you would still like to open a support case, select 'Open a New Support Case'. The case will be pre-populated with the portion of the log previously selected.":"Si usted aún considera que debe abrir un caso de soporte, seleccione 'Abrir un nuevo caso de soporte'. El caso será prellenado con la porción del registro anteriormente seleccionado.","Is Public:":"Es público:","Last Name":"Apellido","Last Updated:":"Última actualización","Learn more":"Aprender más","Log File Viewer":"Archivo de archivo de registro","Log In":"Ingresar","Log Out":"Salir ","Logged into the Red Hat Customer Portal as":"Ingresó al Portal del cliente de Red Hat como","My Account":"Mi cuenta","Name":"Nombre","Next":"Siguiente","No attachments added":"No se han agregado adjuntos","No cases found with given filters.":"No se encontraron casos con los filtros proporcionados. ","No cases found with given search criteria.":"No se encontraron casos con dichos criterios.","No groups found.":"No se encontraron grupos.","No linked bugzillas":"No hay Buzillas vinculados","Not Logged into the Red Hat Customer Portal":"No ha ingresado al Portal del cliente de Red Hat","Note:":"Nota:","Notes:":"Notas:","Once you have selected your log file then you may diagnose any part of the log file and clicking the 'Red Hat Diagnose' button. This will then display relevant articles and solutons from our Red Hat Knowledge base.":"Una vez que haya seleccionado su archivo de registro puede diagnosticar cualquier parte del archivo de registro y hacer clic en el botón 'Diagnóstico Red Hat'. Esto ayudará a desplegar los artículos importantes y soluciones de nuestra base de conocimientos.","Open a New Support Case":"Abrir un nuevo caso de soporte","Opened:":"Abierto: ","Owner":"Propietario","Owner:":"Propietario:","Password":"Contraseña","Previous":"Anterior","Product":"Producto","Product Version:":"Versión del producto","Product:":"Producto:","Recommendations":"Recomendaciones","Red Hat Access makes it easy for you to self-solve issues, diagnose problems, and engage with us via the Red Hat Customer Portal. To access Red Hat Customer Portal resources, you must enter valid portal credentials.":"El acceso de Red Hat le facilita la resolución de problemas, diagnostica problemas y se encarga con nosotros  a través del Portal del cliente de Red Hat. Para acceder a los recursos de Portal del cliente de Red Hat, deberá validar las credenciales del portal. ","Red Hat Customer Portal credentials differ from the credentials used to log into this product.":"Las credenciales del Portal del cliente de Red Hat difieren de las credenciales utilizadas para ingresar dentro de este producto.","Red Hat Diagnose":"Diagnosis de Red Hat","Red Hat Login":"Nombre de usuario de Red Hat","Red Hat Owner:":"Propietario Red Hat: ","Request Management Escalation":"Solicitar escalamiento administrativo","Resolution":"Resolución","Save":"Guardar","Save Group":"Guardar grupo","Saving draft...":"Guardando borrador...","Search":"Búsqueda","Searching...":"Buscando...","Select File":"Seleccionar archivo","Server File(s) To Attach:":"Archivo(s) de servidor a adjuntar: ","Severity":"Gravedad","Severity:":"Gravedad: ","Sign in":"Iniciar sesión","Sign into the Red Hat Customer Portal":"Ingresar al Portal del cliente Red Hat","Simply navigate to and select a log file from the list on the left and click the 'Select File' button.":"Navegue y seleccione un archivo de registro de la lista a la izquierda y haga clic en el botón 'Seleccionar archivo'.","Size":"Tamaño","Status":"Estatus","Status:":"Estatus:","Submit":"Enviar","Submit Request":"Enviar solicitud","Successfully deleted attachment:":"Ha borrado los adjuntos con éxito.","Successfully uploaded attachment":"Ha cargado el adjunto con éxito","Summary of Request":"Resumen de solicitud","Summary:":"Resumen:","Support Level:":"Nivel de soporte:","The log file viewer gives the ability to diagnose application logs as well as file a support case with Red Hat Global Support Services.":"El visor del archivo de registro ofrece la capacidad de diagnosticar registros como también radicar un caso de soporte en Red Hat Global Support Services.","This release is now retired, please refer to the recommended FAQ prior to filing a case":"Este lanzamiento ha sido retirado, por favor consulte las preguntas frecuentes antes de llenar el caso.","To view a recommendation, click on it.":"Para ver una recomendación, haga clic en ella.","Type":"Tipo","Unauthorized.":"No autorizado.","Update Details":"Actualizar información","Updated:":"Actualizada:","Upload Attachments":"Cargar adjuntos","User Name":"Nombre de usuario","View full article in new window":"Ver artículo completo en una nueva ventana","Would you like a Red Hat support manager to contact you regarding this case?":"¿Desearía que un gerente de soporte de Red Hat  lo contacte para este caso? ","You have used 0% of the 32KB maximum description size.":"Ha utilizado 0% del tamaño de máximo de descripción 32KB.","handpicked":"Seleccionado a mano","to case":"para caso"});
+    gettextCatalog.setStrings('fr', {"24x7 Contact:":"Contact 24h/24 et 7j/7 :","24x7 Support:":"Assistance 24h/24 et 7j/7 :","<span class=\"glyphicon glyphicon-plus\"></span>&nbsp;Open a New Support Case":"<span class=\"glyphicon glyphicon-plus\"></span>&nbsp;Ouvrir un nouveau dossier d'assistance","<span class=\"glyphicon glyphicon-refresh\"></span>&nbsp;Select Log":"<span class=\"glyphicon glyphicon-refresh\"></span>&nbsp;Sélectionner un journal","Account Name:":"Nom du compte :","Account Number:":"Numéro de compte :","Account:":"Compte :","Add":"Ajouter","Add Comment":"Ajouter un commentaire","Advanced Mission Critical":"Fonctions avancées essentielles","Alternate Case ID:":"ID alternative du dossier :","Attach Foreman logs:":"Joindre des journaux Foreman :","Attach local file":"Joindre un fichier local","Attached":"Joint","Attached By":"Pièce jointe par :","Attached Files":"Fichiers joints","Attachments":"Pièces jointes","Attachments:":"Pièces jointes :","Available Log Files":"Fichiers journaux disponibles","Bugzilla Number":"Numéro sur Bugzilla","Bugzilla Tickets":"Tickets sur Bugzilla","Cancel":"Annuler","Case Discussion":"Discussion du dossier","Case Group:":"Groupe du dossier :","Case Type:":"Type de dossier :","Chat offline":"Discuter hors-ligne","Chat with support":"Discuter avec le support technique","Choose File(s) To Attach:":"Choisir le(s) fichier(s) à joindre :","Close messages":"Fermer les messages","Comment:":"Commentaire :","Create Case Group":"Créer un groupe de dossiers","Create New Case Group":"Créer un nouveau groupe de dossiers","Delete":"Supprimer","Delete Group":"Supprimer le groupe","Deleting attachment:":"Supprimer la pièce jointe :","Description":"Description","Description:":"Description :","Details":"Détails","Diagnose":"Diagnostiquer","Draft saved":"Brouillon enregistré","Email Notification Recipients":"Envoyer un courrier électronique aux destinataires des notifications","Environment":"Environnement","Export All as CSV":"Tout exporter en CSV","Exporting CSV...":"Export CRV en cours...","File names must be less than 80 characters. Maximum file size for web-uploaded attachments is 250 MB. Please FTP larger files to dropbox.redhat.com.":"Les noms de fichiers sont limités à 80 caractères. La taille de fichier maximale pour les pièces jointes téléversées par le web est de 250 Mo. Pour les fichiers plus importants, veuillez utiliser FTP (dropbox.redhat.com).","Filename":"Nom du fichier","Files to Attach":"Fichiers à joindre","First Name":"Prénom","Group":"Groupe","Group:":"Groupe :","If you feel the issue has become more severe or the case should be a higher priority, please provide a detailed comment, and the case will be reviewed by a support manager.":"Si vous estimez que votre problème s'est aggravé ou qu'il devrait bénéficier d'un niveau de priorité plus élevé, saisissez un commentaire détaillé afin qu'un responsable d'assistance se charge de votre dossier.","In the event that you would still like to open a support case, select 'Open a New Support Case'. The case will be pre-populated with the portion of the log previously selected.":"Si vous souhaitez tout de même ouvrir un nouveau dossier d'assistance, veuillez sélectionner « Ouvrir un nouveau dossier d'assistance ». Le dossier sera pré-rempli avec la portion du journal précédemment sélectionnée.","Is Public:":"Publique :","Last Name":"Nom de famille","Last Updated:":"Dernière mise à jour :","Learn more":"En savoir plus","Log File Viewer":"Visionneur de fichiers journaux","Log In":"Connexion","Log Out":"Déconnexion","Logged into the Red Hat Customer Portal as":"Connecté sur le Portail Client Red Hat en tant que","My Account":"Mon compte","Name":"Nom","Next":"Suivant","No attachments added":"Aucune pièce jointe nécessaire","No cases found with given filters.":"Aucun dossier trouvé avec les filtres donnés.","No cases found with given search criteria.":"Aucun dossier trouvé avec les critères de recherche donnés.","No groups found.":"Aucun groupe trouvé.","No linked bugzillas":"Aucun bugzilla lié","Not Logged into the Red Hat Customer Portal":"Non connecté sur le Portail Client Red Hat","Note:":"Remarque :","Notes:":"Remarques :","Once you have selected your log file then you may diagnose any part of the log file and clicking the 'Red Hat Diagnose' button. This will then display relevant articles and solutons from our Red Hat Knowledge base.":"Une fois le fichier journal sélectionné, vous pourrez diagnostiquer n'importe quelle partie de celui-ci et cliquer sur le bouton « Diagnostique Red Hat ». Ceci affichera les articles et les solutions correspondants de la base de connaissances Red Hat.","Open a New Support Case":"Ouvrir un nouveau dossier d'assistance","Opened:":"Ouvert  :","Owner":"Propriétaire","Owner:":"Propriétaire :","Password":"Mot de passe","Previous":"Précédent","Product":"Produit","Product Version:":"Version du produit :","Product:":"Produit :","Recommendations":"Recommandations","Red Hat Access makes it easy for you to self-solve issues, diagnose problems, and engage with us via the Red Hat Customer Portal. To access Red Hat Customer Portal resources, you must enter valid portal credentials.":"Red Hat Access vous permet de  résoudre vos problèmes vous-même, de diagnostiquer les problèmes, et de nous contacter plus facilement, le tout via le Portail Client. Pour accéder aux ressources du Portail Client, vous devrez saisir des informations d'identification valides sur le portail.","Red Hat Customer Portal credentials differ from the credentials used to log into this product.":"Les informations d'identification du Portail Client Red Hat diffèrent des informations d'identifications utilisées pour se connecter à ce produit.","Red Hat Diagnose":"Diagnostique Red Hat","Red Hat Login":"Connexion Red Hat","Red Hat Owner:":"Propriéraire Red Hat :","Request Management Escalation":"Demander la remontée d'un problème","Resolution":"Résolution","Save":"Enregistrer","Save Group":"Enregistrer le groupe","Saving draft...":"Enregistrement du brouillon...","Search":"Rechercher","Searching...":"Recherche en cours...","Select File":"Sélectionner le fichier","Server File(s) To Attach:":"Fichier(s) du serveur à joindre :","Severity":"Sévérité","Severity:":"Sévérité :","Sign in":"Connexion","Sign into the Red Hat Customer Portal":"Connexion au Portail Client Red Hat","Simply navigate to and select a log file from the list on the left and click the 'Select File' button.":"Veuillez simplement vous rendre sur la liste à gauche, puis sélectionnez un fichier journal et cliquez sur le bouton « Sélectionner le fichier ».","Size":"Taille","Status":"Statut","Status:":"Statut :","Submit":"Valider","Submit Request":"Valider la requête","Successfully deleted attachment:":"Suppression de la pièce jointe réussie :","Successfully uploaded attachment":"Pièce jointe attachée","Summary of Request":"Résumé de la requête","Summary:":"Résumé :","Support Level:":"Niveau d'assistance :","The log file viewer gives the ability to diagnose application logs as well as file a support case with Red Hat Global Support Services.":"Le visionneur de  fichiers journaux offre la possibilité de diagnostiquer les journaux d'applications ainsi que d'ouvrir un dossier d'assistance avec le service de support technique de Red Hat, «  Red Hat Global Support Services » (Red Hat GSS).","This release is now retired, please refer to the recommended FAQ prior to filing a case":"Cette version est désormais obsolète, veuillez consulter la FAQ recommandée avant d'ouvrir un dossier.","To view a recommendation, click on it.":"Pour afficher une recommandation, veuillez cliquer dessus.","Type":"Type","Unauthorized.":"Non autorisé.","Update Details":"Mise à jour des détails","Updated:":"Mis à jour :","Upload Attachments":"Téléverser les pièces jointes","User Name":"Nom d'utilisateur","View full article in new window":"Afficher l'article complet dans une nouvelle fenêtre","Would you like a Red Hat support manager to contact you regarding this case?":"Souhaitez-vous qu'un responsable d'assistance Red Hat vous contacte au sujet de votre dossier ?","You have used 0% of the 32KB maximum description size.":"Vous avez utilisé 0% des 32 Ko correspondants à la taille maximale de la description.","handpicked":"sélection personnelle","to case":"pour le dossier"});
+    gettextCatalog.setStrings('it', {"24x7 Contact:":"Contatto 24x7:","24x7 Support:":"Supporto 24x7:","<span class=\"glyphicon glyphicon-plus\"></span>&nbsp;Open a New Support Case":"<span class=\"glyphicon glyphicon-plus\"></span>&nbsp;Apri un nuovo caso con il supporto tecnico","<span class=\"glyphicon glyphicon-refresh\"></span>&nbsp;Select Log":"<span class=\"glyphicon glyphicon-refresh\"></span>&nbsp;Seleziona il log","Account Name:":"Nome account:","Account Number:":"Numero account:","Account:":"Account:","Add":"Aggiungi","Add Comment":"Aggiungi commento","Advanced Mission Critical":"Advanced Mission Critical","Alternate Case ID:":"ID alternativo del caso:","Attach Foreman logs:":"Allega log di Foreman:","Attach local file":"Allega un file locale","Attached":"Allegato","Attached By":"Allegato da","Attached Files":"File allegati","Attachments":"Allegati","Attachments:":"Allegati:","Available Log Files":"File di log disponibili","Bugzilla Number":"Numero bugzilla ","Bugzilla Tickets":"Ticket di bugzilla","Cancel":"Cancella","Case Discussion":"Discussione del caso","Case Group:":"Gruppo casi:","Case Type:":"Tipo di caso:","Chat offline":"Avvia una chat offline","Chat with support":"Avvia una chat con il supporto","Choose File(s) To Attach:":"Seleziona i fila da allegare:","Close messages":"Chiudi i messaggi","Comment:":"Commento:","Create Case Group":"Crea un gruppo casi","Create New Case Group":"Crea un nuovo gruppo casi","Delete":"Cancella","Delete Group":"Elimina gruppo","Deleting attachment:":"Elimina allegato:","Description":"Descrizione","Description:":"Descrizione:","Details":"Dettagli","Diagnose":"Diagnosi","Draft saved":"Bozza salvata","Email Notification Recipients":"Destinatari delle notifiche email","Environment":"Ambiente","Export All as CSV":"Esporta tutti come CSV","Exporting CSV...":"Esportazione CSV in corso...","File names must be less than 80 characters. Maximum file size for web-uploaded attachments is 250 MB. Please FTP larger files to dropbox.redhat.com.":"I nomi dei file sono limitati a 80 caratteri. La dimensione massima del file come allegato è di 250MB. Per file più grandi usare FTP per dropbox.redhat.com. ","Filename":"Nome del file","Files to Attach":"File da allegare","First Name":"Nome","Group":"Gruppo","Group:":"Gruppo:","If you feel the issue has become more severe or the case should be a higher priority, please provide a detailed comment, and the case will be reviewed by a support manager.":"Se ritieni che il problema si sia aggravato o che il caso debba essere classificato con una priorità più elevata, fornisci un commento dettagliato, e il caso in questione verrà esaminato da un responsabile del supporto.","In the event that you would still like to open a support case, select 'Open a New Support Case'. The case will be pre-populated with the portion of the log previously selected.":"Se desideri ancora aprire un nuovo caso con il supporto, seleziona ' Apri un nuovo caso con il supporto'. Così facendo il nuovo caso verrà popolato con la sezione del log precedentemente selezionato.","Is Public:":"È pubblico:","Last Name":"Cognome","Last Updated:":"Ultimo aggiornamento:","Learn more":"Maggiori informazioni","Log File Viewer":"Visualizzatore file di log","Log In":"Accedi","Log Out":"Esci","Logged into the Red Hat Customer Portal as":"Accesso eseguito nel Portale clienti di Red Hat come","My Account":"Account","Name":"Nome","Next":"Successivo","No attachments added":"Nessun allegato aggiunto","No cases found with given filters.":"Nessun caso trovato con il filtro usato.","No cases found with given search criteria.":"Nessun caso trovato con i criteri di ricerca specificati.","No groups found.":"Nessun gruppo trovato.","No linked bugzillas":"Nessun bugzilla collegato","Not Logged into the Red Hat Customer Portal":"Accesso non eseguito nel Portale clienti di Red Hat come","Note:":"Nota Bene:","Notes:":"Nota Bene:","Once you have selected your log file then you may diagnose any part of the log file and clicking the 'Red Hat Diagnose' button. This will then display relevant articles and solutons from our Red Hat Knowledge base.":"Dopo aver selezionato il file di log sarà possibile eseguire la diagnosi di qualsiasi parte del file selezionando il pulsante 'Diagnostica Red Hat'. Così facendo potrai visualizzare le soluzioni e gli articoli rilevanti del Red Hat Knowledge base.","Open a New Support Case":"Apri un nuovo caso con il supporto tecnico","Opened:":"Aperto: ","Owner":"Proprietario","Owner:":"Proprietario:","Password":"Password","Previous":"Precedente","Product":"Prodotto","Product Version:":"Versione del prodotto:","Product:":"Prodotto:","Recommendations":"Consigli","Red Hat Access makes it easy for you to self-solve issues, diagnose problems, and engage with us via the Red Hat Customer Portal. To access Red Hat Customer Portal resources, you must enter valid portal credentials.":"Red Hat Access facilita la soluzione dei problemi, il processo di diagnosi e l'interazione con Red Hat tramite il Portale clienti. Per accedere alle risorse del Portale clienti è necessario inserire le credenziali valide.","Red Hat Customer Portal credentials differ from the credentials used to log into this product.":"Le credenziali del Portale clienti di Red Hat differiscono da quelle usate per l'accesso a questo prodotto.","Red Hat Diagnose":"Diagnostica Red Hat","Red Hat Login":"Login di Red Hat","Red Hat Owner:":"Proprietario Red Hat:","Request Management Escalation":"Richiesta aumento prioritá livello Manager","Resolution":"Risoluzione","Save":"Salva","Save Group":"Salva gruppo","Saving draft...":"Salvataggio bozza...","Search":"Cerca","Searching...":"Ricerca in corso...","Select File":"Seleziona un file","Server File(s) To Attach:":"File del server da allegare:","Severity":"Severity","Severity:":"Severity:","Sign in":"Accedi","Sign into the Red Hat Customer Portal":"Accedi al Portale clienti di Red Hat","Simply navigate to and select a log file from the list on the left and click the 'Select File' button.":"Vai alla ricerca e seleziona un file di log dall'elenco sulla sinistra e fare clic sul pulsante 'Seleziona file'.","Size":"Dimensione","Status":"Stato","Status:":"Stato:","Submit":"Invia","Submit Request":"Invia una richiesta","Successfully deleted attachment:":"Allegato rimosso con successo:","Successfully uploaded attachment":"Allegato caricato con successo","Summary of Request":"Sommario della richiesta","Summary:":"Sommario:","Support Level:":"Livello di supporto:","The log file viewer gives the ability to diagnose application logs as well as file a support case with Red Hat Global Support Services.":"Il visualizzatore del file di log permette di eseguire una diagnosi dei log dell'applicazione, e di aprire un caso per il supporto con il Red Hat Global Support Services.","This release is now retired, please refer to the recommended FAQ prior to filing a case":"Questa versione è stata rimossa, consultare le FAQ prima di completare una richiesta di supporto","To view a recommendation, click on it.":"Selezionare il consiglio desiderato per poterlo visualizzare.","Type":"Tipo","Unauthorized.":"Non autorizzato.","Update Details":"Aggiorna le informazioni","Updated:":"Aggiornato:","Upload Attachments":"Carica allegati","User Name":"Nome utente","View full article in new window":"Visualizza tutto l'articolo in una nuova finestra","Would you like a Red Hat support manager to contact you regarding this case?":"Desideri che un responsabile per il supporto di Red Hat ti contatti con riferimento a questo caso?","You have used 0% of the 32KB maximum description size.":"Hai usato 0% dei 32 KB stabiliti come dimensione massima per le descrizioni.","handpicked":"scelto","to case":"per il caso"});
+    gettextCatalog.setStrings('ja', {"24x7 Contact:":"24x7 のお問い合わせ先:","24x7 Support:":"24x7 サポート:","<span class=\"glyphicon glyphicon-plus\"></span>&nbsp;Open a New Support Case":"<span class=\"glyphicon glyphicon-plus\"></span>&nbsp;サポートケースを新規作成","<span class=\"glyphicon glyphicon-refresh\"></span>&nbsp;Select Log":"<span class=\"glyphicon glyphicon-refresh\"></span>&nbsp;ログの選択","Account Name:":"アカウント名:","Account Number:":"アカウント番号:","Account:":"アカウント:","Add":"追加","Add Comment":"コメントの追加","Advanced Mission Critical":"Advanced Mission Critical","Alternate Case ID:":"代替ケース ID:","Attach Foreman logs:":"Foreman のログを添付:","Attach local file":"ローカルファイルを添付します","Attached":"添付","Attached By":"作成者","Attached Files":"添付ファイル","Attachments":"添付ファイル","Attachments:":"添付ファイル:","Available Log Files":"利用可能なログファイル","Bugzilla Number":"Bugzilla 番号","Bugzilla Tickets":"Bugzilla チケット","Cancel":"キャンセル","Case Discussion":"ケースコメント","Case Group:":"ケースグループ:","Case Type:":"ケースタイプ:","Chat offline":"オフラインのチャット","Chat with support":"サポート担当者とチャットする","Choose File(s) To Attach:":"添付するファイルの選択:","Close messages":"メッセージを閉じる","Comment:":"コメント:","Create Case Group":"ケースグループの作成","Create New Case Group":"ケースグループの新規作成","Delete":"削除","Delete Group":"グループの削除","Deleting attachment:":"添付ファイルの削除:","Description":"詳細","Description:":"詳細:","Details":"詳細","Diagnose":"診断","Draft saved":"ドラフトを保存しました","Email Notification Recipients":"電子メール通知の受信者","Environment":"環境","Export All as CSV":"すべてを CSV でエクスポート","Exporting CSV...":"CSV をエクスポート中...","File names must be less than 80 characters. Maximum file size for web-uploaded attachments is 250 MB. Please FTP larger files to dropbox.redhat.com.":"ファイル名は 80 文字未満にしてください。Web にアップロードする添付ファイルの最大サイズは 250 MBです。それ以上の場合は、FTP で dropbox.redhat.com にアップロードしてください。","Filename":"ファイル名","Files to Attach":"添付するファイル","First Name":"氏名 (名)","Group":"グループ","Group:":"グループ:","If you feel the issue has become more severe or the case should be a higher priority, please provide a detailed comment, and the case will be reviewed by a support manager.":"問題がより深刻になったか、またはケースの優先度を高くする必要があると思われる場合は、詳細なコメントを入力してください。サポートマネージャーがケースを確認します。","In the event that you would still like to open a support case, select 'Open a New Support Case'. The case will be pre-populated with the portion of the log previously selected.":"サポートケースをまだ作成する必要がある場合には、「サポートケースを新規作成」を選択します。ケースにはログのすでに選択されている部分が事前設定されます。","Is Public:":"公開:","Last Name":"氏名 (姓):","Last Updated:":"最終更新日時:","Learn more":"詳細情報","Log File Viewer":"ログファイルビューアー","Log In":"ログイン","Log Out":"ログアウト","Logged into the Red Hat Customer Portal as":"Red Hat カスタマーポータルにログイン中: ","My Account":"自分のアカウント","Name":"名前","Next":"次へ","No attachments added":"添付ファイルが追加されていません","No cases found with given filters.":"指定のフィルターでケースが見つかりませんでした。","No cases found with given search criteria.":"指定の検索条件でケースが見つかりませんでした。","No groups found.":"グループが見つかりませんでした。","No linked bugzillas":"リンクされた Bugzilla がありません","Not Logged into the Red Hat Customer Portal":"Red Hat カスタマーポータルにログインしていません","Note:":"注意:","Notes:":"注意:","Once you have selected your log file then you may diagnose any part of the log file and clicking the 'Red Hat Diagnose' button. This will then display relevant articles and solutons from our Red Hat Knowledge base.":"ログファイルを選択すると、ファイルのすべての部分を診断することができます。また「Red Hat 診断」ボタンをクリックすると、Red Hat ナレッジベースの関連記事やソリューションが表示されます。","Open a New Support Case":"サポートケースを新規作成","Opened:":"作成日時:","Owner":"担当者","Owner:":"担当者:","Password":"パスワード","Previous":"前へ","Product":"製品","Product Version:":"製品バージョン:","Product:":"製品:","Recommendations":"推奨項目","Red Hat Access makes it easy for you to self-solve issues, diagnose problems, and engage with us via the Red Hat Customer Portal. To access Red Hat Customer Portal resources, you must enter valid portal credentials.":"Red Hat Access をご利用いただくと、問題をご自分で解決したり、問題の診断を行ったり、また Red Hat カスタマーポータル経由で Red Hat にお問い合わせいただいたりすることがより簡単になります。Red Hat カスタマーポータルの各種リソースにアクセスするには、有効なポータルの資格情報を入力する必要があります。","Red Hat Customer Portal credentials differ from the credentials used to log into this product.":"Red Hat カスタマーポータルの資格情報は、この製品にログインするために使用される資格情報とは異なります。","Red Hat Diagnose":"Red Hat 診断","Red Hat Login":"Red Hat ログイン","Red Hat Owner:":"Red Hat 担当者:","Request Management Escalation":"マネージメントエスカレーションをリクエスト","Resolution":"解決方法","Save":"保存","Save Group":"グループの保存","Saving draft...":"下書きの保存中...","Search":"検索","Searching...":"検索中...","Select File":"ファイルの選択","Server File(s) To Attach:":"添付するサーバーファイル:","Severity":"重大度","Severity:":"重大度:","Sign in":"サインイン","Sign into the Red Hat Customer Portal":"Red Hat カスタマーポータルにサインインします","Simply navigate to and select a log file from the list on the left and click the 'Select File' button.":"左側にある一覧に移動し、一覧からログファイルを選択して「ファイルの選択」ボタンをクリックします。","Size":"サイズ","Status":"ステータス","Status:":"ステータス:","Submit":"送信","Submit Request":"リクエストの送信","Successfully deleted attachment:":"添付ファイルが正しく削除されました:","Successfully uploaded attachment":"添付ファイルが正しくアップロードされました:","Summary of Request":"リクエストの要約","Summary:":"概要:","Support Level:":"サポートレベル:","The log file viewer gives the ability to diagnose application logs as well as file a support case with Red Hat Global Support Services.":"ログファイルビューアーは、Red Hat グローバルサポートサービス (GSS) にサポートケースを報告する機能と共に、アプリケーションのログを診断する機能を提供します。","This release is now retired, please refer to the recommended FAQ prior to filing a case":"本リリースは現在使用中止になっています。ケースを作成する前に、推奨されている FAQ を参照してください。","To view a recommendation, click on it.":"推奨項目を閲覧するには、その項目をクリックします。","Type":"タイプ","Unauthorized.":"承認されていません。","Update Details":"更新の詳細","Updated:":"更新日:","Upload Attachments":"添付ファイルのアップロード","User Name":"ユーザー名","View full article in new window":"記事の全文を新規ウィンドウで表示する","Would you like a Red Hat support manager to contact you regarding this case?":"このケースについて、Red Hat のサポートマネージャーからの連絡を希望されますか?","You have used 0% of the 32KB maximum description size.":"コメントの最大サイズ 32KB の 0% を使用しています。","handpicked":"選択済み","to case":"対象のケース"});
+    gettextCatalog.setStrings('ko', {"24x7 Contact:":"24x7 연락처:","24x7 Support:":"24x7 지원:","<span class=\"glyphicon glyphicon-plus\"></span>&nbsp;Open a New Support Case":"<span class=\"glyphicon glyphicon-plus\"></span>&nbsp;새 기술 문의 생성 ","<span class=\"glyphicon glyphicon-refresh\"></span>&nbsp;Select Log":"<span class=\"glyphicon glyphicon-refresh\"></span>&nbsp;로그 선택 ","Account Name:":"계정 이름:","Account Number:":"계정 번호:","Account:":"계정:","Add":"추가 ","Add Comment":"코멘트 추가","Advanced Mission Critical":"고급 미션 크리티컬","Alternate Case ID:":"대체 기술 문의 ID:","Attach Foreman logs:":"Foreman 로그 첨부:","Attach local file":"로컬 파일 첨부 ","Attached":"첨부됨  ","Attached By":"첨부자","Attached Files":"첨부된 파일 ","Attachments":"첨부 파일","Attachments:":"첨부 파일: ","Available Log Files":"사용 가능한 로그 파일 ","Bugzilla Number":"Bugzilla 번호 ","Bugzilla Tickets":"Bugzilla 티켓 ","Cancel":"취소 ","Case Discussion":"기술 문의 토론 ","Case Group:":"기술문의 그룹:","Case Type:":"기술문의 유형: ","Chat offline":"오프라인 채팅 ","Chat with support":"지원 담당자와 채팅","Choose File(s) To Attach:":"첨부할 파일 선택:","Close messages":"메세지 종료 ","Comment:":"코멘트: ","Create Case Group":"기술문의 그룹 생성","Create New Case Group":"새 기술문의 그룹 생성","Delete":"삭제 ","Delete Group":"그룹 삭제","Deleting attachment:":"첨부 파일 삭제 중: ","Description":"설명 ","Description:":"설명: ","Details":"상세 정보 ","Diagnose":"진단 ","Draft saved":"초안 저장됨","Email Notification Recipients":"이메일 알림 수신자 ","Environment":"환경 ","Export All as CSV":"CSV로 모두 내보내기 ","Exporting CSV...":"CSV 내보내기...","File names must be less than 80 characters. Maximum file size for web-uploaded attachments is 250 MB. Please FTP larger files to dropbox.redhat.com.":"파일명은 80자 미만이어야 합니다. 웹에 업로드될 최대 첨부 파일크기는 250 MB입니다. 더 큰 파일은 FTP를(dropbox.redhat.com) 이용해 주시기 바랍니다. ","Filename":"파일명","Files to Attach":"첨부할 파일 ","First Name":"이름","Group":"그룹","Group:":"그룹:","If you feel the issue has become more severe or the case should be a higher priority, please provide a detailed comment, and the case will be reviewed by a support manager.":"문제가 더 심각해지거나 기술 문의 사항의 우선 순위가 더 높아야 한다고 생각되는 경우, 자세한 설명을 제공하면 지원 관리자가 검토할 것입니다.","In the event that you would still like to open a support case, select 'Open a New Support Case'. The case will be pre-populated with the portion of the log previously selected.":"기술 문의 사항을 아직 열어 두어야 할 경우 '새 기술 문의 생성'을 선택합니다. 기술 문의는 이전에 선택한 로그의 일부로 사전 작성됩니다. ","Is Public:":"공개:","Last Name":"성","Last Updated:":"마지막 업데이트:","Learn more":"자세한 정보","Log File Viewer":"로그 파일 뷰어 ","Log In":"로그인","Log Out":"로그 아웃 ","Logged into the Red Hat Customer Portal as":"Red Hat 고객 포털로 로그인 ","My Account":"내 계정","Name":"이름 ","Next":"다음","No attachments added":"추가된 첨부 파일이 없습니다 ","No cases found with given filters.":"지정된 필터에 맞는 기술 문의 사항이 없습니다.","No cases found with given search criteria.":"지정된 검색 조건에 맞는 기술 문의 사항이 없습니다. ","No groups found.":"그룹을 찾을 수 없습니다.","No linked bugzillas":"링크된 Bugzilla가 없습니다 ","Not Logged into the Red Hat Customer Portal":"Red Hat 고객 포털에 로그인되어 있지 않습니다 ","Note:":"알림: ","Notes:":"알림: ","Once you have selected your log file then you may diagnose any part of the log file and clicking the 'Red Hat Diagnose' button. This will then display relevant articles and solutons from our Red Hat Knowledge base.":"로그 파일을 선택하면 로그 파일의 모든 부분을 진단할 수 있으므로 'Red Hat 진단' 버튼을 클릭합니다. 그러면 Red Hat 지식 기반에서 관련 기사 및 솔루션이 표시됩니다. ","Open a New Support Case":"새 기술문의 생성","Opened:":"생성일: ","Owner":"소유자 ","Owner:":"소유자:","Password":"암호 ","Previous":"이전","Product":"제품","Product Version:":"제품 버전:","Product:":"제품:","Recommendations":"권장 사항 ","Red Hat Access makes it easy for you to self-solve issues, diagnose problems, and engage with us via the Red Hat Customer Portal. To access Red Hat Customer Portal resources, you must enter valid portal credentials.":"Red Hat Access를 사용하여 문제를 직접 해결하고, 문제를 진단하거나 Red Hat  고객 포털을 통해 보다 쉽게 지원 문의할 수 있습니다. Red Hat 고객 포털 리소스에 액세스하려면 유효한 포털 인증을 입력해야 합니다. ","Red Hat Customer Portal credentials differ from the credentials used to log into this product.":"Red Hat 고객 포털 인증은 제품에 로그인하는데 사용되는 인증과 다릅니다.","Red Hat Diagnose":"Red Hat 진단","Red Hat Login":"Red Hat 로그인","Red Hat Owner:":"Red Hat 소유자:","Request Management Escalation":"관리 에스컬레이션 요청","Resolution":"해결 방법 ","Save":"저장","Save Group":"그룹 저장","Saving draft...":"초안 저장 중...","Search":"검색 ","Searching...":"검색 중.. ","Select File":"파일 선택 ","Server File(s) To Attach:":"첨부할 서버 파일: ","Severity":"심각성 ","Severity:":"심각성:","Sign in":"로그인 ","Sign into the Red Hat Customer Portal":"Red Hat 고객 포털로 로그인 ","Simply navigate to and select a log file from the list on the left and click the 'Select File' button.":"왼쪽에 있는 목록으로 이동하여 로그 파일을 선택한 후 '파일 선택' 버튼을 클릭합니다.","Size":"크기 ","Status":"상태","Status:":"상태: ","Submit":"제출","Submit Request":"요청 제출","Successfully deleted attachment:":"첨부 파일을 성공적으로 삭제했습니다:","Successfully uploaded attachment":"첨부 파일을 성공적으로 업로드했습니다 ","Summary of Request":"요청 요약 ","Summary:":"요약: ","Support Level:":"지원 수준: ","The log file viewer gives the ability to diagnose application logs as well as file a support case with Red Hat Global Support Services.":"로그 파일 뷰어는 Red Hat  글로벌 지원 서비스 (GSS)를 통해 기술 지원 사항을 저장할 수 있는 기능과 함께 애플리케이션을 진단할 수 있는 기능을 제공합니다.","This release is now retired, please refer to the recommended FAQ prior to filing a case":"이 릴리즈는 현재 만료되었습니다. 기술 문의를 작성하기 전 FAQ를 참조하십시오.","To view a recommendation, click on it.":"권장 사항을 확인하려면 해당 항목을 클릭합니다.","Type":"유형 ","Unauthorized.":"인증되지 않았습니다.","Update Details":"업데이트 상세 정보 ","Updated:":"업데이트된 날짜:","Upload Attachments":"첨부 파일 업로드 ","User Name":"사용자 이름","View full article in new window":"새 창에서 전체 기사 보기","Would you like a Red Hat support manager to contact you regarding this case?":"이 기술 문의와 관련하여 Red Hat 지원 관리자가 귀하에게 연락하도록 하시겠습니까?","You have used 0% of the 32KB maximum description size.":"최대 설명 크기인 32KB 중 0%가 사용되었습니다. ","handpicked":"엄선","to case":"기술 문의 사항 "});
+    gettextCatalog.setStrings('pt-BR', {"24x7 Contact:":"Contato 24x7:","24x7 Support:":"Suporte 24x7:","<span class=\"glyphicon glyphicon-plus\"></span>&nbsp;Open a New Support Case":"<span class=\"glyphicon glyphicon-plus\"></span>&nbsp;Abra um Novo Caso de Suporte","<span class=\"glyphicon glyphicon-refresh\"></span>&nbsp;Select Log":"<span class=\"glyphicon glyphicon-refresh\"></span>&nbsp;Selecione o Log","Account Name:":"Nome da Conta:","Account Number:":"Número da Conta:","Account:":"Conta:","Add":"Adicionar","Add Comment":"Adicionar Comentário","Advanced Mission Critical":"Missão Crítica Avançada","Alternate Case ID:":"Alternar ID de Caso:","Attach Foreman logs:":"Anexar logs do Foreman:","Attach local file":"Anexar arquivo local:","Attached":"Anexado","Attached By":"Anexado por","Attached Files":"Arquivos anexados","Attachments":"Anexos","Attachments:":"Anexos:","Available Log Files":"Arquivos de Log Disponíveis:","Bugzilla Number":"Número do Bugzilla","Bugzilla Tickets":"Tiquetes do Bugzilla","Cancel":"Cancelar","Case Discussion":"Discussão do Caso","Case Group:":"Grupo do Caso:","Case Type:":"Tipo do Caso:","Chat offline":"Bate papo offline","Chat with support":"Bate-papo com o suporte","Choose File(s) To Attach:":"Escolha Arquivo(s) para Anexar:","Close messages":"Fechar Mensagens","Comment:":"Comentário:","Create Case Group":"Criar Grupo de Caso","Create New Case Group":"Criar novo Grupo de Caso","Delete":"Remover","Delete Group":"Excluir Grupo","Deleting attachment:":"remover Anexo:","Description":"Descrição","Description:":"Descrição:","Details":"Detalhes","Diagnose":"Diagnóstico","Draft saved":"Rascunho Salvo ","Email Notification Recipients":"Destinatários de notificação por e-mail","Environment":"Ambiente","Export All as CSV":"Exportar todos os CSV","Exporting CSV...":"Exportando CSV...","File names must be less than 80 characters. Maximum file size for web-uploaded attachments is 250 MB. Please FTP larger files to dropbox.redhat.com.":"O nome dos arquivos são limitados a 80 caracteres. Tamanho máximo de arquivo é 250 Mb. Para arquivos maiores que 250Mb por favor utilize o FTP (dropbox.redhat.com). ","Filename":"Nome do Arquivo","Files to Attach":"Anexar Arquivos à","First Name":"Primeiro Nome","Group":"Grupo","Group:":"Grupo:","If you feel the issue has become more severe or the case should be a higher priority, please provide a detailed comment, and the case will be reviewed by a support manager.":"Caso sinta que o problema ficou mais grave ou que o caso deveria ter maior prioridade, forneça um comentário detalhado, e o caso será analisado por um gerente de suporte.","In the event that you would still like to open a support case, select 'Open a New Support Case'. The case will be pre-populated with the portion of the log previously selected.":"Caso você ainda deseje abrir um caso de suporte, selecione 'Abrir um Novo Caso de Suporte'. O caso será pré-populado com a porção do log anteriormente selecionada.","Is Public:":"É Público:","Last Name":"Sobrenome","Last Updated:":"Úlltima Atualização:","Learn more":"Saiba mais","Log File Viewer":"Visualizador de Arquivos de Log","Log In":"Logon","Log Out":"Sair","Logged into the Red Hat Customer Portal as":"Autenticado no Red Hat Customer Portal como","My Account":"Minha conta","Name":"Nome","Next":"Próximo","No attachments added":"Não foi adicionado nenhum anexo","No cases found with given filters.":"Nenhum caso foi encontrado com os filtros especificados","No cases found with given search criteria.":"Nenhum caso encontrado com critério de busca especificado","No groups found.":"Nenhum grupo encontrado","No linked bugzillas":"Nenhum bugzilla conectado","Not Logged into the Red Hat Customer Portal":"Não foi autenticado no Red Hat Customer Portal","Note:":"Nota:","Notes:":"Notas:","Once you have selected your log file then you may diagnose any part of the log file and clicking the 'Red Hat Diagnose' button. This will then display relevant articles and solutons from our Red Hat Knowledge base.":"Depois que você selecionou o arquivo de log, você poderá diagnosticar qualquer parte do arquivo de log e clicar no botão 'Red Hat Diagnose'. Isto irá exibir artigos relevantes e soluções de nossa base do Red Hat Knowledge.","Open a New Support Case":"Abrir um novo Caso de Suporte","Opened:":"Aberto: ","Owner":"Proprietário","Owner:":"Proprietário:","Password":"Senha","Previous":"Anterior","Product":"Produto","Product Version:":"Versão do Produto:","Product:":"Produto:","Recommendations":"Recomendações","Red Hat Access makes it easy for you to self-solve issues, diagnose problems, and engage with us via the Red Hat Customer Portal. To access Red Hat Customer Portal resources, you must enter valid portal credentials.":"O Red Hat Access facilita a solução de problemas, diagnóstico de problemas pra você e nos une via Red Hat Customer Portal. Para acessar os recursos do Portal do Consumidor Red Hat, você precisa inserir as credenciais do portal válidas.","Red Hat Customer Portal credentials differ from the credentials used to log into this product.":"As credenciais do Portal do Consumidor, diferem das credenciais usadas para se autenticar neste produto.","Red Hat Diagnose":"Diagnóstico da Red Hat","Red Hat Login":"Red Hat Login","Red Hat Owner:":"Proprietário da Red Hat:","Request Management Escalation":"Requisita a escalação de gerenciamento","Resolution":"Resolução","Save":"Salvar","Save Group":"Salvar Grupo","Saving draft...":"Salvar Rascunho...","Search":"Buscar","Searching...":"Buscando... ","Select File":"Selecionar Arquivo","Server File(s) To Attach:":"Arquivo(s) do Servidor para Anexar:","Severity":"Gravidade","Severity:":"Gravidade:","Sign in":"Entrar","Sign into the Red Hat Customer Portal":"Entrar no Red Hat Portal do Cliente","Simply navigate to and select a log file from the list on the left and click the 'Select File' button.":"Simplesmente navegue até lá e selecione um arquivo de log a partir da lista à esquerda e clique no botão 'Selecionar Arquivo'.","Size":"Tamanho","Status":"Estado","Status:":"Estado:","Submit":"Enviar","Submit Request":"Enviar Solicitação","Successfully deleted attachment:":"Anexos removidos com sucesso:","Successfully uploaded attachment":"Anexo atualizado com sucesso","Summary of Request":"Sumário de Solicitações","Summary:":"Sumário","Support Level:":"Nível de Suporte","The log file viewer gives the ability to diagnose application logs as well as file a support case with Red Hat Global Support Services.":"O visualizador de arquivo de log fornece a habilidade para diagnosticar logs de aplicativo assim como arquivar caso de suporte com os Serviços da Red Hat Global Support.","This release is now retired, please refer to the recommended FAQ prior to filing a case":"Este lançamento está obsoleto, por favor consulte o FAQ recomendado antes de arquivar um caso","To view a recommendation, click on it.":"Para visualizar recomendação, clique nela;","Type":"Tipo","Unauthorized.":"Desautorizado.","Update Details":"Atualizar Detalhes","Updated:":"Atualizado:","Upload Attachments":"Atualizar Anexos","User Name":"Nome de Usuário","View full article in new window":"Visualizar artigo completo na nova janela","Would you like a Red Hat support manager to contact you regarding this case?":"Você deseja  que o gerente de suporte da Red Hat entre em contato para discutir sobre este caso?","You have used 0% of the 32KB maximum description size.":"Você já usou 0% do tamanho da descrição máximo de 32 KB.","handpicked":"escolhido manualmente","to case":"para o caso"});
+    gettextCatalog.setStrings('zh-Hans', {"24x7 Contact:":"24x7 联系方法：","24x7 Support:":"24x7 支持：","<span class=\"glyphicon glyphicon-plus\"></span>&nbsp;Open a New Support Case":"<span class=\"glyphicon glyphicon-plus\"></span>&nbsp;创建一个新支持案例","<span class=\"glyphicon glyphicon-refresh\"></span>&nbsp;Select Log":"<span class=\"glyphicon glyphicon-refresh\"></span>&nbsp;选择日志","Account Name:":"帐户名称：","Account Number:":"帐户号：","Account:":"账户：","Add":"添加","Add Comment":"添加评论","Advanced Mission Critical":"高级关键任务","Alternate Case ID:":"备用案例 ID：","Attach Foreman logs:":"附加 Foreman 日志：","Attach local file":"附加本地文件","Attached":"附加","Attached By":"附件上传者","Attached Files":"附加的文件","Attachments":"附件","Attachments:":"附件：","Available Log Files":"有效的日志文件","Bugzilla Number":"Bugzilla 号","Bugzilla Tickets":"Bugzilla 报告","Cancel":"取消","Case Discussion":"支持案例讨论","Case Group:":"支持案例组：","Case Type:":"支持案例类别：","Chat offline":"离线互动咨询","Chat with support":"互动咨询支持","Choose File(s) To Attach:":"选择要被附加的文件：","Close messages":"关闭信息","Comment:":"评论：","Create Case Group":"创建案例组","Create New Case Group":"创建新的案例组","Delete":"删除","Delete Group":"删除组","Deleting attachment:":"删除附件：","Description":"描述","Description:":"描述：","Details":"详细信息","Diagnose":"诊断","Draft saved":"保存草稿","Email Notification Recipients":"电子邮件通知接收者","Environment":"环境","Export All as CSV":"将所有导出为 CSV","Exporting CSV...":"导出 CSV...","File names must be less than 80 characters. Maximum file size for web-uploaded attachments is 250 MB. Please FTP larger files to dropbox.redhat.com.":"文件名不能超过 80 个字符，网页上传文件大小不能超过 250 MB。请使用 FTP 将大文件上传到 dropbox.redhat.com。","Filename":"文件名","Files to Attach":"要附加的文件","First Name":"名","Group":"组","Group:":"组：","If you feel the issue has become more severe or the case should be a higher priority, please provide a detailed comment, and the case will be reviewed by a support manager.":"如果您的问题愈发严重或案例应具有更高优先级，请提供详细信息，支持经理将会复核该案例。","In the event that you would still like to open a support case, select 'Open a New Support Case'. The case will be pre-populated with the portion of the log previously selected.":"如果您仍然希望创建一个新的支持案例，请选择“创建新支持案例”。系统将会根据您所选择的日志自动生成案例中的部分内容。","Is Public:":"是否公开：","Last Name":"姓","Last Updated:":"最新更新：","Learn more":"了解更多信息","Log File Viewer":"日志文件查看器","Log In":"登录","Log Out":"登出","Logged into the Red Hat Customer Portal as":"以以下身份登录到红帽客户门户网站","My Account":"我的帐号","Name":"名称","Next":"下一步","No attachments added":"无添加的附件","No cases found with given filters.":"无匹配的支持案例。","No cases found with given search criteria.":"无匹配的支持案例。","No groups found.":"没有找到组。","No linked bugzillas":"没有相关的 bugzilla 报告","Not Logged into the Red Hat Customer Portal":"没有登录到红帽用户门户网站","Note:":"备注：","Notes:":"备注：","Once you have selected your log file then you may diagnose any part of the log file and clicking the 'Red Hat Diagnose' button. This will then display relevant articles and solutons from our Red Hat Knowledge base.":"在选择了您的日志文件后，点“红帽诊断”按钮可以根据您的日志文件对系统进行诊断，红帽知识库中的相应条目将会被显示。","Open a New Support Case":"创建一个新的支持案例","Opened:":"创建：","Owner":"所有者","Owner:":"所有者：","Password":"密码","Previous":"上一步","Product":"产品","Product Version:":"产品版本：","Product:":"产品：","Recommendations":"建议","Red Hat Access makes it easy for you to self-solve issues, diagnose problems, and engage with us via the Red Hat Customer Portal. To access Red Hat Customer Portal resources, you must enter valid portal credentials.":"通过使用 Red Hat Access，您可以方便地通过红帽用户门户网站来自助解决问题、诊断问题并和红帽进行联系。您需要有效的账户来访问红帽用户门户网站的资源。","Red Hat Customer Portal credentials differ from the credentials used to log into this product.":"红帽用户门户网站的用户帐号和登录到其它产品的用户帐号不同。","Red Hat Diagnose":"红帽诊断","Red Hat Login":"红帽登录","Red Hat Owner:":"红帽负责人：","Request Management Escalation":"请求管理升级","Resolution":"解决方案","Save":"保存","Save Group":"保存组","Saving draft...":"保存草稿...","Search":"搜索","Searching...":"搜索...","Select File":"选择文件","Server File(s) To Attach:":"附加的服务器文件：","Severity":"严重性","Severity:":"严重性：","Sign in":"登录","Sign into the Red Hat Customer Portal":"登录到红帽用户门户网站","Simply navigate to and select a log file from the list on the left and click the 'Select File' button.":"从左面的列表中查找并选择一个日志文件，点“选择文件”按钮。","Size":"大小","Status":"状态","Status:":"状态：","Submit":"提交","Submit Request":"提交请求","Successfully deleted attachment:":"成功删除的附件：","Successfully uploaded attachment":"成功上传的附件","Summary of Request":"请求概述","Summary:":"概述：","Support Level:":"支持级别：","The log file viewer gives the ability to diagnose application logs as well as file a support case with Red Hat Global Support Services.":"日志文件查看器可以对应用程序的日志文件进行诊断，并可以在红帽全球支持服务系统中创建一个支持案例。","This release is now retired, please refer to the recommended FAQ prior to filing a case":"这个版本已经不被支持，请在创建案例前参考我们推荐的 FAQ。","To view a recommendation, click on it.":"点一个建议项来查看它的内容。","Type":"类型","Unauthorized.":"未授权。","Update Details":"更新详情","Updated:":"更新：","Upload Attachments":"上传附件","User Name":"用户名","View full article in new window":"在新窗口中查看全文","Would you like a Red Hat support manager to contact you regarding this case?":"您是否希望红帽支持经理就此支持案例与您联系？","You have used 0% of the 32KB maximum description size.":"您已经使用了最大描述大小限制（32 KB）中的 0%。","handpicked":"精选","to case":"案例"});
+    gettextCatalog.setStrings('ru', {"24x7 Contact:":"Круглосуточная связь:","24x7 Support:":"Круглосуточная поддержка:","<span class=\"glyphicon glyphicon-plus\"></span>&nbsp;Open a New Support Case":"<span class=\"glyphicon glyphicon-plus\"></span>&nbsp;Открыть новый запрос","<span class=\"glyphicon glyphicon-refresh\"></span>&nbsp;Select Log":"<span class=\"glyphicon glyphicon-refresh\"></span>&nbsp;Выберите журнал","Account Name:":"Имя учетной записи:","Account Number:":"Номер учетной записи:","Account:":"Учетная запись:","Add":"Добавить","Add Comment":"Добавить комментарий","Advanced Mission Critical":"Программа критического обслуживания","Alternate Case ID:":"Дополнительный идентификатор запроса:","Attach Foreman logs:":"Добавить журналы Foreman:","Attach local file":"Добавить локальный файл","Attached":"Добавлено","Attached By":"Добавил ","Attached Files":"Добавленные файлы","Attachments":"Вложения","Attachments:":"Вложения:","Available Log Files":"Доступные журналы","Bugzilla Number":"Номер Bugzilla","Bugzilla Tickets":"Отчеты Bugzilla","Cancel":"Отмена","Case Discussion":"Обсуждение запроса","Case Group:":"Группа:","Case Type:":"Тип запроса:","Chat offline":"Оффлайн чат","Chat with support":"Чат с поддержкой","Choose File(s) To Attach:":"Выберите файлы:","Close messages":"Закрыть сообщения","Comment:":"Комментарий:","Create Case Group":"Создать группу","Create New Case Group":"Создать новую группу запросов","Delete":"Удалить","Delete Group":"Удалить группу","Deleting attachment:":"Удаление вложения:","Description":"Описание","Description:":"Описание:","Details":"Свойства","Diagnose":"Диагностика","Draft saved":"Черновик сохранен","Email Notification Recipients":"Получатели уведомлений","Environment":"Окружение","Export All as CSV":"Экспорт в CSV","Exporting CSV...":"Экспорт в CSV...","File names must be less than 80 characters. Maximum file size for web-uploaded attachments is 250 MB. Please FTP larger files to dropbox.redhat.com.":"Имена файлов не могут содержать больше 80 знаков, а размер вложения не должен превышать 250 МБ. Для больших файлов рекомендуется использовать dropbox.redhat.com.","Filename":"Имя файла","Files to Attach":"Файлы для добавления","First Name":"Имя","Group":"Группа","Group:":"Группа:","If you feel the issue has become more severe or the case should be a higher priority, please provide a detailed comment, and the case will be reviewed by a support manager.":"Если вы считаете, что ваш запрос должен иметь высокий приоритет, объясните причину в комментариях.","In the event that you would still like to open a support case, select 'Open a New Support Case'. The case will be pre-populated with the portion of the log previously selected.":"Если вы все же хотите открыть запрос, нажмите «Открыть новый запрос». Данные из выбранного журнала будут автоматически добавлены в отчет.","Is Public:":"Общий доступ:","Last Name":"Фамилия","Last Updated:":"Обновлен:","Learn more":"Узнать больше","Log File Viewer":"Просмотр журналов","Log In":"Вход","Log Out":"Выход","Logged into the Red Hat Customer Portal as":"Пользователь:","My Account":"Моя учетная запись","Name":"Имя","Next":"Вперед","No attachments added":"Нет вложений","No cases found with given filters.":"Нет запросов.","No cases found with given search criteria.":"Нет запросов.","No groups found.":"Нет групп.","No linked bugzillas":"Нет запросов Bugzilla","Not Logged into the Red Hat Customer Portal":"Не авторизован на портале пользователей","Note:":"Примечание:","Notes:":"Примечания:","Once you have selected your log file then you may diagnose any part of the log file and clicking the 'Red Hat Diagnose' button. This will then display relevant articles and solutons from our Red Hat Knowledge base.":"После выбора журнала можно провести его диагностику, нажав кнопку «Диагностика Red Hat». Будут показаны подходящие статьи и решения из базы данных Red Hat.","Open a New Support Case":"Открыть новый запрос","Opened:":"Открыт: ","Owner":"Владелец","Owner:":"Владелец:","Password":"Пароль","Previous":"Назад","Product":"Продукт","Product Version:":"Версия:","Product:":"Продукт:","Recommendations":"Рекомендации","Red Hat Access makes it easy for you to self-solve issues, diagnose problems, and engage with us via the Red Hat Customer Portal. To access Red Hat Customer Portal resources, you must enter valid portal credentials.":"Red Hat Access облегчает самостоятельную диагностику конфликтов и предоставляет каналы связи с Red Hat через портал пользователей. Для доступа к ресурсам надо будет авторизоваться на портале.","Red Hat Customer Portal credentials differ from the credentials used to log into this product.":"Имя пользователя и пароль доступа к порталу отличаются от имени и пароля, связанных с продуктом.","Red Hat Diagnose":"Диагностика Red Hat","Red Hat Login":"Учетная запись Red Hat","Red Hat Owner:":"Владелец Red Hat:","Request Management Escalation":"Связаться с менеджером","Resolution":"Решение","Save":"Сохранить","Save Group":"Сохранить группу","Saving draft...":"Сохранение черновика...","Search":"Поиск","Searching...":"Поиск...","Select File":"Выбрать файл","Server File(s) To Attach:":"Файлы на сервере:","Severity":"Степень","Severity:":"Степень:","Sign in":"Вход","Sign into the Red Hat Customer Portal":"Авторизация на портале пользователей Red Hat","Simply navigate to and select a log file from the list on the left and click the 'Select File' button.":"Выберите журнал из списка и нажмите «Выбрать файл».","Size":"Размер","Status":"Статус","Status:":"Статус:","Submit":"Отправить","Submit Request":"Отправить запрос","Successfully deleted attachment:":"Вложение удалено:","Successfully uploaded attachment":"Вложение добавлено:","Summary of Request":"Сводка запроса","Summary:":"Сводка:","Support Level:":"Уровень поддержки:","The log file viewer gives the ability to diagnose application logs as well as file a support case with Red Hat Global Support Services.":"В окне просмотра журналов можно проверить журналы программ и создать запрос обслуживания в службе поддержки Red Hat.","This release is now retired, please refer to the recommended FAQ prior to filing a case":"Жизненный цикл этого выпуска подошел к концу.  Прежде чем создать запрос, ознакомьтесь с секцией вопросов и ответов.","To view a recommendation, click on it.":"Щелкните на рекомендации для ее просмотра.","Type":"Тип","Unauthorized.":"Не авторизован.","Update Details":"Обновить свойства","Updated:":"Обновлено:","Upload Attachments":"Добавить вложения","User Name":"Имя пользователя","View full article in new window":"Открыть статью в новом окне","Would you like a Red Hat support manager to contact you regarding this case?":"Вы согласны, чтобы менеджер службы поддержки Red Hat с вами связался?","You have used 0% of the 32KB maximum description size.":"Для описания использовано 0% из 32 КБ.","handpicked":"подобрано","to case":"к запросу"});
 /* jshint +W100 */
 }]);
 'use strict';
@@ -21,12 +30,12 @@ angular.module('RedhatAccess.cases', [
 ]).constant('CASE_EVENTS', {
     received: 'case-received'
 }).constant('CHAT_SUPPORT', {
-    enableChat: true,
+    enableChat: false,
     chatButtonToken: '573A0000000GmiP',
     chatLiveAgentUrlPrefix: 'https://d.la1w1.salesforceliveagent.com/chat',
     chatInitHashOne: '572A0000000GmiP',
     chatInitHashTwo: '00DA0000000HxWH',
-    chatIframeHackUrlPrefix: 'https://rogsstest.force.com/chatHidden'
+    chatIframeHackUrlPrefix: 'https://rogsstest.secure.force.com/chatHidden'
 }).constant('STATUS', {
     open: 'open',
     closed: 'closed',
@@ -51,10 +60,11 @@ angular.module('RedhatAccess.cases', [
     'showRecommendations': true,
     'showComments': true,
     'showServerSideAttachments': true,
-    'showEmailNotifications': true
+    'showEmailNotifications': true,
+    'isPCM': false
 }).config([
     '$stateProvider',
-    function ($stateProvider) {
+    function($stateProvider) {
         $stateProvider.state('compact', {
             url: '/case/compact?sessionId',
             templateUrl: 'cases/views/compact.html'
@@ -132,40 +142,32 @@ angular.module('RedhatAccess.common', [
 /*global $ */
 angular.module('RedhatAccess.header', []).value('TITLE_VIEW_CONFIG', {
     show: 'false',
-    titlePrefix: 'Red Hat Access: ',
-    searchTitle: 'Search',
-    caseListTitle: 'Support Cases',
-    caseViewTitle: 'View/Modify Case',
-    newCaseTitle: 'New Support Case',
-    searchCaseTitle: 'Search Support Cases',
-    logViewerTitle: 'Log',
-    manageGroupsTitle: 'Manage Case Groups',
-    editGroupTitle: 'Edit Case Group',
-    defaultGroup: 'Manage Default Case Groups'
+    titlePrefix: 'Red Hat Access: '
 }).controller('TitleViewCtrl', [
     'TITLE_VIEW_CONFIG',
     '$scope',
-    function (TITLE_VIEW_CONFIG, $scope) {
+    'translate',
+    function (TITLE_VIEW_CONFIG, $scope, translate) {
         $scope.showTitle = TITLE_VIEW_CONFIG.show;
         $scope.titlePrefix = TITLE_VIEW_CONFIG.titlePrefix;
         $scope.getPageTitle = function () {
             switch ($scope.page) {
             case 'search':
-                return TITLE_VIEW_CONFIG.searchTitle;
+                return translate('Search');
             case 'caseList':
-                return TITLE_VIEW_CONFIG.caseListTitle;
+                return translate('Support Cases');
             case 'caseView':
-                return TITLE_VIEW_CONFIG.caseViewTitle;
+                return translate('View/Modify Case');
             case 'newCase':
-                return TITLE_VIEW_CONFIG.newCaseTitle;
+                return translate('New Support Case');
             case 'logViewer':
-                return TITLE_VIEW_CONFIG.logViewerTitle;
+                return translate('Logs');
             case 'searchCase':
-                return TITLE_VIEW_CONFIG.searchCaseTitle;
+                return translate('Search Support Case');
             case 'manageGroups':
-                return TITLE_VIEW_CONFIG.manageGroupsTitle;
+                return translate('Manage Case Groups');
             case 'editGroup':
-                return TITLE_VIEW_CONFIG.editGroupTitle;
+                return translate('Manage Default Case Groups');
             default:
                 return '';
             }
@@ -183,7 +185,8 @@ angular.module('RedhatAccess.header', []).value('TITLE_VIEW_CONFIG', {
     'AUTH_EVENTS',
     '$rootScope',
     'RHAUtils',
-    function ($filter, AUTH_EVENTS, $rootScope, RHAUtils) {
+    'translate',
+    function ($filter, AUTH_EVENTS, $rootScope, RHAUtils, translate) {
         var ALERT_TYPES = {
                 DANGER: 'danger',
                 SUCCESS: 'success',
@@ -245,7 +248,7 @@ angular.module('RedhatAccess.header', []).value('TITLE_VIEW_CONFIG', {
         };
         $rootScope.$on(AUTH_EVENTS.logoutSuccess, angular.bind(this, function () {
             this.clearAlerts();
-            this.addMessage('You have successfully logged out of the Red Hat Customer Portal.');
+            this.addMessage(translate('You have successfully logged out of the Red Hat Customer Portal.'));
         }));
         $rootScope.$on(AUTH_EVENTS.loginSuccess, angular.bind(this, function () {
             this.clearAlerts();
@@ -336,6 +339,11 @@ app.service('translate', [
         };
     }
 ]);
+app.filter('trust_html', ['$sce', function($sce){
+    return function(text) {
+        return $sce.trustAsHtml(text);
+    };
+}]);
 app.directive('rhaChoicetree', function () {
     return {
         template: '<ul><div rha-choice ng-repeat="choice in tree"></div></ul>',
@@ -734,7 +742,7 @@ angular.module('RedhatAccess.common').factory('strataService', [
                 checkLogin: function () {
                     var deferred = $q.defer();
                     if (!ie8 && strataCache.get('auth')) {
-                        strata.addAccountNumber(strataCache.get('auth').number);
+                        strata.addAccountNumber(strataCache.get('auth').account_number);
                         deferred.resolve(strataCache.get('auth'));
                     } else {
                         strata.checkLogin(function (result, authedUser) {
@@ -794,11 +802,18 @@ angular.module('RedhatAccess.common').factory('strataService', [
                 }, angular.bind(deferred, errorHandler), max);
                 return deferred.promise;
             },
-            recommendations: function (data, max) {
+            recommendations: function (data, max, highlight, highlightTags) {
                 var deferred = $q.defer();
                 strata.recommendations(data, function (recommendations) {
                     deferred.resolve(recommendations);
-                }, angular.bind(deferred, errorHandler), max);
+                }, angular.bind(deferred, errorHandler), max, highlight, highlightTags);
+                return deferred.promise;
+            },
+            recommendationsXmlHack: function (data, max, highlight, highlightTags) {
+                var deferred = $q.defer();
+                strata.recommendationsXmlHack(data, function (recommendations) {
+                    deferred.resolve(recommendations);
+                }, angular.bind(deferred, errorHandler), max, highlight, highlightTags);
                 return deferred.promise;
             },
             solutions: {
@@ -930,20 +945,23 @@ angular.module('RedhatAccess.common').factory('strataService', [
             groups: {
                 get: function (groupNum, ssoUserName) {
                     var deferred = $q.defer();
-                    if (!ie8 && strataCache.get('groups' + ssoUserName)) {
-                        deferred.resolve(strataCache.get('groups' + ssoUserName));
+                    if (!ie8 && strataCache.get('groups' + groupNum + ssoUserName)) {
+                        deferred.resolve(strataCache.get('groups' + groupNum + ssoUserName));
                     } else {
                         strata.groups.get(groupNum, function (response) {
                             if (!ie8) {
-                                strataCache.put('groups' + ssoUserName, response);
+                                strataCache.put('groups' + groupNum + ssoUserName, response);
                             }
                             deferred.resolve(response);
                         }, angular.bind(deferred, errorHandler), ssoUserName);
                     }
                     return deferred.promise;
                 },
-                list: function (ssoUserName) {
+                list: function (ssoUserName, flushCashe) {
                     var deferred = $q.defer();
+                    if(flushCashe){
+                        strataCache.remove('groups' + ssoUserName);
+                    }
                     if (!ie8 && strataCache.get('groups' + ssoUserName)) {
                         deferred.resolve(strataCache.get('groups' + ssoUserName));
                     } else {
@@ -1255,6 +1273,38 @@ angular.module('RedhatAccess.common').factory('strataService', [
                         return deferred.promise;
                     }
                 }
+            },
+            users: {
+                get: function (userId) {
+                    var deferred = $q.defer();
+                    if (!ie8 && strataCache.get('userId' + userId)) {
+                        deferred.resolve(strataCache.get('userId' + userId));
+                    } else {
+                        strata.users.get(function (response) {
+                            if (!ie8) {
+                                strataCache.put('userId' + userId, response);
+                            }
+                            deferred.resolve(response);
+                        }, angular.bind(deferred, errorHandler), userId);
+                    }
+                    return deferred.promise;
+                },
+                chatSession: {
+                    post: function(){
+                        var deferred = $q.defer();
+                        if (!ie8 && strataCache.get('chatSession')) {
+                            deferred.resolve(strataCache.get('chatSession'));
+                        } else {
+                            strata.users.chatSession.get(function (response) {
+                                if (!ie8) {
+                                    strataCache.put('chatSession', response);
+                                }
+                                deferred.resolve(response);
+                            }, angular.bind(deferred, errorHandler));
+                        }
+                        return deferred.promise;
+                    }
+                }
             }
         };
         return service;
@@ -1304,49 +1354,23 @@ angular.module('RedhatAccess.security').factory('securityService', [
         var service = {
             loginStatus: {
                 isLoggedIn: false,
-                loggedInUser: '',
                 verifying: false,
-                isInternal: false,
-                orgAdmin: false,
-                hasChat: false,
-                sessionId: '',
-                canAddAttachments: false,
-                ssoName: ''
+                userAllowedToManageCases: false,
+                authedUser: {}
             },
             loginURL: SECURITY_CONFIG.loginURL,
             logoutURL: SECURITY_CONFIG.logoutURL,
-            setLoginStatus: function(isLoggedIn, userName, verifying, isInternal, orgAdmin, hasChat, sessionId, canAddAttachments, ssoName) {
+            setLoginStatus: function(isLoggedIn, verifying, authedUser) {
                 service.loginStatus.isLoggedIn = isLoggedIn;
-                service.loginStatus.loggedInUser = userName;
                 service.loginStatus.verifying = verifying;
-                service.loginStatus.isInternal = isInternal;
-                if (orgAdmin !== null) {
-                    service.loginStatus.orgAdmin = orgAdmin;
-                }
-                if (hasChat !== null) {
-                    service.loginStatus.hasChat = hasChat;
-                }
-                if (sessionId !== null) {
-                    service.loginStatus.sessionId = sessionId;
-                }
-                if (canAddAttachments !== null) {
-                    service.loginStatus.canAddAttachments = canAddAttachments;
-                }
-                if (ssoName !== null) {
-                    service.loginStatus.ssoName = ssoName;
-                }
+                service.loginStatus.authedUser = authedUser;
+                service.userAllowedToManageCases();
             },
             clearLoginStatus: function() {
                 service.loginStatus.isLoggedIn = false;
-                service.loginStatus.loggedInUser = '';
                 service.loginStatus.verifying = false;
-                service.loginStatus.isInternal = false;
-                service.loginStatus.orgAdmin = false;
-                service.loginStatus.hasChat = false;
-                service.loginStatus.sessionId = '';
-                service.loginStatus.canAddAttachments = false;
-                service.loginStatus.account = {};
-                service.loginStatus.ssoName = '';
+                service.loginStatus.userAllowedToManageCases = false;
+                service.loginStatus.authedUser = {};
             },
             setAccount: function(accountJSON) {
                 service.loginStatus.account = accountJSON;
@@ -1365,15 +1389,27 @@ angular.module('RedhatAccess.security').factory('securityService', [
                 bodyText: 'Perform this action?',
                 backdrop: 'static'
             },
+            userAllowedToManageCases: function() {
+                var canManage = false;
+                if(service.loginStatus.authedUser.rights !== undefined){
+                    for(var i = 0; i < service.loginStatus.authedUser.rights.right.length; i++){
+                        if(service.loginStatus.authedUser.rights.right[i].name === 'portal_manage_cases' && service.loginStatus.authedUser.rights.right[i].has_access === true){
+                            canManage = true;
+                            break;
+                        }
+                    }
+                }
+                service.loginStatus.userAllowedToManageCases = canManage;
+            },
             userAllowedToManageEmailNotifications: function(user) {
-                if (RHAUtils.isNotEmpty(service.loginStatus.account) && RHAUtils.isNotEmpty(service.loginStatus.account) && service.loginStatus.orgAdmin) {
+                if (RHAUtils.isNotEmpty(service.loginStatus.authedUser.account) && RHAUtils.isNotEmpty(service.loginStatus.authedUser.account) && service.loginStatus.authedUser.org_admin) {
                     return true;
                 } else {
                     return false;
                 }
             },
             userAllowedToManageGroups: function(user) {
-                if (RHAUtils.isNotEmpty(service.loginStatus.account) && RHAUtils.isNotEmpty(service.loginStatus.account) && (!service.loginStatus.account.has_group_acls || service.loginStatus.account.has_group_acls && service.loginStatus.orgAdmin)) {
+                if (RHAUtils.isNotEmpty(service.loginStatus.authedUser.account) && RHAUtils.isNotEmpty(service.loginStatus.authedUser.account) && (!service.loginStatus.authedUser.account.has_group_acls || service.loginStatus.authedUser.account.has_group_acls && service.loginStatus.authedUser.org_admin)) {
                     return true;
                 } else {
                     return false;
@@ -1399,21 +1435,16 @@ angular.module('RedhatAccess.security').factory('securityService', [
                 service.loggingIn = true;
                 var defer = $q.defer();
                 var wasLoggedIn = service.loginStatus.isLoggedIn;
-                var currentSid = service.loginStatus.sessionId;
                 service.loginStatus.verifying = true;
                 strataService.authentication.checkLogin().then(angular.bind(this, function(authedUser) {
-                    var sidChanged = currentSid !== authedUser.session_id;
                     service.setAccount(authedUser.account);
-                    service.setLoginStatus(true, authedUser.name, false, authedUser.is_internal, authedUser.org_admin, authedUser.has_chat, authedUser.session_id, authedUser.can_add_attachments, authedUser.login);
+                    service.setLoginStatus(true, false, authedUser);
                     service.loggingIn = false;
                     //We don't want to resend the AUTH_EVENTS.loginSuccess if we are already logged in
                     if (wasLoggedIn === false) {
                         $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
                     }
-                    if (sidChanged) {
-                        $rootScope.$broadcast(AUTH_EVENTS.sessionIdChanged);
-                    }
-                    defer.resolve(authedUser.name);
+                    defer.resolve(authedUser.loggedInUser);
                 }), angular.bind(this, function(error) {
                     service.clearLoginStatus();
                     AlertService.addStrataErrorMessage(error);
@@ -1437,7 +1468,7 @@ angular.module('RedhatAccess.security').factory('securityService', [
                         defer.resolve(username);
                     }, function(error) {
                         service.login().then(function(authedUser) {
-                            defer.resolve(authedUser.name);
+                            defer.resolve(authedUser.loggedInUser);
                         }, function(error) {
                             defer.reject(error);
                         });
@@ -1696,6 +1727,49 @@ angular.module('RedhatAccess.search').directive('rhaResultdetaildisplay', [
                         return '';
                     }
                 };
+
+                scope.resultClickCapture = function(event, result) {
+                    var target = event.target || event.srcElement; // srcElement === IE
+                    var isAnchor = target && (target.nodeName && target.nodeName.toLowerCase() === 'a');
+                    if (!isAnchor) {
+                        // Don't care - bail.
+                        return;
+                    }
+                    var hashRegex = /^#.*/,
+                        absoluteRegex = /^http(s?):\/\//;
+                    // target.href adds base uri - have to use getAttr('href')
+                    var href = target.getAttribute('href');
+                    if (hashRegex.test(href)) {
+                        // Found a hash href (starts with #)
+                        event.preventDefault();
+                        var targetElem = angular.element(target.hash),
+                            scrollElem = angular.element('#rha-solution-display');
+                        if (targetElem.length && scrollElem.length) {
+                            // We have a target element, and a scroll host
+                            // set scroll of top of target element
+                            scrollElem.scrollTop(targetElem.position().top);
+                        } else if (targetElem.length) {
+                            // No scroll host, just use native method that will scroll
+                            // the window
+                            targetElem[0].scrollIntoView();
+                        }
+                    } else if (!absoluteRegex.test(href)) {
+                        // Found a relative href (does NOT start with http or https)
+                        event.preventDefault();
+                        if(href.indexOf('/') === 0) {
+                            // Absolute url relative to result view_uri
+                            // This is a very hacky way to get the base url from a url
+                            var parser = document.createElement('a');
+                            parser.href = result.view_uri;
+                            target.href = parser.origin + href;
+                        } else {
+                            // Relative url relative to result view_uri
+                            target.href = result.view_uri + href;
+                        }
+                        // Re-click target with newly constructed href
+                        target.click();
+                    }
+                };
             },
             templateUrl: 'search/views/resultDetail.html'
         };
@@ -1757,7 +1831,8 @@ angular.module('RedhatAccess.search').factory('SearchResultsService', [
     'AlertService',
     'securityService',
     'strataService',
-    function ($q, $rootScope, AUTH_EVENTS, RESOURCE_TYPES, SEARCH_PARAMS, AlertService, securityService, strataService) {
+    'translate',
+    function ($q, $rootScope, AUTH_EVENTS, RESOURCE_TYPES, SEARCH_PARAMS, AlertService, securityService, strataService, translate) {
         var searchArticlesOrSolutions = function (searchString, limit) {
             //var that = this;
             if (limit === undefined || limit < 1) {
@@ -1769,7 +1844,7 @@ angular.module('RedhatAccess.search').factory('SearchResultsService', [
             strataService.search(searchString, limit).then(
                 function (results) {
                     if (results.length === 0) {
-                        AlertService.addSuccessMessage('No solutions found.');
+                        AlertService.addSuccessMessage(translate('No solutions found.'));
                     }
                     results.forEach(function (result) {
                         if (result !== undefined) {
@@ -1795,7 +1870,7 @@ angular.module('RedhatAccess.search').factory('SearchResultsService', [
                     //retrieve details for each solution
                     if (solutions !== undefined) {
                         if (solutions.length === 0) {
-                            AlertService.addSuccessMessage('No solutions found.');
+                            AlertService.addSuccessMessage(translate('No solutions found.'));
                         }
                         solutions.forEach(function (solution) {
                             var deferred = $q.defer();
@@ -1809,7 +1884,7 @@ angular.module('RedhatAccess.search').factory('SearchResultsService', [
                                 });
                         });
                     } else {
-                        AlertService.addSuccessMessage('No solutions found.');
+                        AlertService.addSuccessMessage(translate('No solutions found.'));
                     }
                     $q.all(deferreds).then(function (solutions) {
                         solutions.forEach(function (solution) {
@@ -1863,7 +1938,7 @@ angular.module('RedhatAccess.search').factory('SearchResultsService', [
                     searchArticlesOrSolutions(searchString, limit);
                 }, function (error) {
                     that.searchInProgress.value = false;
-                    AlertService.addDangerMessage('You must be logged in to use this functionality.');
+                    AlertService.addDangerMessage(translate('You must be logged in to use this functionality.'));
                 });
             },
             diagnose: function (data, limit) {
@@ -1873,7 +1948,7 @@ angular.module('RedhatAccess.search').factory('SearchResultsService', [
                     searchProblems(data, limit);
                 }, function (error) {
                     that.searchInProgress.value = false;
-                    AlertService.addDangerMessage('You must be logged in to use this functionality.');
+                    AlertService.addDangerMessage(translate('You must be logged in to use this functionality.'));
                 });
             }
         };
@@ -1899,7 +1974,8 @@ angular.module('RedhatAccess.cases').controller('EditGroup', [
     'securityService',
     'RHAUtils',
     'AUTH_EVENTS',
-    function ($scope, $rootScope, strataService, AlertService, $filter, ngTableParams, GroupUserService, SearchBoxService, $location, securityService, RHAUtils, AUTH_EVENTS) {
+    'translate',
+    function ($scope, $rootScope, strataService, AlertService, $filter, ngTableParams, GroupUserService, SearchBoxService, $location, securityService, RHAUtils, AUTH_EVENTS, translate) {
         $scope.GroupUserService = GroupUserService;
         $scope.listEmpty = false;
         $scope.selectedGroup = {};
@@ -1937,7 +2013,7 @@ angular.module('RedhatAccess.cases').controller('EditGroup', [
         $scope.init = function() {
             if(securityService.userAllowedToManageGroups()){
                 var loc = $location.url().split('/');
-                $scope.accountNumber = securityService.loginStatus.account.number;
+                $scope.accountNumber = securityService.loginStatus.authedUser.account_number;
                 strataService.groups.get(loc[3]).then(function (group) {
                     $scope.selectedGroup = group;
                     strataService.accounts.users($scope.accountNumber, $scope.selectedGroup.number).then(function (users) {
@@ -1958,13 +2034,13 @@ angular.module('RedhatAccess.cases').controller('EditGroup', [
                 });
             }else{
                 $scope.usersLoading = false;
-                AlertService.addStrataErrorMessage('User does not have proper credentials to manage case groups.');
+                AlertService.addStrataErrorMessage(translate('User does not have proper credentials to manage case groups.'));
             }
         };
         $scope.saveGroup = function () {
             if(!$scope.isGroupPrestine){
                 strataService.groups.update($scope.selectedGroup.name, $scope.selectedGroup.number).then(function (response) {
-                    AlertService.addSuccessMessage('Case group successfully updated.');
+                    AlertService.addSuccessMessage(translate('Case group successfully updated.'));
                     $scope.isGroupPrestine = true;
                 }, function (error) {
                     AlertService.addStrataErrorMessage(error);
@@ -1973,7 +2049,7 @@ angular.module('RedhatAccess.cases').controller('EditGroup', [
             if(!$scope.isUsersPrestine){
                 strataService.groupUsers.update($scope.usersOnAccount, $scope.accountNumber, $scope.selectedGroup.number).then(function(response) {
                     $scope.isUsersPrestine = true;
-                    AlertService.addSuccessMessage('Case users successfully updated.');
+                    AlertService.addSuccessMessage(translate('Case users successfully updated.'));
                 }, function (error) {
                     AlertService.addStrataErrorMessage(error);
                 });
@@ -2043,7 +2119,8 @@ angular.module('RedhatAccess.cases').controller('AccountSelect', [
     'AlertService',
     'CaseService',
     'RHAUtils',
-    function ($scope, strataService, AlertService, CaseService, RHAUtils) {
+    'translate',
+    function ($scope, strataService, AlertService, CaseService, RHAUtils, translate) {
         $scope.CaseService = CaseService;
         $scope.selectUserAccount = function () {
             $scope.loadingAccountNumber = true;
@@ -2068,7 +2145,7 @@ angular.module('RedhatAccess.cases').controller('AccountSelect', [
                     if (RHAUtils.isNotEmpty($scope.alertInstance)) {
                         AlertService.removeAlert($scope.alertInstance);
                     }
-                    $scope.alertInstance = AlertService.addWarningMessage('Account not found.');
+                    $scope.alertInstance = AlertService.addWarningMessage(translate('Account not found.'));
                     CaseService.users = [];
                 });
             }
@@ -2095,7 +2172,7 @@ angular.module('RedhatAccess.cases').controller('AddCommentSection', [
 
         $scope.addComment = function () {
             $scope.addingComment = true;
-            if (!securityService.loginStatus.isInternal) {
+            if (!securityService.loginStatus.authedUser.is_internal) {
                 CaseService.isCommentPublic = true;
             }
             var onSuccess = function (response) {
@@ -2105,19 +2182,20 @@ angular.module('RedhatAccess.cases').controller('AddCommentSection', [
                 CaseService.commentText = '';
                 CaseService.disableAddComment = true;
                 //TODO: find better way than hard code
-                if (!securityService.loginStatus.isInternal && CaseService.kase.status.name === 'Closed') {
-                    var status = { name: 'Waiting on Red Hat' };
+                var status = {};
+                if (!securityService.loginStatus.authedUser.is_internal && CaseService.kase.status.name === 'Closed') {
+                    status = { name: 'Waiting on Red Hat' };
                     CaseService.kase.status = status;
                 }
 
-                if(securityService.loginStatus.isInternal){
+                if(securityService.loginStatus.authedUser.is_internal){
                     if (CaseService.kase.status.name === 'Waiting on Red Hat') {
-                        var status = { name: 'Waiting on Customer' };
+                        status = { name: 'Waiting on Customer' };
                         CaseService.kase.status = status;
                     }
                 }else {
                     if (CaseService.kase.status.name === 'Waiting on Customer') {
-                        var status = { name: 'Waiting on Red Hat' };
+                        status = { name: 'Waiting on Red Hat' };
                         CaseService.kase.status = status;
                     }
                 }
@@ -2131,9 +2209,9 @@ angular.module('RedhatAccess.cases').controller('AddCommentSection', [
                 });
                 $scope.progressCount = 0;
 
-                if(securityService.loginStatus.ssoName !== undefined && CaseService.originalNotifiedUsers.indexOf(securityService.loginStatus.ssoName) === -1){
-                    strataService.cases.notified_users.add(CaseService.kase.case_number, securityService.loginStatus.ssoName).then(function () {
-                        CaseService.originalNotifiedUsers.push(securityService.loginStatus.ssoName);
+                if(securityService.loginStatus.authedUser.sso_username !== undefined && CaseService.updatedNotifiedUsers.indexOf(securityService.loginStatus.authedUser.sso_username) === -1){
+                    strataService.cases.notified_users.add(CaseService.kase.case_number, securityService.loginStatus.authedUser.sso_username).then(function () {
+                        CaseService.updatedNotifiedUsers.push(securityService.loginStatus.authedUser.sso_username);
                     }, function (error) {
                         AlertService.addStrataErrorMessage(error);
                     });
@@ -2177,6 +2255,9 @@ angular.module('RedhatAccess.cases').controller('AddCommentSection', [
         };
         $scope.saveDraft = function () {
             $scope.savingDraft = true;
+            if (!securityService.loginStatus.authedUser.is_internal) {
+                CaseService.isCommentPublic = true;
+            }
             var onSuccess = function (commentId) {
                 $scope.savingDraft = false;
                 $scope.draftSaved = true;
@@ -2207,14 +2288,26 @@ angular.module('RedhatAccess.cases').controller('AddCommentSection', [
 /*global $ */
 angular.module('RedhatAccess.cases').controller('AttachLocalFile', [
     '$scope',
+    '$sce',
+    'RHAUtils',
     'AlertService',
     'AttachmentsService',
     'securityService',
-    function ($scope, AlertService, AttachmentsService, securityService) {
+    'translate',
+    function ($scope, $sce, RHAUtils,AlertService, AttachmentsService, securityService, translate) {
         $scope.AttachmentsService = AttachmentsService;
         $scope.NO_FILE_CHOSEN = 'No file chosen';
         $scope.fileDescription = '';
         var maxFileSize = 250000000;
+
+        $scope.parseArtifactHtml = function () {
+            var parsedHtml = '';
+            if (RHAUtils.isNotEmpty(AttachmentsService.suggestedArtifact.description)) {
+                var rawHtml = AttachmentsService.suggestedArtifact.description.toString();
+                parsedHtml = $sce.trustAsHtml(rawHtml);
+            }
+            return parsedHtml;
+        };
         $scope.clearSelectedFile = function () {
             $scope.fileName = $scope.NO_FILE_CHOSEN;
             $scope.fileDescription = '';
@@ -2228,7 +2321,7 @@ angular.module('RedhatAccess.cases').controller('AttachLocalFile', [
                 file_name: $scope.fileName,
                 description: $scope.fileDescription,
                 length: $scope.fileSize,
-                created_by: securityService.loginStatus.loggedInUser,
+                created_by: securityService.loginStatus.authedUser.loggedInUser,
                 created_date: new Date().getTime(),
                 file: data
             });
@@ -2244,7 +2337,7 @@ angular.module('RedhatAccess.cases').controller('AttachLocalFile', [
                 $scope.fileName = $scope.fileObj.name;
                 $scope.$apply();
             } else {
-                AlertService.addDangerMessage($('#fileUploader')[0].files[0].name + " cannot be attached because it is larger the 250MB. Please FTP large files to dropbox.redhat.com.")
+                AlertService.addDangerMessage($('#fileUploader')[0].files[0].name + translate(' cannot be attached because it is larger the 250MB. Please FTP large files to dropbox.redhat.com.'));
             }
             $('#fileUploader')[0].value = '';
         };
@@ -2262,9 +2355,12 @@ angular.module('RedhatAccess.cases').controller('AttachmentsSection', [
     function ($scope, AttachmentsService, CaseService, TreeViewSelectorUtils, EDIT_CASE_CONFIG) {
         $scope.rhaDisabled = !EDIT_CASE_CONFIG.showAttachments;
         $scope.showServerSideAttachments = EDIT_CASE_CONFIG.showServerSideAttachments;
+        $scope.isPCM = EDIT_CASE_CONFIG.isPCM;
+        $scope.ie8 = window.ie8;
         $scope.AttachmentsService = AttachmentsService;
         $scope.CaseService = CaseService;
         $scope.TreeViewSelectorUtils = TreeViewSelectorUtils;
+        $scope.ie8Message='We’re unable to accept file attachments from Internet Explorer 8 (IE8) at this time. Please see our instructions for providing files <a href=\"https://access.redhat.com/solutions/2112\" target="_blank\">via FTP </a> in the interim.';
         $scope.doUpdate = function () {
             $scope.updatingAttachments = true;
             AttachmentsService.updateAttachments(CaseService.kase.case_number).then(function () {
@@ -2304,6 +2400,7 @@ angular.module('RedhatAccess.cases').controller('BackEndAttachmentsCtrl', [
     }
 ]);
 'use strict';
+/*jshint camelcase: false, expr: true*/
 //Saleforce hack---
 //we have to monitor stuff on the window object
 //because the liveagent code generated by Salesforce is not
@@ -2317,14 +2414,15 @@ angular.module('RedhatAccess.cases').controller('ChatButton', [
     '$scope',
     'CaseService',
     'securityService',
+    'strataService',
+    'AlertService',
     'CHAT_SUPPORT',
-    'securityService',
     'AUTH_EVENTS',
     '$rootScope',
     '$sce',
     '$http',
     '$interval',
-    function ($scope, CaseService, SecurityService, CHAT_SUPPORT, securityService, AUTH_EVENTS, $rootScope, $sce, $http, $interval) {
+    function ($scope, CaseService, securityService, strataService, AlertService, CHAT_SUPPORT, AUTH_EVENTS, $rootScope, $sce, $http, $interval) {
         $scope.securityService = securityService;
         if (window.chatInitialized === undefined) {
             window.chatInitialized = false;
@@ -2335,11 +2433,15 @@ angular.module('RedhatAccess.cases').controller('ChatButton', [
         $scope.timer = null;
         $scope.chatHackUrl = $sce.trustAsResourceUrl(CHAT_SUPPORT.chatIframeHackUrlPrefix);
         $scope.setChatIframeHackUrl = function () {
-            var url = CHAT_SUPPORT.chatIframeHackUrlPrefix + '?sessionId=' + securityService.loginStatus.sessionId + '&ssoName=' + securityService.loginStatus.ssoName;
-            $scope.chatHackUrl = $sce.trustAsResourceUrl(url);
+            strataService.users.chatSession.post().then(angular.bind(this, function (sessionId) {
+                var url = CHAT_SUPPORT.chatIframeHackUrlPrefix + '?sessionId=' + sessionId + '&ssoName=' + securityService.loginStatus.authedUser.sso_username;
+                $scope.chatHackUrl = $sce.trustAsResourceUrl(url);
+            }), function (error) {
+                AlertService.addStrataErrorMessage(error);
+            });
         };
         $scope.enableChat = function () {
-            $scope.showChat = securityService.loginStatus.isLoggedIn && securityService.loginStatus.hasChat && CHAT_SUPPORT.enableChat;
+            $scope.showChat = securityService.loginStatus.isLoggedIn && securityService.loginStatus.authedUser.has_chat && CHAT_SUPPORT.enableChat;
             return $scope.showChat;
         };
         $scope.showChat = false;
@@ -2359,10 +2461,10 @@ angular.module('RedhatAccess.cases').controller('ChatButton', [
                 liveagent.showWhenOffline(CHAT_SUPPORT.chatButtonToken, window.fakeOfflineButton);
             });
             //var chatToken = securityService.loginStatus.sessionId;
-            var ssoName = securityService.loginStatus.ssoName;
-            var name = securityService.loginStatus.loggedInUser;
+            var ssoName = securityService.loginStatus.authedUser.sso_username;
+            var name = securityService.loginStatus.authedUser.loggedInUser;
             //var currentCaseNumber;
-            var accountNumber = securityService.loginStatus.account.number;
+            var accountNumber = securityService.loginStatus.authedUser.account_number;
             // if (currentCaseNumber) {
             //   liveagent
             //     .addCustomDetail('Case Number', currentCaseNumber)
@@ -2411,15 +2513,9 @@ angular.module('RedhatAccess.cases').controller('ChatButton', [
                 $scope.authEventLoginSuccess();
             });
         }
-        $scope.authEventSessionChanged = $rootScope.$on(AUTH_EVENTS.sessionIdChanged, function () {
-            if ($scope.enableChat()) {
-                $scope.setChatIframeHackUrl();
-            }
-        });
 
         $scope.$on('$destroy', function () {
             window._laq = null;
-            $scope.authEventSessionChanged();
         });
     }
 ]);
@@ -2439,6 +2535,8 @@ angular.module('RedhatAccess.cases').controller('CommentsSection', [
     'RHAUtils',
     function ($scope, CaseService, strataService, $stateParams, AlertService, $modal, $location, $anchorScroll, RHAUtils) {
         $scope.CaseService = CaseService;
+        $scope.ie8 = window.ie8;
+        $scope.ie9 = window.ie9;
 
         CaseService.populateComments($stateParams.id).then(function (comments) {
             $scope.$on('rhaCaseSettled', function() {
@@ -2573,21 +2671,34 @@ angular.module('RedhatAccess.cases').controller('CreateGroupModal', [
     '$scope',
     '$modalInstance',
     'strataService',
+    'securityService',
     'AlertService',
     'CaseService',
     'GroupService',
-    function ($scope, $modalInstance, strataService, AlertService, CaseService, GroupService) {
+    'translate',
+    function ($scope, $modalInstance, strataService, securityService, AlertService, CaseService, GroupService, translate) {
         $scope.createGroup = function () {
-            AlertService.addWarningMessage('Creating group ' + this.groupName + '...');
+            AlertService.addWarningMessage(translate('Creating group') + ' ' + this.groupName + '...');
             $modalInstance.close();
             strataService.groups.create(this.groupName).then(angular.bind(this, function (success) {
-                CaseService.groups.push({
-                    name: this.groupName,
-                    number: success
-                });
-                AlertService.clearAlerts();
-                AlertService.addSuccessMessage('Successfully created group ' + this.groupName);
-                GroupService.reloadTable();
+                if(success !== null){
+                    CaseService.groups.push({
+                        name: this.groupName,
+                        number: success
+                    });
+                    AlertService.clearAlerts();
+                    AlertService.addSuccessMessage(translate('Successfully created group') + ' ' + this.groupName);
+                    GroupService.reloadTable();
+                } else {
+                    CaseService.populateGroups(securityService.loginStatus.authedUser.sso_username, true).then(angular.bind(this, function (groups) {
+                        AlertService.clearAlerts();
+                        AlertService.addSuccessMessage(translate('Successfully created group') + ' ' + this.groupName);
+                        GroupService.reloadTable();
+                    }), function (error) {
+                        AlertService.clearAlerts();
+                        AlertService.addStrataErrorMessage(error);
+                    });
+                }
             }), function (error) {
                 AlertService.clearAlerts();
                 AlertService.addStrataErrorMessage(error);
@@ -2614,7 +2725,8 @@ angular.module('RedhatAccess.cases').controller('DefaultGroup', [
     '$location',
     'securityService',
     'AUTH_EVENTS',
-    function ($scope, $rootScope, strataService, AlertService, $location, securityService, AUTH_EVENTS) {
+    'translate',
+    function ($scope, $rootScope, strataService, AlertService, $location, securityService, AUTH_EVENTS, translate) {
         $scope.securityService = securityService;
         $scope.listEmpty = false;
         $scope.selectedGroup = {};
@@ -2632,11 +2744,16 @@ angular.module('RedhatAccess.cases').controller('DefaultGroup', [
             if(securityService.userAllowedToManageGroups()){
                 $scope.groupsLoading = true;
                 var loc = $location.url().split('/');
-                $scope.ssoName = securityService.loginStatus.ssoName;
+                $scope.ssoName = securityService.loginStatus.authedUser.sso_username;
                 $scope.account = securityService.loginStatus.account;
                 strataService.groups.list($scope.ssoName).then(function (groups) {
                     $scope.groupsLoading = false;
                     $scope.groups = groups;
+                    $scope.groups.sort(function(a, b){
+                        if(a.name < b.name) { return -1; }
+                        if(a.name > b.name) { return 1; }
+                        return 0;
+                    });
                 }, function (error) {
                     $scope.groupsLoading = false;
                     AlertService.addStrataErrorMessage(error);
@@ -2647,6 +2764,11 @@ angular.module('RedhatAccess.cases').controller('DefaultGroup', [
                     $scope.usersLoading = false;
                     $scope.usersOnAccount = users;
                     $scope.usersLoaded = true;
+                    $scope.usersOnAccount.sort(function(a, b){
+                        if(a.sso_username < b.sso_username) { return -1; }
+                        if(a.sso_username > b.sso_username) { return 1; }
+                        return 0;
+                    });
                 }, function (error) {
                     $scope.usersLoading = false;
                     AlertService.addStrataErrorMessage(error);
@@ -2654,16 +2776,20 @@ angular.module('RedhatAccess.cases').controller('DefaultGroup', [
             }else{
                 $scope.usersLoading = false;
                 $scope.groupsLoading = false;
-                AlertService.addStrataErrorMessage('User does not have proper credentials to manage default groups.');
+                AlertService.addStrataErrorMessage(translate('User does not have proper credentials to manage default groups.'));
             }
         };
 
-        $scope.userChange = function (){
-            $scope.usersAndGroupsFinishedLoading = true;
+        $scope.validatePage = function () {
+            if ($scope.selectedGroup.name !== undefined && $scope.selectedUser.sso_username !== undefined) {
+                $scope.usersAndGroupsFinishedLoading = true;
+            } else {
+                $scope.usersAndGroupsFinishedLoading = false;
+            }
         };
 
         $scope.setDefaultGroup = function () {
-            //Remove old group is_default
+            //Remove old group is_default            
             var tmpGroup = {
                 name: $scope.selectedGroup.name,
                 number: $scope.selectedGroup.number,
@@ -2712,7 +2838,8 @@ angular.module('RedhatAccess.cases').controller('DeleteGroupButton', [
     '$q',
     '$filter',
     'GroupService',
-    function ($scope, strataService, AlertService, CaseService, $q, $filter, GroupService) {
+    'translate',
+    function ($scope, strataService, AlertService, CaseService, $q, $filter, GroupService, translate) {
         $scope.GroupService = GroupService;
         $scope.deleteGroups = function () {
             var promises = [];
@@ -2729,7 +2856,7 @@ angular.module('RedhatAccess.cases').controller('DeleteGroupButton', [
                             });
                         CaseService.groups = groups;
                         GroupService.reloadTable();
-                        AlertService.addSuccessMessage('Successfully deleted group ' + group.name);
+                        AlertService.addSuccessMessage(translate('Successfully deleted group') + ' ' + group.name);
                     }, function (error) {
                         AlertService.addStrataErrorMessage(error);
                     });
@@ -2740,7 +2867,7 @@ angular.module('RedhatAccess.cases').controller('DeleteGroupButton', [
             var parentPromise = $q.all(promises);
             parentPromise.then(function (success) {
                 AlertService.clearAlerts();
-                AlertService.addSuccessMessage('Successfully deleted groups.');
+                AlertService.addSuccessMessage(translate('Successfully deleted groups.'));
             }, function (error) {
                 AlertService.addStrataErrorMessage(error);
             });
@@ -2826,7 +2953,7 @@ angular.module('RedhatAccess.cases').controller('DetailsSection', [
                 if (CaseService.kase.group !== null && CaseService.kase.group !== undefined && CaseService.kase.group.number !== undefined) {
                     caseJSON.folderNumber = CaseService.kase.group.number;
                 } else {
-                    caseJSON.folderNumber = "";
+                    caseJSON.folderNumber = '';
                 }
                 if (RHAUtils.isNotEmpty(CaseService.kase.fts)) {
                     caseJSON.fts = CaseService.kase.fts;
@@ -2849,7 +2976,9 @@ angular.module('RedhatAccess.cases').controller('DetailsSection', [
                 }, function (error) {
                     AlertService.addStrataErrorMessage(error);
                     $scope.updatingDetails = false;
-                    $scope.$apply();
+                    if ($scope.$root.$$phase !== '$apply' && $scope.$root.$$phase !== '$digest') {
+                        $scope.$apply();
+                    }
                 });
             }
         };
@@ -2898,10 +3027,12 @@ angular.module('RedhatAccess.cases').controller('Edit', [
         $scope.CaseService = CaseService;
         CaseService.clearCase();
         $scope.loading = {};
+        $scope.failedToLoadCase = true;
         $scope.init = function () {
             $scope.loading.kase = true;
             $scope.recommendationsLoading = true;
             strataService.cases.get($stateParams.id).then(function (resp) {
+                $scope.failedToLoadCase = false;
                 var caseJSON = resp[0];
                 var cacheHit = resp[1];
                 if (!cacheHit) {
@@ -2937,27 +3068,31 @@ angular.module('RedhatAccess.cases').controller('Edit', [
                 if (EDIT_CASE_CONFIG.showEmailNotifications && !cacheHit) {
                     CaseService.defineNotifiedUsers();
                 }
+
+                if (EDIT_CASE_CONFIG.showAttachments) {
+                    $scope.loading.attachments = true;
+                    strataService.cases.attachments.list($stateParams.id).then(function (attachmentsJSON) {
+                        AttachmentsService.defineOriginalAttachments(attachmentsJSON);
+                        $scope.loading.attachments= false;
+                    }, function (error) {
+                        AlertService.addStrataErrorMessage(error);
+                        $scope.loading.attachments= false;
+                    });
+                }
+                if (EDIT_CASE_CONFIG.showComments) {
+                    $scope.loading.comments = true;
+                    strataService.cases.comments.get($stateParams.id).then(function (commentsJSON) {
+                        $scope.comments = commentsJSON;
+                        $scope.loading.comments = false;
+                    }, function (error) {
+                        AlertService.addStrataErrorMessage(error);
+                        $scope.loading.comments = false;
+                    });
+                }
+            }, function (error) {
+                AlertService.addDangerMessage('Unable to retrieve case.  Please be sure case number is valid.');
+                $scope.failedToLoadCase = true;
             });
-            if (EDIT_CASE_CONFIG.showAttachments) {
-                $scope.loading.attachments = true;
-                strataService.cases.attachments.list($stateParams.id).then(function (attachmentsJSON) {
-                    AttachmentsService.defineOriginalAttachments(attachmentsJSON);
-                    $scope.loading.attachments= false;
-                }, function (error) {
-                    AlertService.addStrataErrorMessage(error);
-                    $scope.loading.attachments= false;
-                });
-            }
-            if (EDIT_CASE_CONFIG.showComments) {
-                $scope.loading.comments = true;
-                strataService.cases.comments.get($stateParams.id).then(function (commentsJSON) {
-                    $scope.comments = commentsJSON;
-                    $scope.loading.comments = false;
-                }, function (error) {
-                    AlertService.addStrataErrorMessage(error);
-                    $scope.loading.comments = false;
-                });
-            }
         };
         if (securityService.loginStatus.isLoggedIn) {
             $scope.init();
@@ -2981,7 +3116,7 @@ angular.module('RedhatAccess.cases').controller('Edit', [
                     allLoaded = false;
                 }
             }
-            if(allLoaded) {
+            if(allLoaded && !$scope.failedToLoadCase) {
                 caseSettled();
             }
         }, true);
@@ -2998,6 +3133,7 @@ angular.module('RedhatAccess.cases').controller('Edit', [
             $scope.authLoginEvent();
             $scope.loadingWatcher();
             $scope.loadingRecWatcher();
+            RecommendationsService.clear();
         });
     }
 ]);
@@ -3082,6 +3218,8 @@ angular.module('RedhatAccess.cases').controller('ExportCSVButton', [
     'strataService',
     'AlertService',
     function ($scope, strataService, AlertService) {
+        $scope.ie8 = window.ie8;
+        $scope.ie9 = window.ie9;
         $scope.exporting = false;
         $scope.exports = function () {
             $scope.exporting = true;
@@ -3178,7 +3316,7 @@ angular.module('RedhatAccess.cases').controller('GroupList', [
         $scope.init = function() {
             strataService.groups.list().then(function (groups) {
                 CaseService.groups = groups;
-                $scope.canManageGroups = securityService.loginStatus.account.has_group_acls && securityService.loginStatus.orgAdmin;
+                $scope.canManageGroups = securityService.loginStatus.account.has_group_acls && securityService.loginStatus.authedUser.org_admin;
                 $scope.groupsLoading = false;
                 buildTable();
                 if(reloadTable){
@@ -3264,10 +3402,12 @@ angular.module('RedhatAccess.cases').controller('List', [
     'CaseService',
     'AUTH_EVENTS',
     'SearchBoxService',
-    function ($scope, $filter, ngTableParams, securityService, AlertService, $rootScope, SearchCaseService, CaseService, AUTH_EVENTS, SearchBoxService) {
+    'NEW_CASE_CONFIG',
+    function ($scope, $filter, ngTableParams, securityService, AlertService, $rootScope, SearchCaseService, CaseService, AUTH_EVENTS, SearchBoxService, NEW_CASE_CONFIG) {
         $scope.SearchCaseService = SearchCaseService;
         $scope.securityService = securityService;
         $scope.AlertService = AlertService;
+        $scope.NEW_CASE_CONFIG = NEW_CASE_CONFIG;
         AlertService.clearAlerts();
         var tableBuilt = false;
         var buildTable = function () {
@@ -3281,7 +3421,6 @@ angular.module('RedhatAccess.cases').controller('List', [
                 getData: function ($defer, params) {
                     if (!SearchCaseService.allCasesDownloaded && params.count() * params.page() >= SearchCaseService.count) {
                         SearchCaseService.doFilter().then(function () {
-                            $scope.tableParams.reload();
                             var orderedData = params.sorting() ? $filter('orderBy')(SearchCaseService.cases, params.orderBy()) : SearchCaseService.cases;
                             var pageData = orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
                             $scope.tableParams.total(SearchCaseService.totalCases);
@@ -3299,6 +3438,9 @@ angular.module('RedhatAccess.cases').controller('List', [
         };
         SearchBoxService.doSearch = CaseService.onSelectChanged = CaseService.onOwnerSelectChanged = CaseService.onGroupSelectChanged = function () {
             SearchCaseService.clearPagination();
+            if($scope.tableParams !== undefined){
+                $scope.tableParams.$params.page = 1;
+            }
             if(CaseService.groups.length === 0){
                 CaseService.populateGroups().then(function (){
                     SearchCaseService.doFilter().then(function () {
@@ -3324,13 +3466,17 @@ angular.module('RedhatAccess.cases').controller('List', [
         /**
        * Callback after user login. Load the cases and clear alerts
        */
-        if (securityService.loginStatus.isLoggedIn) {
+        if (securityService.loginStatus.isLoggedIn && securityService.loginStatus.userAllowedToManageCases) {
             SearchCaseService.clear();
+            CaseService.status = 'open';
             SearchBoxService.doSearch();
         }
         $scope.listAuthEventDeregister = $rootScope.$on(AUTH_EVENTS.loginSuccess, function () {
-            SearchBoxService.doSearch();
-            AlertService.clearAlerts();
+            if(securityService.loginStatus.userAllowedToManageCases){
+                CaseService.status = 'open';
+                SearchBoxService.doSearch();
+                AlertService.clearAlerts();
+            }
         });
 
         $scope.authEventLogoutSuccess = $rootScope.$on(AUTH_EVENTS.logoutSuccess, function () {
@@ -3405,6 +3551,7 @@ angular.module('RedhatAccess.cases').controller('New', [
     '$state',
     '$q',
     '$timeout',
+    '$sanitize',
     'SearchResultsService',
     'AttachmentsService',
     'strataService',
@@ -3419,7 +3566,8 @@ angular.module('RedhatAccess.cases').controller('New', [
     'NEW_DEFAULTS',
     'NEW_CASE_CONFIG',
     '$http',
-    function ($scope, $state, $q, $timeout, SearchResultsService, AttachmentsService, strataService, RecommendationsService, CaseService, AlertService, securityService, $rootScope, AUTH_EVENTS, $location, RHAUtils, NEW_DEFAULTS, NEW_CASE_CONFIG, $http) {
+    'translate',
+    function ($scope, $state, $q, $timeout, $sanitize, SearchResultsService, AttachmentsService, strataService, RecommendationsService, CaseService, AlertService, securityService, $rootScope, AUTH_EVENTS, $location, RHAUtils, NEW_DEFAULTS, NEW_CASE_CONFIG, $http, translate) {
         $scope.NEW_CASE_CONFIG = NEW_CASE_CONFIG;
         $scope.versions = [];
         $scope.versionDisabled = true;
@@ -3434,6 +3582,9 @@ angular.module('RedhatAccess.cases').controller('New', [
         $scope.CaseService = CaseService;
         $scope.RecommendationsService = RecommendationsService;
         $scope.securityService = securityService;
+        $scope.ie8 = window.ie8;
+        $scope.ie8Message='We’re unable to accept file attachments from Internet Explorer 8 (IE8) at this time. Please see our instructions for providing files <a href=\"https://access.redhat.com/solutions/2112\" target="_blank\">via FTP </a> in the interim.';
+
 
         // Instantiate these variables outside the watch
         var waiting = false;
@@ -3450,15 +3601,37 @@ angular.module('RedhatAccess.cases').controller('New', [
         $scope.getRecommendations = function () {
             if ($scope.NEW_CASE_CONFIG.showRecommendations) {
                 SearchResultsService.searchInProgress.value = true;
-                RecommendationsService.populateRecommendations(5).then(function () {
-                    SearchResultsService.clear();
-                    RecommendationsService.recommendations.forEach(function (recommendation) {
-                        SearchResultsService.add(recommendation);
+                var numRecommendations = 5;
+                if($scope.NEW_CASE_CONFIG.isPCM){
+                    numRecommendations = 30;
+                    RecommendationsService.populatePCMRecommendations(numRecommendations).then(function () {
+                        SearchResultsService.clear();
+                        RecommendationsService.recommendations.forEach(function (recommendation) {
+                            try {
+                                recommendation.abstract = $sanitize(recommendation.abstract);
+                            }
+                            catch(err) {
+                                recommendation.abstract = '';
+                            }
+                            SearchResultsService.add(recommendation);
+                        });
+                        SearchResultsService.searchInProgress.value = false;
+                    }, function (error) {
+                        AlertService.addStrataErrorMessage(error);
+                        SearchResultsService.searchInProgress.value = false;
                     });
-                    SearchResultsService.searchInProgress.value = false;
-                }, function (error) {
-                    AlertService.addStrataErrorMessage(error);
-                });
+                } else {
+                    RecommendationsService.populateRecommendations(numRecommendations).then(function () {
+                        SearchResultsService.clear();
+                        RecommendationsService.recommendations.forEach(function (recommendation) {
+                            SearchResultsService.add(recommendation);
+                        });
+                        SearchResultsService.searchInProgress.value = false;
+                    }, function (error) {
+                        AlertService.addStrataErrorMessage(error);
+                        SearchResultsService.searchInProgress.value = false;
+                    });
+                }
             }
         };
         CaseService.onOwnerSelectChanged = function () {
@@ -3480,24 +3653,31 @@ angular.module('RedhatAccess.cases').controller('New', [
                     if (response.status === 200 && response.data !== undefined) {
                         productSortList = response.data.split(',');
 
-                        angular.forEach(productSortList, function(sortProduct){
-                            productOptions.push({
-                                code: sortProduct,
-                                name: sortProduct
-                            });
-                        }, this);
+                        for(var i = 0; i < productSortList.length; i++) {
+                            for (var j = 0 ; j < originalProductList.length ; j++) {
+                                if (productSortList[i] === originalProductList[j].code) {
+                                    var sortProduct = productSortList[i];
+                                    productOptions.push({
+                                        value: sortProduct,
+                                        label: sortProduct
+                                    });
+                                    break;
+                                }
+                            }
+                        }
 
                         var sep = '────────────────────────────────────────';
-
-                        productOptions.push({
-                            isDisabled: true,
-                            name: sep
-                        });
+                        if (productOptions.length > 0) {
+                            productOptions.push({
+                                isDisabled: true,
+                                label: sep
+                            });
+                        }
 
                         angular.forEach(originalProductList, function(product){
                             productOptions.push({
-                                code: product.code,
-                                name: product.name
+                                value: product.code,
+                                label: product.name
                             });
                         }, this);
 
@@ -3505,8 +3685,8 @@ angular.module('RedhatAccess.cases').controller('New', [
                     } else {
                         angular.forEach(originalProductList, function(product){
                             productOptions.push({
-                                code: product.code,
-                                name: product.name
+                                value: product.code,
+                                label: product.name
                             });
                         }, this);
                         $scope.products = productOptions;
@@ -3515,8 +3695,8 @@ angular.module('RedhatAccess.cases').controller('New', [
             } else {
                 angular.forEach(originalProductList, function(product){
                     productOptions.push({
-                        code: product.code,
-                        name: product.name
+                        value: product.code,
+                        label: product.name
                     });
                 }, this);
                 $scope.products = productOptions;
@@ -3529,14 +3709,16 @@ angular.module('RedhatAccess.cases').controller('New', [
         $scope.initSelects = function () {
             CaseService.clearCase();
             $scope.productsLoading = true;
-            strataService.products.list(securityService.loginStatus.ssoName).then(function (products) {
+            strataService.products.list(securityService.loginStatus.authedUser.sso_username).then(function (products) {
                 $scope.buildProductOptions(products);
                 $scope.productsLoading = false;
                 if (RHAUtils.isNotEmpty(NEW_DEFAULTS.product)) {
-                    CaseService.kase.product = {
-                        name: NEW_DEFAULTS.product,
-                        code: NEW_DEFAULTS.product
-                    };
+                    for(var i = 0; i < $scope.products.length; i++){
+                        if($scope.products[i].label === NEW_DEFAULTS.product){
+                            CaseService.kase.product = $scope.products[i].value;
+                            break;
+                        }
+                    }
                     $scope.getRecommendations();
                     $scope.getProductVersions(CaseService.kase.product);
                 }
@@ -3587,6 +3769,7 @@ angular.module('RedhatAccess.cases').controller('New', [
             $scope.initSelects();
             $scope.initDescription();
             AlertService.clearAlerts();
+            RecommendationsService.failureCount = 0;
         });
 
         $scope.$on('$destroy', function () {
@@ -3601,7 +3784,7 @@ angular.module('RedhatAccess.cases').controller('New', [
             CaseService.kase.version = '';
             $scope.versionDisabled = true;
             $scope.versionLoading = true;
-            strataService.products.versions(product.code).then(function (response) {
+            strataService.products.versions(product).then(function (response) {
                 $scope.versions = response;
                 CaseService.validateNewCasePage1();
                 $scope.versionDisabled = false;
@@ -3615,8 +3798,29 @@ angular.module('RedhatAccess.cases').controller('New', [
             });
 
             //Retrieve the product detail, basically finding the attachment artifact
-            AttachmentsService.fetchProductDetail(product.code);
+            $scope.fetchProductDetail(product);
         };
+
+        /**
+        * Fetch the product details for the selected product
+        **/
+        $scope.fetchProductDetail = function (productCode) {
+            AttachmentsService.suggestedArtifact = {};
+            strataService.products.get(productCode).then(angular.bind(this, function (product) {
+                if (product !== undefined && product.suggested_artifacts !== undefined && product.suggested_artifacts.suggested_artifact !== undefined) {
+                    if (product.suggested_artifacts.suggested_artifact.length > 0) {
+                        var description = product.suggested_artifacts.suggested_artifact[0].description;
+                        if (description.indexOf('<a') > -1) {
+                            description = description.replace("<a","<a target='_blank'");
+                        }
+                        AttachmentsService.suggestedArtifact.description = description;
+                    }
+                }
+            }), function (error) {
+                AlertService.addStrataErrorMessage(error);
+            });
+        };
+
         /**
        * Go to a page in the wizard
        *
@@ -3661,7 +3865,7 @@ angular.module('RedhatAccess.cases').controller('New', [
             }
             /*jshint camelcase: false */
             var caseJSON = {
-                    'product': CaseService.kase.product.code,
+                    'product': CaseService.kase.product,
                     'version': CaseService.kase.version,
                     'summary': CaseService.kase.summary,
                     'description': CaseService.kase.description,
@@ -3695,7 +3899,7 @@ angular.module('RedhatAccess.cases').controller('New', [
             };
             strataService.cases.post(caseJSON).then(function (caseNumber) {
                 AlertService.clearAlerts();
-                AlertService.addSuccessMessage('Successfully created case number ' + caseNumber);
+                AlertService.addSuccessMessage(translate('Successfully created case number') + ' ' + caseNumber);
                 if ((AttachmentsService.updatedAttachments.length > 0 || AttachmentsService.hasBackEndSelections()) && NEW_CASE_CONFIG.showAttachments) {
                     AttachmentsService.updateAttachments(caseNumber).then(function () {
                         redirectToCase(caseNumber);
@@ -3735,6 +3939,53 @@ angular.module('RedhatAccess.cases').controller('OwnerSelect', [
         $scope.securityService = securityService;
         $scope.SearchCaseService = SearchCaseService;
         $scope.CaseService = CaseService;
+    }
+]);
+
+'use strict';
+/*jshint camelcase: false, expr: true*/
+angular.module('RedhatAccess.cases').controller('PcmRecommendationsController', [
+    '$scope',
+    '$location',
+    'SearchResultsService',
+    'SEARCH_CONFIG',
+    'securityService',
+    'AlertService',
+    function ($scope, $location, SearchResultsService, SEARCH_CONFIG, securityService, AlertService) {
+        $scope.SearchResultsService = SearchResultsService;
+        $scope.results = {};
+        $scope.selectedSolution = SearchResultsService.currentSelection;
+        $scope.searchInProgress = SearchResultsService.searchInProgress;
+        $scope.currentSearchData = SearchResultsService.currentSearchData;
+        $scope.itemsPerPage = 3;
+        $scope.maxPagerSize = 5;
+        $scope.currentPage = 1;
+        $scope.selectPage = function (pageNum) {
+
+            var start = $scope.itemsPerPage * (pageNum - 1);
+            var end = start + $scope.itemsPerPage;
+            end = end > SearchResultsService.results.length ? SearchResultsService.results.length : end;
+            $scope.results = SearchResultsService.results.slice(start, end);
+        };
+        $scope.triggerAnalytics = function ($event) {
+            if (window.chrometwo_require !== undefined && $location.path() === '/case/new') {
+                chrometwo_require(['analytics/main'], function (analytics) {
+                    analytics.trigger('OpenSupportCaseRecommendationClick', $event);
+                });
+            }
+        };
+        $scope.$watch(function () {
+            return SearchResultsService.currentSelection;
+        }, function (newVal) {
+            $scope.selectedSolution = newVal;
+        });
+
+        $scope.$watch(function () {
+            return SearchResultsService.results;
+        }, function () {
+            $scope.currentPage = 1;
+            $scope.selectPage($scope.currentPage);
+        }, true);
     }
 ]);
 
@@ -3988,21 +4239,22 @@ angular.module('RedhatAccess.cases').controller('StatusSelect', [
     'securityService',
     'CaseService',
     'STATUS',
-    function ($scope, securityService, CaseService, STATUS) {
+    'translate',
+    function ($scope, securityService, CaseService, STATUS, translate) {
         $scope.securityService = securityService;
         $scope.CaseService = CaseService;
         $scope.STATUS = STATUS;
         $scope.statuses = [
             {
-                name: 'Open and Closed',
+                name: translate('Open and Closed'),
                 value: STATUS.both
             },
             {
-                name: 'Open',
+                name: translate('Open'),
                 value: STATUS.open
             },
             {
-                name: 'Closed',
+                name: translate('Closed'),
                 value: STATUS.closed
             }
         ];
@@ -4104,8 +4356,13 @@ angular.module('RedhatAccess.cases').directive('rhaCasecomments', ['$location','
             scope.$on('$destroy', function () {
                 element.remove();
             });
-            scope.commentReply = function(id) {
-                var text = $('#'+id+' .pcmTextBlock').text();
+            scope.commentReply = function(id,browserIE) {
+                var text = '';
+                if (browserIE === true) {
+                    text = $('#'+id+' .browserIE').text();
+                } else {
+                    text = $('#'+id+' .browserNotIE').text();
+                }
                 var person = $('#'+id+' .personNameBlock').text();
                 var originalText = $('#case-comment-box').val();
                 var lines = text.split(/\n/);
@@ -4300,9 +4557,7 @@ angular.module('RedhatAccess.cases').directive('rhaNewrecommendations', function
     return {
         templateUrl: 'cases/views/newRecommendationsSection.html',
         restrict: 'A',
-        controller: 'SearchController',
-        transclude: true,
-        scope: { loading: '=' },
+        controller: 'PcmRecommendationsController',
         link: function postLink(scope, element, attrs) {
             scope.$on('$destroy', function () {
                 element.remove();
@@ -4552,7 +4807,7 @@ angular.module('RedhatAccess.cases').service('AttachmentsService', [
                             errorMsg = ' : Internal server error';
                             break;
                         }
-                        AlertService.addDangerMessage('Failed to upload attachment ' + jsonData.attachment + ' to case ' + caseId + errorMsg);
+                        AlertService.addDangerMessage(translate('Failed to upload attachment ') + jsonData.attachment + translate(' to case ') + caseId + errorMsg);
                         deferred.reject(data);
                     });
                     promises.push(deferred.promise);
@@ -4577,7 +4832,7 @@ angular.module('RedhatAccess.cases').service('AttachmentsService', [
                             promise.then(function (uri) {
                                 attachment.uri = uri;
                                 attachment.uuid = uri.slice(uri.lastIndexOf('/') + 1);
-                                AlertService.addSuccessMessage('Successfully uploaded attachment ' + attachment.file_name + ' to case ' + caseId);
+                                AlertService.addSuccessMessage(translate('Successfully uploaded attachment ') + attachment.file_name + ' to case ' + caseId);
                             }, function (error) {
                                 AlertService.addStrataErrorMessage(error);
                             });
@@ -4585,7 +4840,7 @@ angular.module('RedhatAccess.cases').service('AttachmentsService', [
                         }
                     });
                 }
-                var uploadingAlert = AlertService.addWarningMessage('Uploading attachments...');
+                var uploadingAlert = AlertService.addWarningMessage(translate('Uploading attachments...'));
                 var parentPromise = $q.all(promises);
                 parentPromise.then(angular.bind(this, function () {
                     this.originalAttachments = this.originalAttachments.concat(this.updatedAttachments);
@@ -4598,37 +4853,6 @@ angular.module('RedhatAccess.cases').service('AttachmentsService', [
                 return parentPromise;
             }
         };
-        this.fetchProductDetail = function (productCode) {
-            this.suggestedArtifact = {};
-            strataService.products.get(productCode).then(angular.bind(this, function (product) {
-                //TODO find some better way of escaping the html
-                if (product !== undefined && product.suggested_artifacts !== undefined && product.suggested_artifacts.suggested_artifact !== undefined) {
-                    if (product.suggested_artifacts.suggested_artifact.length > 0) {
-                        var description = product.suggested_artifacts.suggested_artifact[0].description;
-                        var attachmentLink = '';
-                        var text = '';
-                        var trail = '';
-                        this.suggestedArtifact.hasLink = false;
-                        if (description.indexOf('<a') > -1) {
-                            this.suggestedArtifact.hasLink = true;
-                            attachmentLink = description.slice(description.indexOf('\"'),description.lastIndexOf('\"')-12);
-                            text = description.slice(0,description.indexOf('<'));
-                            trail = description.slice(description.lastIndexOf('>')+1,description.length);
-                        } else {
-                            text = product.suggested_artifacts.suggested_artifact[0].description;
-                        }
-                        
-                        this.suggestedArtifact.name = product.suggested_artifacts.suggested_artifact[0].name;
-                        this.suggestedArtifact.link = attachmentLink;
-                        this.suggestedArtifact.description = text;
-                        this.suggestedArtifact.trail = trail;
-                    }                    
-                }
-            }), function (error) {
-                AlertService.addStrataErrorMessage(error);
-            });
-        };
-
     }
 ]);
 'use strict';
@@ -4651,7 +4875,8 @@ angular.module('RedhatAccess.cases').constant('CASE_GROUPS', {
     '$q',
     '$timeout',
     '$filter',
-    function (strataService, AlertService, RHAUtils, securityService, $q, $timeout, $filter) {
+    'translate',
+    function (strataService, AlertService, RHAUtils, securityService, $q, $timeout, $filter,translate ) {
         this.kase = {};
         this.caseDataReady = false;
         this.isCommentPublic = false;
@@ -4681,6 +4906,8 @@ angular.module('RedhatAccess.cases').constant('CASE_GROUPS', {
         this.groupOptions = [];
         this.showsearchoptions = false;
         this.disableAddComment = true;
+        this.fts = false;
+        this.fts_contact = '';
         /**
        * Add the necessary wrapper objects needed to properly display the data.
        *
@@ -4710,8 +4937,8 @@ angular.module('RedhatAccess.cases').constant('CASE_GROUPS', {
             this.updatedNotifiedUsers.push(this.kase.contact_sso_username);
             //hide the X button for the case owner
             $('#rha-emailnotifyselect').on('change', angular.bind(this, function () {
-                $('rha-emailnotifyselect .select2-choices li:contains("' + this.kase.contact_sso_username + '") a').css('display', 'none');
-                $('rha-emailnotifyselect .select2-choices li:contains("' + this.kase.contact_sso_username + '")').css('padding-left', '5px');
+                $('rha-emailnotifyselect .chosen-choices li:contains("' + this.kase.contact_sso_username + '") a').css('display', 'none');
+                $('rha-emailnotifyselect .chosen-choices li:contains("' + this.kase.contact_sso_username + '")').css('padding-left', '5px');
             }));
             if (RHAUtils.isNotEmpty(this.kase.notified_users)) {
                 angular.forEach(this.kase.notified_users.link, angular.bind(this, function (user) {
@@ -4747,17 +4974,19 @@ angular.module('RedhatAccess.cases').constant('CASE_GROUPS', {
             this.originalNotifiedUsers = [];
             this.updatedNotifiedUsers = [];
             this.groupOptions = [];
+            this.fts = false;
+            this.fts_contact = '';
         };
         this.groupsLoading = false;
-        this.populateGroups = function (ssoUsername) {
+        this.populateGroups = function (ssoUsername, flushCache) {
             var that = this;
             var deferred = $q.defer();
             this.groupsLoading = true;
             var username = ssoUsername;
             if(username === undefined){
-                username = securityService.loginStatus.ssoName;
+                username = securityService.loginStatus.authedUser.sso_username;
             }
-            strataService.groups.list(ssoUsername).then(angular.bind(this, function (groups) {
+            strataService.groups.list(ssoUsername, flushCache).then(angular.bind(this, function (groups) {
                 that.groups = groups;
                 that.group = '';
                 that.buildGroupOptions(that);
@@ -4777,13 +5006,13 @@ angular.module('RedhatAccess.cases').constant('CASE_GROUPS', {
        */
         this.populateUsers = angular.bind(this, function () {
             var promise = null;
-            if (securityService.loginStatus.orgAdmin) {
+            if (securityService.loginStatus.authedUser.org_admin) {
                 this.usersLoading = true;
-                var accountNumber = RHAUtils.isEmpty(this.account.number) ? securityService.loginStatus.account.number : this.account.number;
+                var accountNumber = RHAUtils.isEmpty(this.account.number) ? securityService.loginStatus.authedUser.account_number : this.account.number;
                 promise = strataService.accounts.users(accountNumber);
                 promise.then(angular.bind(this, function (users) {
                     angular.forEach(users, function(user){
-                        if(user.sso_username === securityService.loginStatus.ssoName) {
+                        if(user.sso_username === securityService.loginStatus.authedUser.sso_username) {
                             this.owner = user.sso_username;
                         }
                     }, this);
@@ -4798,7 +5027,8 @@ angular.module('RedhatAccess.cases').constant('CASE_GROUPS', {
                 var deferred = $q.defer();
                 promise = deferred.promise;
                 deferred.resolve();
-                this.users = [];
+                var tmp= {'sso_username': securityService.loginStatus.authedUser.sso_username};
+                this.users.push(tmp);
             }
             return promise;
         });
@@ -4863,9 +5093,29 @@ angular.module('RedhatAccess.cases').constant('CASE_GROUPS', {
             }));
         };
         this.showFts = function () {
+            var showFtsCheckbox = false;
             if (RHAUtils.isNotEmpty(this.severities)) {
-                if (this.entitlement === 'PREMIUM' || this.entitlement === 'AMC' || RHAUtils.isNotEmpty(this.kase.entitlement) && (this.kase.entitlement.sla === 'PREMIUM' || this.kase.entitlement.sla === 'AMC')) {
+                if (this.entitlements !== undefined && this.entitlements.length === 1) {
+                    if (this.entitlements[0] === 'PREMIUM' || this.entitlements[0] === 'AMC') {
+                        showFtsCheckbox = true;
+                    }
+                } else if (this.entitlement === 'PREMIUM' || this.entitlement === 'AMC') {
+                    showFtsCheckbox = true;
+                } else if (RHAUtils.isNotEmpty(this.kase.entitlement) && (this.kase.entitlement.sla === 'PREMIUM' || this.kase.entitlement.sla === 'AMC')) {
+                    showFtsCheckbox = true;
+                }
+                if ((showFtsCheckbox === true) && (RHAUtils.isNotEmpty(this.kase.severity) && this.kase.severity.name.charAt(0) === '1')) {
                     return true;
+                } else {
+                    this.fts = false;
+                    this.fts_contact = '';
+                    if (this.kase.fts !== undefined) {
+                        this.kase.fts = false;
+                    }
+                    if (this.kase.contact_info24_x7 !== undefined) {
+                        this.kase.contact_info24_x7 = '';
+                    }
+                    return false;
                 }
             }
             return false;
@@ -4900,10 +5150,10 @@ angular.module('RedhatAccess.cases').constant('CASE_GROUPS', {
             if (this.showsearchoptions === true) {
                 this.groupOptions.push({
                     value: '',
-                    label: 'All Groups'
+                    label: translate('All Groups')
                 }, {
                     value: 'ungrouped',
-                    label: 'Ungrouped Cases'
+                    label: translate('Ungrouped Cases')
                 }, {
                     isDisabled: true,
                     label: sep
@@ -4911,7 +5161,7 @@ angular.module('RedhatAccess.cases').constant('CASE_GROUPS', {
             } else {
                 this.groupOptions.push({
                     value: '',
-                    label: 'Ungrouped Case'
+                    label: translate('Ungrouped Case')
                 });
             }
 
@@ -4931,7 +5181,7 @@ angular.module('RedhatAccess.cases').constant('CASE_GROUPS', {
                     label: sep
                 }, {
                     value: 'manage',
-                    label: 'Manage Case Groups'
+                    label: translate('Manage Case Groups')
                 });
             }
         };
@@ -4973,14 +5223,14 @@ angular.module('RedhatAccess.cases').service('RecommendationsService', [
         this.pinnedRecommendations = [];
         this.handPickedRecommendations = [];
         var currentData = {
-                product: null,
-                version: null,
-                summary: null,
-                description: null
-            };
+            product: null,
+            version: null,
+            summary: null,
+            description: null
+        };
         this.loadingRecommendations = false;
         var setCurrentData = function () {
-            currentData = {
+            currentData= {
                 product: CaseService.kase.product,
                 version: CaseService.kase.version,
                 summary: CaseService.kase.summary,
@@ -4990,6 +5240,14 @@ angular.module('RedhatAccess.cases').service('RecommendationsService', [
         setCurrentData();
         this.clear = function () {
             this.recommendations = [];
+            this.pinnedRecommendations = [];
+            this.handPickedRecommendations = [];
+            var currentData = {
+                product: null,
+                version: null,
+                summary: null,
+                description: null
+            };
         };
         this.pageSize = 4;
         this.maxSize = 10;
@@ -5056,12 +5314,16 @@ angular.module('RedhatAccess.cases').service('RecommendationsService', [
         this.populateRecommendations = function (max) {
             var masterDeferred = $q.defer();
             masterDeferred.promise.then(angular.bind(this, function() {this.selectPage(1);}));
+            var productName;
+            if(CaseService.kase.product !== undefined && CaseService.kase.product.name !== undefined){
+                productName = CaseService.kase.product.name;
+            }
             var newData = {
-                    product: CaseService.kase.product,
-                    version: CaseService.kase.version,
-                    summary: CaseService.kase.summary,
-                    description: CaseService.kase.description
-                };
+                product: productName,
+                version: CaseService.kase.version,
+                summary: CaseService.kase.summary,
+                description: CaseService.kase.description
+            };
             if ((newData.product !== undefined || newData.version !== undefined || newData.summary !== undefined || newData.description !== undefined || (!angular.equals(currentData, newData) && !this.loadingRecommendations || this.recommendations.length < 1)) && this.failureCount < 10) {
                 this.loadingRecommendations = true;
                 setCurrentData();
@@ -5087,9 +5349,60 @@ angular.module('RedhatAccess.cases').service('RecommendationsService', [
                         masterDeferred.resolve();
                     }));
                 }), angular.bind(this, function (error) {
+                    this.loadingRecommendations = false;
                     masterDeferred.reject();
                     this.failureCount++;
                     this.populateRecommendations(12);
+                }));
+            } else {
+                masterDeferred.resolve();
+            }
+            return masterDeferred.promise;
+        };
+        this.populatePCMRecommendations = function (max) {
+            var masterDeferred = $q.defer();
+            masterDeferred.promise.then(angular.bind(this, function() {this.selectPage(1);}));
+            var productName;
+            if(CaseService.kase.product !== undefined && CaseService.kase.product.name !== undefined){
+                productName = CaseService.kase.product.name;
+            }
+
+            var newData = {
+                product: productName,
+                version: CaseService.kase.version,
+                summary: CaseService.kase.summary,
+                description: CaseService.kase.description
+            };
+
+            if ((newData.product !== undefined || newData.version !== undefined || newData.summary !== undefined || newData.description !== undefined || (!angular.equals(currentData, newData) && !this.loadingRecommendations)) && this.failureCount < 10) {
+                this.loadingRecommendations = true;
+                setCurrentData();
+                var deferreds = [];
+                strataService.recommendationsXmlHack(currentData, max, true, '%3Cstrong%3E%2C%3C%2Fstrong%3E').then(angular.bind(this, function (solutions) {
+                    //retrieve details for each solution
+                    solutions.forEach(function (solution) {
+                        //var deferred = strataService.solutions.get(solution.resource_uri);
+                        deferreds.push(solution);
+                    });
+                    $q.all(deferreds).then(angular.bind(this, function (solutions) {
+                        this.recommendations = [];
+                        solutions.forEach(angular.bind(this, function (solution) {
+                            if (solution !== undefined) {
+                                solution.resource_type = 'Solution';
+                                this.recommendations.push(solution);
+                            }
+                        }));
+                        this.loadingRecommendations = false;
+                        masterDeferred.resolve();
+                    }), angular.bind(this, function (error) {
+                        this.loadingRecommendations = false;
+                        masterDeferred.resolve();
+                    }));
+                }), angular.bind(this, function (error) {
+                    this.loadingRecommendations = false;
+                    masterDeferred.reject();
+                    this.failureCount++;
+                    this.populatePCMRecommendations(12);
                 }));
             } else {
                 masterDeferred.resolve();
@@ -5215,21 +5528,30 @@ angular.module('RedhatAccess.cases').service('SearchCaseService', [
                 var that = this;
                 var cases = null;
                 if (securityService.loginStatus.isLoggedIn) {
-                    if (securityService.loginStatus.ssoName && securityService.loginStatus.isInternal) {
-                        params.owner_ssoname = securityService.loginStatus.ssoName;
+                    if (securityService.loginStatus.authedUser.sso_username && securityService.loginStatus.authedUser.is_internal) {
+                        params.owner_ssoname = securityService.loginStatus.authedUser.sso_username;
                     }
                     cases = strataService.cases.filter(params).then(angular.bind(that, function (response) {
-                        that.totalCases = response.total_count;
-                        if (response['case'].length + that.total >= that.totalCases) {
+                        if(response['case'] === undefined ){
+                            that.totalCases = 0;
+                            that.total = 0;
                             that.allCasesDownloaded = true;
+                        } else {
+                            that.totalCases = response.total_count;
+                            if (response['case'] !== undefined && response['case'].length + that.total >= that.totalCases) {
+                                that.allCasesDownloaded = true;
+                            }
+                            if (response['case'] !== undefined){
+                                that.cases = that.cases.concat(response['case']);
+                                that.count = response['case'].length + that.total
+                                that.start = that.start + that.count;
+                                that.total = that.total + response['case'].length;
+                            }
+                            if (angular.isFunction(that.postFilter)) {
+                                that.postFilter();
+                            }
                         }
-                        that.cases = that.cases.concat(response['case']);
                         that.searching = false;
-                        that.start = that.start + that.count;
-                        that.total = that.total + response['case'].length;
-                        if (angular.isFunction(that.postFilter)) {
-                            that.postFilter();
-                        }
                     }), angular.bind(that, function (error) {
                         AlertService.addStrataErrorMessage(error);
                         that.searching = false;
@@ -5237,8 +5559,8 @@ angular.module('RedhatAccess.cases').service('SearchCaseService', [
                     deferred.resolve(cases);
                 } else {
                     $rootScope.$on(AUTH_EVENTS.loginSuccess, function () {
-                        if (securityService.loginStatus.ssoName && securityService.loginStatus.isInternal) {
-                            params.owner_ssoname = securityService.loginStatus.ssoName;
+                        if (securityService.loginStatus.authedUser.sso_username && securityService.loginStatus.authedUser.is_internal) {
+                            params.owner_ssoname = securityService.loginStatus.authedUser.sso_username;
                         }
                         cases = strataService.cases.filter(params).then(angular.bind(that, function (response) {
                             that.totalCases = response.total_count;
@@ -5288,8 +5610,9 @@ angular.module('RedhatAccess.logViewer').controller('DropdownCtrl', [
     'files',
     'hideMachinesDropdown',
     'AlertService',
-    function ($scope, $http, $location, files, hideMachinesDropdown, AlertService) {
-        $scope.machinesDropdownText = 'Please Select the Machine';
+    'translate',
+    function ($scope, $http, $location, files, hideMachinesDropdown, AlertService,translate) {
+        $scope.machinesDropdownText = translate('Please Select the Machine');
         $scope.items = [];
         $scope.hideDropdown = hideMachinesDropdown.value;
         $scope.loading = false;
@@ -5406,8 +5729,8 @@ angular.module('RedhatAccess.logViewer').controller('TabsDemoCtrl', [
             securityService.validateLogin(true).then(function () {
                 //Removed in refactor, no loger exists.  Think it hides tool tip??
                 //this.tt_isOpen = false;
-                if (!$scope.$parent.solutionsToggle) {
-                    $scope.$parent.solutionsToggle = !$scope.$parent.solutionsToggle;
+                if (!$scope.$parent.showSolutions) {
+                    $scope.$parent.showSolutions = !$scope.$parent.showSolutions;
                 }
                 if (text !== '') {
                     $scope.checked = !$scope.checked;
@@ -5480,7 +5803,7 @@ angular.module('RedhatAccess.logViewer').controller('fileController', [
             if(files.selectedFile !== undefined && !files.getRetrieveFileButtonIsDisabled()){
                 $scope.fileSelected();
             }
-        }
+        };
 
         $scope.fileSelected = function () {
             files.setFileClicked(true);
@@ -5491,7 +5814,11 @@ angular.module('RedhatAccess.logViewer').controller('fileController', [
                 method: 'GET',
                 url: 'logs?sessionId=' + encodeURIComponent(sessionId) + '&userId=' + encodeURIComponent(userId) + '&path=' + files.selectedFile + '&machine=' + files.selectedHost
             }).success(function (data, status, headers, config) {
-                files.file = data;
+                if(data !== ""){
+                    files.file = data;
+                } else {
+                    files.file = " ";
+                }
             }).error(function (data, status, headers, config) {
                 AlertService.addDangerMessage(data);
             });
@@ -5535,7 +5862,7 @@ angular.module('RedhatAccess.logViewer').controller('logViewerController', [
         };
         $scope.toggleSolutions = function () {
             $scope.showSolutions = !$scope.showSolutions;
-        }
+        };
     }
 ]);
 'use strict';
@@ -5697,18 +6024,18 @@ angular.module("common/views/alert.html", []).run(["$templateCache", function($t
 angular.module("common/views/header.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/views/header.html",
     "<div class=\"rha-page-header\">\n" +
-    "    <div class=\"row\">\n" +
+    "    <div class=\"row\" style='margin-bottom: 0px;'>\n" +
     "        <div class=\"col-xs-12\">\n" +
     "            <div rha-titletemplate page=\"{{page}}\"/>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "    <div class=\"row\">\n" +
+    "    <div class=\"row\" style='margin-bottom: 0px;'>\n" +
     "        <div class=\"col-xs-12\">\n" +
     "            <div rha-loginstatus />\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "    <div class=\"rha-bottom-border\" />\n" +
-    "    <div class=\"row\">\n" +
+    "    <div class=\"rha-bottom-border\" style='margin-bottom: 0px;'/>\n" +
+    "    <div class=\"row\" style='margin-bottom: 0px;'>\n" +
     "        <div class=\"col-xs-12\">\n" +
     "            <div rha-alert />\n" +
     "        </div>\n" +
@@ -5797,7 +6124,7 @@ angular.module("security/views/login_form.html", []).run(["$templateCache", func
 angular.module("security/views/login_status.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("security/views/login_status.html",
     "<div ng-controller = 'SecurityController' ng-show=\"displayLoginStatus()\">\n" +
-    "<span ng-show=\"securityService.loginStatus.isLoggedIn\" class=\"pull-right rha-logged-in\"> {{'Logged into the Red Hat Customer Portal as'|translate}} {{securityService.loginStatus.loggedInUser}} &nbsp;|&nbsp;\n" +
+    "<span ng-show=\"securityService.loginStatus.isLoggedIn\" class=\"pull-right rha-logged-in\"> {{'Logged into the Red Hat Customer Portal as'|translate}} {{securityService.loginStatus.authedUser.loggedInUser}} &nbsp;|&nbsp;\n" +
     "    <span ng-if=\"securityService.logoutURL.length === 0\" ng-show=\"!securityService.loginStatus.verifying\">\n" +
     "        <a href=\"\" ng-click=\"securityService.logout()\"> {{'Log Out'|translate}}</a>\n" +
     "    </span>\n" +
@@ -5886,31 +6213,32 @@ angular.module("search/views/list_search_results.html", []).run(["$templateCache
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n" +
-    "<div class=\"col-sm-8\" style=\"overflow: auto;\" rha-resizable rha-domready=\"domReady\">\n" +
+    "<div id=\"rha-solution-display\" class=\"col-sm-8\" style=\"overflow: auto;\" rha-resizable rha-domready=\"domReady\">\n" +
     "    <div class=\"alert alert-info\" ng-show='selectedSolution.index === -1 && results.length > 0'>\n" +
     "        {{'To view a recommendation, click on it.'|translate}}\n" +
     "    </div>\n" +
     "    <div style \"overflow: vertical;\">\n" +
     "        <div rha-resultdetaildisplay result='selectedSolution.data' />\n" +
     "    </div>\n" +
-    "</div>");
+    "</div>\n" +
+    "");
 }]);
 
 angular.module("search/views/resultDetail.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("search/views/resultDetail.html",
-    "<div class='panel' style='border:0' ng-model=\"result\" >\n" +
+    "<div class='panel' style='border:0' ng-model=\"result\" ng-click=\"resultClickCapture($event, result)\">\n" +
     "	<div ng-if=\"isSolution()\">\n" +
     "		<h3 translate=''>Environment</h3>\n" +
     "		<div ng-bind-html='result.environment.html'></div>\n" +
     "		<h3>Issue</h3>\n" +
-    "		<div ng-bind-html='result.issue.html'></div>\n" +
+    "		<div ng-bind-html='result.issue.html | trust_html'></div>\n" +
     "		<div ng-if=\"getSolutionResolution() !== ''\">\n" +
     "			<h3  translate=''>Resolution</h3>\n" +
     "		</div>\n" +
-    "		<div ng-bind-html='getSolutionResolution()'></div>\n" +
+    "		<div ng-bind-html='getSolutionResolution() | trust_html'></div>\n" +
     "	</div>\n" +
     "	<div ng-if=\"isArticle()\">\n" +
-    "		<div ng-bind-html='getArticleHtml()'></div>\n" +
+    "		<div ng-bind-html='getArticleHtml() | trust_html'></div>\n" +
     "	</div>\n" +
     "</div>\n" +
     "\n" +
@@ -5929,7 +6257,7 @@ angular.module("search/views/search_form.html", []).run(["$templateCache", funct
     "    <form role=\"form\" id=\"rh-search\">\n" +
     "        <div ng-class=\"{'col-sm-8': searchInProgress.value}\">\n" +
     "            <div class=\"input-group\">\n" +
-    "                <input type=\"text\" class=\"form-control\" id=\"rhSearchStr\" name=\"searchString\" ng-model=\"searchStr\" class=\"input-xxlarge\" placeholder=\"Search Articles and Solutions\">\n" +
+    "                <input type=\"text\" class=\"form-control\" id=\"rhSearchStr\" name=\"searchString\" ng-model=\"searchStr\" class=\"input-xxlarge\" placeholder=\"{{'Search Articles and Solutions'|translate}}\">\n" +
     "                <span class=\"input-group-btn\">\n" +
     "                    <button ng-disabled=\"(searchStr === undefined || searchStr.trim()==='' || searchInProgress.value === true)\" class=\"btn btn-default btn-primary\" type='submit' ng-click=\"search(searchStr)\">\n" +
     "                        <i class=\"glyphicon glyphicon-search \"></i>\n" +
@@ -5966,12 +6294,12 @@ angular.module("cases/views/accountSelect.html", []).run(["$templateCache", func
 
 angular.module("cases/views/addCommentSection.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/addCommentSection.html",
-    "<div style=\"margin-left: 60px; margin-right: 60px;\"><div style=\"margin-bottom: 10px;\" class=\"well\"><textarea id=\"case-comment-box\" ng-disabled=\"addingComment\" rows=\"5\" ng-model=\"CaseService.commentText\" style=\"max-width: 100%\" ng-change=\"onNewCommentKeypress()\" class=\"form-control\"></textarea><span id=\"commentNotice\" class=\"uploadNotice\"> <span>{{'You have used'|translate}}</span><span class=\"progressBarWrap\"><span class=\"progressCount\">{{progressCount}} %</span></span><span>{{'of the 32KB maximum description size.'|translate}}</span></span><div style=\"padding-top: 10px;\"><div ng-if=\"securityService.loginStatus.isInternal\"><span style=\"float: left;\">{{'Is Public:'|translate}}</span><input type=\"checkbox\" ng-model=\"CaseService.isCommentPublic\" style=\"display: inline-block;\"/></div><span ng-show=\"savingDraft\" class=\"pull-right rha-bold\">{{'Saving draft...'|translate}}</span><span ng-show=\"draftSaved\" class=\"pull-right rha-bold\">{{'Draft saved'|translate}}</span></div></div><div style=\"float: right;\"><span ng-show=\"addingComment\" class=\"rha-search-spinner\"></span><button ng-hide=\"addingComment\" ng-disabled=\"CaseService.disableAddComment\" ng-click=\"addComment()\" style=\"float: right;\" translate=\"\" class=\"btn btn-primary\">Add Comment</button></div></div>");
+    "<div style=\"margin-left: 60px; margin-right: 60px;\"><div style=\"margin-bottom: 10px;\" class=\"well\"><textarea id=\"case-comment-box\" ng-disabled=\"addingComment\" rows=\"5\" ng-model=\"CaseService.commentText\" style=\"max-width: 100%\" ng-change=\"onNewCommentKeypress()\" class=\"form-control\"></textarea><span id=\"commentNotice\" class=\"uploadNotice\"> <span>{{'You have used'|translate}}</span><span class=\"progressBarWrap\"><span class=\"progressCount\">{{progressCount}} %</span></span><span>{{'of the 32KB maximum description size.'|translate}}</span></span><div style=\"padding-top: 10px;\"><div ng-if=\"securityService.loginStatus.authedUser.is_internal\"><span style=\"float: left;\">{{'Is Public:'|translate}}</span><input id=\"rha-case-comment-isPublic\" type=\"checkbox\" ng-model=\"CaseService.isCommentPublic\" style=\"display: inline-block;\"/></div><span ng-show=\"savingDraft\" class=\"pull-right rha-bold\">{{'Saving draft...'|translate}}</span><span ng-show=\"draftSaved &amp;&amp; !savingDraft\" class=\"pull-right rha-bold\">{{'Draft saved'|translate}}</span></div></div><div style=\"float: right;\"><span ng-show=\"addingComment\" class=\"rha-search-spinner\"></span><button id=\"rha-case-addcommentbutton\" ng-hide=\"addingComment\" ng-disabled=\"CaseService.disableAddComment\" ng-click=\"addComment()\" style=\"float: right;\" translate=\"\" class=\"btn btn-primary\">Add Comment</button></div></div>");
 }]);
 
 angular.module("cases/views/attachLocalFile.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/attachLocalFile.html",
-    "<div class=\"container-fluid\"><div class=\"row rha-create-field\"><div class=\"col-xs-6\"><button style=\"float: left;\" ng-click=\"getFile()\" ng-disabled=\"disabled\" translate=\"\" class=\"btn btn-attach\">Attach local file</button><div style=\"height: 0px; width:0px; overflow:hidden;\"><input id=\"fileUploader\" type=\"file\" value=\"upload\" rha-onchange=\"selectFile\" ng-model=\"file\" ng-disabled=\"disabled\"/></div></div><div class=\"col-xs-6\"><div style=\"float: left; word-wrap: break-word; width: 100%;\">{{fileName}}</div></div></div><div class=\"row rha-create-field\"><div style=\"font-size: 80%;\" class=\"col-xs-12\"><span>{{AttachmentsService.suggestedArtifact.description}}</span><a href=\"{{AttachmentsService.suggestedArtifact.link}}\" target=\"_blank\" ng-if=\"AttachmentsService.suggestedArtifact.hasLink\">{{AttachmentsService.suggestedArtifact.name}}</a><span ng-if=\"AttachmentsService.suggestedArtifact.hasLink\">{{AttachmentsService.suggestedArtifact.trail}}</span></div><div style=\"font-size: 80%;\" class=\"col-xs-12\"><span>{{'File names must be less than 80 characters. Maximum file size for web-uploaded attachments is 250 MB. Please FTP larger files to dropbox.redhat.com.'|translate}}&nbsp;</span><span><a href=\"https://access.devgssci.devlab.phx1.redhat.com/knowledge/solutions/2112\" target=\"_blank\">(More info)</a></span></div></div><div class=\"row rha-create-field\"><div class=\"col-xs-12\"><input style=\"float: left;\" placeholder=\"File description\" ng-model=\"fileDescription\" ng-disabled=\"disabled\" class=\"form-control\"/></div></div><div class=\"row rha-create-field\"><div class=\"col-xs-12\"><button ng-disabled=\"fileName == NO_FILE_CHOSEN || disabled\" style=\"float: right;\" ng-click=\"addFile(fileUploaderForm)\" translate=\"\" class=\"btn btn-add\">Add</button></div></div></div>");
+    "<div class=\"container-fluid\"><div class=\"row rha-create-field\"><div class=\"col-xs-6\"><button style=\"float: left;\" ng-click=\"getFile()\" ng-disabled=\"disabled\" translate=\"\" class=\"btn btn-attach\">Attach local file</button><div style=\"height: 0px; width:0px; overflow:hidden;\"><input id=\"fileUploader\" type=\"file\" value=\"upload\" rha-onchange=\"selectFile\" ng-model=\"file\" ng-disabled=\"disabled\"/></div></div><div class=\"col-xs-6\"><div style=\"float: left; word-wrap: break-word; width: 100%;\">{{fileName}}</div></div></div><div class=\"row rha-create-field\"><div style=\"font-size: 80%;\" class=\"col-xs-12\">     <div ng-bind-html=\"parseArtifactHtml()\"></div></div><div style=\"font-size: 80%;\" class=\"col-xs-12\"><span>{{'File names must be less than 80 characters. Maximum file size for web-uploaded attachments is 250 MB. Please FTP larger files to dropbox.redhat.com.'|translate}}&nbsp;</span><span><a href=\"https://access.redhat.com/knowledge/solutions/2112\" target=\"_blank\">{{'(More info)'|translate}}</a></span></div></div><div class=\"row rha-create-field\"><div class=\"col-xs-12\"><input id=\"rha-case-attachement-fileDescription\" style=\"float: left;\" placeholder=\"{{'File description'|translate}}\" ng-model=\"fileDescription\" ng-disabled=\"disabled\" class=\"form-control\"/></div></div><div class=\"row rha-create-field\"><div class=\"col-xs-12\"><button ng-disabled=\"fileName == NO_FILE_CHOSEN || disabled\" style=\"float: right;\" ng-click=\"addFile(fileUploaderForm)\" translate=\"\" class=\"btn btn-add\">Add</button></div></div></div>");
 }]);
 
 angular.module("cases/views/attachProductLogs.html", []).run(["$templateCache", function($templateCache) {
@@ -5981,17 +6309,17 @@ angular.module("cases/views/attachProductLogs.html", []).run(["$templateCache", 
 
 angular.module("cases/views/attachmentsSection.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/attachmentsSection.html",
-    "<h4 translate=\"\" class=\"rha-section-header\">Attachments</h4><span ng-show=\"loading\" class=\"rha-search-spinner\"></span><div ng-hide=\"loading\" class=\"container-fluid rha-side-padding\"><div class=\"row rha-side-padding\"><div class=\"col-xs-12 rha-col-no-padding\"><div rha-listattachments=\"\"></div></div></div><div style=\"border-top: 1px solid #cccccc; padding-top: 10px; margin: 0;\" class=\"row\"></div><div ng-hide=\"AttachmentsService.updatedAttachments.length &lt;= 0 &amp;&amp; TreeViewSelectorUtils.getSelectedLeaves(AttachmentsService.backendAttachments).length &lt;= 0\"><div class=\"row rha-side-padding\"><div class=\"col-xs-12 rha-col-no-padding\"><div rha-listnewattachments=\"rha-listnewattachments\"></div></div></div><div class=\"row rha-side-padding\"><div style=\"padding-bottom: 14px;\" class=\"col-xs-12 rha-col-no-padding\"><div style=\"float: right\"><span ng-show=\"updatingAttachments\" class=\"rha-search-spinner\"></span><button ng-hide=\"updatingAttachments\" ng-click=\"doUpdate()\" translate=\"\" class=\"btn btn-primary\">Upload Attachments</button></div></div></div><div style=\"border-top: 1px solid #cccccc; padding-top: 10px; margin: 0;\" class=\"row\"></div></div><div class=\"row\"><div class=\"col-xs-12\"><div rha-attachlocalfile=\"\"></div></div></div><div ng-show=\"showServerSideAttachments\"><div class=\"row\"><div class=\"col-xs-12\"><div class=\"server-attach-header\">{{'Server File(s) To Attach:'|translate}}</div><div rha-choicetree=\"\" ng-model=\"attachmentTree\" ng-controller=\"BackEndAttachmentsCtrl\" rhaDisabled=\"rhaDisabled\">     </div></div></div></div></div>");
+    "<h4 translate=\"\" class=\"rha-section-header\">Attachments</h4><span ng-show=\"loading\" class=\"rha-search-spinner\"></span><div ng-hide=\"loading || ie8 &amp;&amp; isPCM\" class=\"container-fluid rha-side-padding\"><div class=\"row rha-side-padding\"><div class=\"col-xs-12 rha-col-no-padding\"><div rha-listattachments=\"\"></div></div></div><div style=\"border-top: 1px solid #cccccc; padding-top: 10px; margin: 0;\" class=\"row\"></div><div ng-hide=\"AttachmentsService.updatedAttachments.length &lt;= 0 &amp;&amp; TreeViewSelectorUtils.getSelectedLeaves(AttachmentsService.backendAttachments).length &lt;= 0\"><div class=\"row rha-side-padding\"><div class=\"col-xs-12 rha-col-no-padding\"><div rha-listnewattachments=\"rha-listnewattachments\"></div></div></div><div class=\"row rha-side-padding\"><div style=\"padding-bottom: 14px;\" class=\"col-xs-12 rha-col-no-padding\"><div style=\"float: right\"><span ng-show=\"updatingAttachments\" class=\"rha-search-spinner\"></span><button ng-hide=\"updatingAttachments\" ng-click=\"doUpdate()\" translate=\"\" class=\"btn btn-primary\">Upload Attachments</button></div></div></div><div style=\"border-top: 1px solid #cccccc; padding-top: 10px; margin: 0;\" class=\"row\"></div></div><div class=\"row\"><div class=\"col-xs-12\"><div rha-attachlocalfile=\"\"></div></div></div><div ng-show=\"showServerSideAttachments\"><div class=\"row\"><div class=\"col-xs-12\"><div class=\"server-attach-header\">{{'Server File(s) To Attach:'|translate}}</div><div rha-choicetree=\"\" ng-model=\"attachmentTree\" ng-controller=\"BackEndAttachmentsCtrl\" rhaDisabled=\"rhaDisabled\"></div></div></div></div></div><div ng-show=\"!loading &amp;&amp; ie8 &amp;&amp; isPCM\"><div ng-bind-html=\"ie8Message\"></div></div>");
 }]);
 
 angular.module("cases/views/chatButton.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/chatButton.html",
-    "<span ng-show=\"showChat\"><iframe style=\"display: none;\" ng-src=\"{{chatHackUrl}}\"></iframe><button ng-show=\"chatAvailable\" ng-click=\"openChatWindow()\" translate=\"\" class=\"btn btn-primary\">Chat with support</button><button ng-show=\"!chatAvailable\" disabled=\"disabled\" translate=\"\" class=\"btn btn-secondary\">Chat offline</button></span>");
+    "<span ng-show=\"showChat\"><iframe style=\"display: none;\" ng-src=\"{{chatHackUrl}}\"></iframe><button ng-show=\"chatAvailable\" ng-click=\"openChatWindow()\" translate=\"\" class=\"btn btn-primary btn-slim btn-sm\">Chat with support</button><button ng-show=\"!chatAvailable\" disabled=\"disabled\" translate=\"\" class=\"btn btn-secondary btn-slim btn-sm\">Chat offline</button></span>");
 }]);
 
 angular.module("cases/views/commentsSection.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/commentsSection.html",
-    "<h4 translate=\"\" class=\"rha-section-header\">Case Discussion</h4><span ng-show=\"loading\" class=\"rha-search-spinner\"></span><div ng-hide=\"loading\" class=\"container-fluid rha-side-padding\"><div class=\"row rha-create-field\"><div class=\"col-xs-12\"><div rha-addcommentsection=\"\"></div></div></div><div style=\"border-top: 1px solid #cccccc; padding-top: 10px; padding-bottom: 10px;\" class=\"row\"><div class=\"col-xs-12\"><span style=\"display: inline-block; padding-right: 10px;\">{{'Would you like a Red Hat support manager to contact you regarding this case?'|translate}}</span><button style=\"display: inline-block\" ng-click=\"requestManagementEscalation()\" translate=\"\" class=\"btn btn-secondary\">Request Management Escalation</button></div></div><div ng-hide=\"CaseService.comments.length &lt;= 0 || CaseService.comments === undefined\" style=\"border-top: 1px solid #dddddd;\" class=\"rha-comments-section\"><div ng-repeat=\"comment in CaseService.comments\" ng-if=\"!comment.draft\"><div id=\"{{comment.id}}\"><div style=\"padding-bottom: 10px;\" class=\"row\"><div class=\"col-md-2\"><div class=\"rha-bold personNameBlock\">{{comment.created_by}}</div><div>{{comment.created_date | date:'mediumDate'}}</div><div>{{comment.created_date | date:'h:mm:ss a Z'}}</div><div ng-if=\"comment.public !== undefined &amp;&amp; comment.public === false\" class=\"private\">Private</div></div><div class=\"col-md-9 rha-comment-text\"><pre style=\"word-break: normal;\" ng-bind-html=\"comment.text | linky:'_blank'\" class=\"pcmTextBlock\"></pre><a ng-click=\"commentReply(comment.id)\" class=\"commentReply\">{{'Reply'|translate}}</a></div><div class=\"col-md-1 rha-comment-link\"><a ng-click=\"CaseService.scrollToComment(comment.id)\" ng-href=\"#/case/{{CaseService.kase.case_number}}?commentId={{comment.id}}\" class=\"glyphicon glyphicon-link\"></a></div></div></div></div></div></div>");
+    "<h4 translate=\"\" class=\"rha-section-header\">Case Discussion</h4><span ng-show=\"loading\" class=\"rha-search-spinner\"></span><div ng-hide=\"loading\" class=\"container-fluid rha-side-padding\"><div class=\"row rha-create-field\"><div class=\"col-xs-12\"><div rha-addcommentsection=\"\"></div></div></div><div style=\"border-top: 1px solid #cccccc; padding-top: 10px; padding-bottom: 10px;\" class=\"row\"><div class=\"col-xs-12\"><span style=\"display: inline-block; padding-right: 10px;\">{{'Would you like a Red Hat support manager to contact you regarding this case?'|translate}}</span><button style=\"display: inline-block\" ng-click=\"requestManagementEscalation()\" translate=\"\" class=\"btn btn-secondary\">Request Management Escalation</button></div></div><div ng-hide=\"CaseService.comments.length &lt;= 0 || CaseService.comments === undefined\" style=\"border-top: 1px solid #dddddd;\" class=\"rha-comments-section\"><div ng-repeat=\"comment in CaseService.comments\" ng-if=\"!comment.draft\"><div id=\"{{comment.id}}\"><div style=\"padding-bottom: 10px;\" class=\"row\"><div class=\"col-md-2\"><div class=\"rha-bold personNameBlock\">{{comment.created_by}}</div><div>{{comment.created_date | date:'mediumDate'}}</div><div>{{comment.created_date | date:'h:mm:ss a Z'}}</div><div ng-if=\"comment.public !== undefined &amp;&amp; comment.public === false\" class=\"private\">Private</div></div><div class=\"col-md-9 rha-comment-text\"><pre ng-hide=\"ie8 || ie9\" ng-bind-html=\"comment.text | linky:'_blank'\" class=\"pcmTextBlock browserNotIE\"></pre><div ng-show=\"ie8 || ie9\" class=\"pcmTextBlock browserIE\">{{ comment.text}}</div><a ng-click=\"commentReply(comment.id,(ie8 || ie9))\" class=\"commentReply\">{{'Reply'|translate}}</a></div><div class=\"col-md-1 rha-comment-link\"><a ng-click=\"CaseService.scrollToComment(comment.id)\" ng-href=\"#/case/{{CaseService.kase.case_number}}?commentId={{comment.id}}\" class=\"glyphicon glyphicon-link\"></a></div></div></div></div></div></div>");
 }]);
 
 angular.module("cases/views/compact.html", []).run(["$templateCache", function($templateCache) {
@@ -6030,22 +6358,22 @@ angular.module("cases/views/compactEdit.html", []).run(["$templateCache", functi
 
 angular.module("cases/views/createGroupButton.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/createGroupButton.html",
-    "<button ng-click=\"openCreateGroupDialog()\" translate=\"\" class=\"btn btn-primary\">Create New Case Group</button>");
+    "<button ng-click=\"openCreateGroupDialog()\" translate=\"\" class=\"btn btn-primary btn-slim btn-small\">Create New Case Group</button>");
 }]);
 
 angular.module("cases/views/createGroupModal.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/createGroupModal.html",
-    "<div id=\"rha-create-group-modal\"><div class=\"modal-header\"><h3 translate=\"\">Create Case Group</h3></div><div style=\"padding: 20px;\" class=\"container-fluid\"><div style=\"padding-bottom: 20px;\" class=\"row\"><div class=\"col-sm-12\"><div style=\"display: table; width: 100%;\"><label style=\"display: table-cell\" translate=\"\">Case Group:</label><input ng-model=\"groupName\" style=\"display: table-cell; width: 100%;\" ng-keypress=\"onGroupNameKeyPress($event)\" class=\"form-control\"/></div></div></div><div class=\"row\"><div class=\"col-sm-12\"><button ng-click=\"createGroup()\" style=\"margin-left: 10px;\" translate=\"\" class=\"btn-primary btn pull-right\">Save</button><button ng-click=\"closeModal()\" translate=\"\" class=\"btn-secondary btn pull-right\">Cancel</button></div></div></div></div>");
+    "<div id=\"rha-create-group-modal\"><div class=\"modal-header\"><h3 translate=\"\">Create Case Group</h3></div><div style=\"padding: 20px;\" class=\"container-fluid\"><div style=\"padding-bottom: 20px;\" class=\"row\"><div class=\"col-sm-12\"><div style=\"display: table; width: 100%;\"><label style=\"display: table-cell\" translate=\"\">Case Group:</label><input id=\"rha-case-groupName\" ng-model=\"groupName\" style=\"display: table-cell; width: 100%;\" ng-keypress=\"onGroupNameKeyPress($event)\" class=\"form-control\"/></div></div></div><div class=\"row\"><div class=\"col-sm-12\"><button ng-click=\"createGroup()\" style=\"margin-left: 10px;\" translate=\"\" class=\"btn-primary btn pull-right\">Save</button><button ng-click=\"closeModal()\" translate=\"\" class=\"btn-secondary btn pull-right\">Cancel</button></div></div></div></div>");
 }]);
 
 angular.module("cases/views/defaultGroup.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/defaultGroup.html",
-    "<div id=\"redhat-access-case\" class=\"container-offset\"><div rha-header=\"\" page=\"defaultGroup\" ng-controller=\"DefaultGroup\"></div><div class=\"rha-side-padding\"><div style=\"padding-bottom: 20px;\" class=\"row\"><div style=\"padding-bottom: 20px;\" class=\"col-xs-12\"><div class=\"col-xs-2\"><label>Case Group Name: </label></div><div class=\"col-xs-9\"><select id=\"rha-defaultgroup-groupselect\" chosen=\"chosen\" ng-disabled=\"!securityService.loginStatus.isLoggedIn || groupsLoading\" ng-model=\"selectedGroup\" ng-options=\"group as group.name for group in groups\" class=\"form-control\"></select></div><div class=\"col-xs-1\"><div style=\"width: 100%\"><span ng-show=\"groupsLoading\" class=\"rha-search-spinner\"></span></div></div></div><div style=\"padding-bottom: 20px;\" class=\"col-xs-12\"><div class=\"col-xs-2\"><label>Group Users: </label></div><div class=\"col-xs-9\"><select id=\"rha-defaultgroup-userselect\" chosen=\"chosen\" ng-disabled=\"!securityService.loginStatus.isLoggedIn || !usersLoaded\" ng-model=\"selectedUser\" ng-change=\"userChange()\" ng-options=\"user.sso_username for user in usersOnAccount\" class=\"form-control\"></select></div><div class=\"col-xs-1\"><div style=\"width: 100%\"><span ng-show=\"usersLoading\" class=\"rha-search-spinner\"></span></div></div></div><div style=\"padding-bottom: 20px;\" class=\"col-xs-12\"><div style=\"padding-bottom: 20px;\" class=\"row\"></div><button ng-click=\"setDefaultGroup()\" ng-disabled=\"!usersAndGroupsFinishedLoading\" translate=\"\" class=\"btn btn-primary\">Save Group</button><button ng-click=\"back()\" translate=\"\" class=\"btn btn-primary\">Back</button></div></div></div></div>");
+    "<div id=\"redhat-access-case\" class=\"container-offset\"><div rha-header=\"\" page=\"defaultGroup\" ng-controller=\"DefaultGroup\"></div><div ng-show=\"!securityService.loginStatus.authedUser.org_admin\">{{'User does not have permissions to set default case group.'|translate}}</div><div ng-show=\"securityService.loginStatus.authedUser.org_admin\" class=\"rha-side-padding\"><div style=\"padding-bottom: 20px;\" class=\"row\"><div style=\"padding-bottom: 20px;\" class=\"col-xs-12\"><div class=\"col-xs-2\"><label>Case Group Name: </label></div><div class=\"col-xs-9\"><select id=\"rha-defaultgroup-groupselect\" ng-disabled=\"!securityService.loginStatus.isLoggedIn || groupsLoading\" ng-model=\"selectedGroup\" ng-change=\"validatePage()\" ng-options=\"group as group.name for group in groups\" class=\"form-control\"></select></div><div class=\"col-xs-1\"><div style=\"width: 100%\"><span ng-show=\"groupsLoading\" class=\"rha-search-spinner\"></span></div></div></div><div style=\"padding-bottom: 20px;\" class=\"col-xs-12\"><div class=\"col-xs-2\"><label>Group Users: </label></div><div class=\"col-xs-9\"><select id=\"rha-defaultgroup-userselect\" ng-disabled=\"!securityService.loginStatus.isLoggedIn || !usersLoaded\" ng-model=\"selectedUser\" ng-change=\"validatePage()\" ng-options=\"user.sso_username for user in usersOnAccount\" class=\"form-control\"></select></div><div class=\"col-xs-1\"><div style=\"width: 100%\"><span ng-show=\"usersLoading\" class=\"rha-search-spinner\"></span></div></div></div><div style=\"padding-bottom: 20px;\" class=\"col-xs-12\"><div style=\"padding-bottom: 20px;\" class=\"row\"></div><button ng-click=\"setDefaultGroup()\" ng-disabled=\"!usersAndGroupsFinishedLoading\" translate=\"\" class=\"btn btn-primary\">Save Group</button><div class=\"divider\"></div><button ng-click=\"back()\" translate=\"\" class=\"btn btn-primary\">Back</button></div></div></div></div>");
 }]);
 
 angular.module("cases/views/deleteGroupButton.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/deleteGroupButton.html",
-    "<button ng-click=\"deleteGroups()\" ng-disabled=\"GroupService.disableDeleteGroup\" translate=\"\" class=\"btn btn-secondary\">Delete Group</button>");
+    "<button ng-click=\"deleteGroups()\" ng-disabled=\"GroupService.disableDeleteGroup\" translate=\"\" class=\"btn btn-secondary btn-slim btn-small\">Delete Group</button>");
 }]);
 
 angular.module("cases/views/descriptionSection.html", []).run(["$templateCache", function($templateCache) {
@@ -6055,12 +6383,12 @@ angular.module("cases/views/descriptionSection.html", []).run(["$templateCache",
 
 angular.module("cases/views/detailsSection.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/detailsSection.html",
-    "<form name=\"caseDetails\"><div style=\"display: table; width: 100%; padding-bottom: 20px;\"><div style=\"display: table-cell; width: 50%;\"><div><h3 style=\"margin-top: 0px;\" class=\"case-id\">Case {{CaseService.kase.case_number}} <span ng-show=\"CaseService.kase.entitlement.sla=='AMC'\" class=\"amc\">{{'Advanced Mission Critical'|translate}}</span></h3></div><input style=\"width: 100%; display: inline-block;\" ng-model=\"CaseService.kase.summary\" name=\"summary\" class=\"form-control\"/><span ng-show=\"caseDetails.summary.$dirty\" style=\"display: inline-block;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></div><div ng-hide=\"compact\" style=\"display: table-cell; vertical-align: bottom; width: 50%;\"><div ng-show=\"showEmailNotifications\"><div style=\"width: 75%\" class=\"pull-right\"><div rha-emailnotifyselect=\"\"></div></div></div></div></div><span ng-show=\"loading\" class=\"rha-search-spinner\"></span><div ng-hide=\"loading\" class=\"container-fluid rha-side-padding\"><div id=\"rha-case-details\" class=\"row\"><div class=\"col-sm-12 rha-section-header\"><h4 translate=\"\">Details</h4></div><div class=\"container-fluid rha-side-padding\"><div class=\"row\"><div class=\"col-md-4\"><table class=\"table details-table\"><tr ng-hide=\"compact\"><th class=\"rha-detail-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\"><label for=\"rha-case-type\">{{'Case Type:'|translate}}</label></div><span ng-show=\"caseDetails.type.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><div rha-selectloadingindicator=\"\" loading=\"caseTypes === undefined\" type=\"bootstrap\"><select id=\"rha-case-type\" name=\"type\" style=\"width: 100%;\" ng-model=\"CaseService.kase.type\" ng-options=\"c.name for c in caseTypes track by c.name\" class=\"form-control\"></select></div></td></tr><tr><th class=\"rha-detail-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\"><label for=\"rha-case-severity\">{{'Severity:'|translate}}</label></div><span ng-show=\"caseDetails.severity.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><div rha-selectloadingindicator=\"\" loading=\"CaseService.severities === undefined\" type=\"bootstrap\"><select id=\"rha-case-severity\" name=\"severity\" style=\"width: 100%;\" ng-model=\"CaseService.kase.severity\" ng-options=\"s.name for s in CaseService.severities track by s.name\" class=\"form-control\"></select></div></td></tr><tr ng-show=\"CaseService.showFts()\"><th class=\"rha-detail-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\">{{'24x7 Support:'|translate}}</div></th><td><input ng-model=\"CaseService.kase.fts\" type=\"checkbox\"/></td></tr><tr ng-show=\"CaseService.showFts() &amp;&amp; CaseService.kase.fts\"><th class=\"rha-detail-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\">{{'24x7 Contact:'|translate}}</div></th><td><input ng-model=\"CaseService.kase.contact_info24_x7\" class=\"form-control\"/></td></tr><tr><th class=\"rha-detail-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\"><label for=\"rha-case-status\">{{'Status:'|translate}}</label></div><span ng-show=\"caseDetails.status.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><div rha-selectloadingindicator=\"\" loading=\"statuses === undefined\" type=\"bootstrap\"><select id=\"rha-case-status\" name=\"status\" style=\"width: 100%;\" ng-model=\"CaseService.kase.status\" ng-options=\"s.name for s in statuses track by s.name\" class=\"form-control\"></select></div></td></tr><tr ng-hide=\"compact\"><th class=\"rha-detail-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\"><label for=\"rha-case-alt-id\">{{'Alternate Case ID:'|translate}}</label></div><span ng-show=\"caseDetails.alternate_id.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><input id=\"rha-case-alt-id\" style=\"width: 100%\" ng-model=\"CaseService.kase.alternate_id\" name=\"alternate_id\" class=\"form-control\"/></td></tr></table></div><div class=\"col-md-4\"><table class=\"table details-table\"><tr><th><div style=\"vertical-align: 50%; display: inline-block;\"><label for=\"rha-product\">{{'Product:'|translate}}</label></div><span ng-show=\"caseDetails.product.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><div rha-selectloadingindicator=\"\" loading=\"products === undefined\" type=\"bootstrap\"><select id=\"rha-product\" name=\"product\" style=\"width: 100%;\" ng-model=\"CaseService.kase.product\" ng-change=\"getProductVersions()\" ng-options=\"s.name for s in products track by s.name\" required=\"required\" class=\"form-control\"></select></div></td></tr><tr><th class=\"rha-detail-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\"><label for=\"rha-product-version\">{{'Product Version:'|translate}}</label></div><span ng-show=\"caseDetails.version.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><div rha-selectloadingindicator=\"\" loading=\"CaseService.versions.length === 0\" type=\"bootstrap\"><select id=\"rha-product-version\" name=\"version\" style=\"width: 100%;\" ng-options=\"v for v in CaseService.versions track by v\" ng-model=\"CaseService.kase.version\" required=\"required\" class=\"form-control\"></select></div></td></tr><tr ng-hide=\"compact\"><th class=\"rha-detail-table-header\"><label for=\"rha-support-level\">{{'Support Level:'|translate}}</label></th><td id=\"rha-support-level\">{{CaseService.kase.entitlement.sla}}</td></tr><tr ng-hide=\"compact\"><th class=\"rha-detail-table-header\"><label for=\"rha-owner\">{{'Owner:'|translate}}</label></th><td id=\"rha-owner\">{{CaseService.kase.contact_name}} <{{CaseService.kase.contact_sso_username }}></td></tr><tr ng-hide=\"compact\"><th class=\"rha-detail-table-header\"><label for=\"rha-rh-owner\">{{'Red Hat Owner:'|translate}}</label></th><td id=\"rha-rh-owner\">{{CaseService.kase.owner}}</td></tr></table></div><div class=\"col-md-4\"><table class=\"table details-table\"><tr ng-hide=\"compact\"><th class=\"rha-detail-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\"><label for=\"rha-group-select\">{{'Group:'|translate}}</label></div><span ng-show=\"caseDetails.group.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span></th><td><div rha-selectloadingindicator=\"\" loading=\"groups === undefined\" type=\"bootstrap\"><select id=\"rha-group-select\" name=\"group\" style=\"width: 100%;\" ng-options=\"g.name for g in groups track by g.number\" ng-model=\"CaseService.kase.group\" class=\"form-control\"><option value=\"\">Ungrouped Case</option></select></div></td></tr><tr ng-hide=\"compact\"><th class=\"rha-detail-table-header\"><label for=\"rha-opened\">{{'Opened:'|translate}}</label></th><td id=\"rha-opened\"><div>{{CaseService.kase.created_date | date:'MMM d, y h:mm:ss a Z'}}</div><div>{{CaseService.kase.created_by}}</div></td></tr><tr ng-hide=\"compact\"><th class=\"rha-detail-table-header\"><label for=\"rha-last-updated\">{{'Last Updated:'|translate}}</label></th><td id=\"rha-last-updated\"><div>{{CaseService.kase.last_modified_date | date:'MMM d, y h:mm:ss a Z'}}</div><div>{{CaseService.kase.last_modified_by}}</div></td></tr><tr ng-hide=\"compact\" ng-if=\"securityService.loginStatus.isInternal\" class=\"rha-detail-acc-number\"><th class=\"rha-detail-table-header\"><label for=\"rha-account-number\">{{'Account Number:'|translate}}</label></th><td id=\"rha-account-number\">{{CaseService.kase.account_number}}</td></tr><tr ng-hide=\"compact\" ng-if=\"securityService.loginStatus.isInternal\" class=\"rha-detail-acc-name\"><th class=\"rha-detail-table-header\"><label for=\"rha-account-name\">{{'Account Name:'|translate}}</label></th><td id=\"rha-account-name\">{{CaseService.account.name}}        </td></tr></table></div></div><div ng-if=\"!securityService.loginStatus.isInternal\"><label for=\"rha-case-notes\">{{'Notes:'|translate}} </label><span ng-show=\"caseDetails.notes.$dirty\" class=\"glyphicon glyphicon-asterisk form-control-feedback\"></span><textarea id=\"rha-case-notes\" style=\"width: 100%; height: 100px; max-width: 100%;\" ng-model=\"CaseService.kase.notes\" name=\"notes\"></textarea></div><div style=\"padding-top: 10px;\" class=\"row\"><div class=\"col-xs-12\"><div style=\"float: right;\"><button name=\"updateButton\" ng-disabled=\"!caseDetails.$dirty\" ng-hide=\"updatingDetails\" ng-click=\"updateCase()\" translate=\"\" class=\"btn btn-primary\">Update Details</button><span ng-show=\"updatingDetails\" class=\"rha-search-spinner\"></span></div></div></div></div></div></div></form>");
+    "<form name=\"caseDetails\"><div style=\"display: table; width: 100%; padding-bottom: 20px;\"><div style=\"display: table-cell; width: 50%;\"><div><h3 style=\"margin-top: 0px;\" class=\"case-id\">Case {{CaseService.kase.case_number}} <span ng-show=\"CaseService.kase.entitlement.sla=='AMC'\" class=\"amc\">{{'Advanced Mission Critical'|translate}}</span></h3></div><input style=\"width: 100%; display: inline-block;\" ng-model=\"CaseService.kase.summary\" name=\"summary\" class=\"form-control\"/><span ng-show=\"caseDetails.summary.$dirty\" style=\"display: inline-block;\" class=\"glyphicon glyphicon-asterisk\"></span></div><div ng-hide=\"compact\" style=\"display: table-cell; vertical-align: bottom; width: 50%;\"><div ng-show=\"showEmailNotifications\"><div style=\"width: 75%\" class=\"pull-right\"><div rha-emailnotifyselect=\"\"></div></div></div></div></div><span ng-show=\"loading\" class=\"rha-search-spinner\"></span><div ng-hide=\"loading\" class=\"container-fluid rha-side-padding\"><div id=\"rha-case-details\" class=\"row\"><div class=\"col-sm-12 rha-section-header\"><h4 translate=\"\">Details</h4></div><div class=\"container-fluid rha-side-padding\"><div class=\"row\"><div class=\"col-md-4\"><table class=\"table details-table\"><tr ng-hide=\"compact\"><th class=\"rha-detail-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\"><label for=\"rha-case-type\">{{'Case Type:'|translate}}</label></div><span ng-show=\"caseDetails.type.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk\"></span></th><td><div rha-selectloadingindicator=\"\" loading=\"caseTypes === undefined\" type=\"bootstrap\"><select id=\"rha-case-type\" name=\"type\" style=\"width: 100%;\" ng-model=\"CaseService.kase.type\" ng-options=\"c.name for c in caseTypes track by c.name\" class=\"form-control\"></select></div></td></tr><tr><th class=\"rha-detail-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\"><label for=\"rha-case-severity\">{{'Severity:'|translate}}</label></div><span ng-show=\"caseDetails.severity.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk\"></span></th><td><div rha-selectloadingindicator=\"\" loading=\"CaseService.severities === undefined\" type=\"bootstrap\"><select id=\"rha-case-severity\" name=\"severity\" style=\"width: 100%;\" ng-model=\"CaseService.kase.severity\" ng-options=\"s.name for s in CaseService.severities track by s.name\" class=\"form-control\"></select></div></td></tr><tr ng-show=\"CaseService.showFts()\"><th class=\"rha-detail-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\">{{'24x7 Support:'|translate}}</div></th><td><input id=\"rha-case-ftsCheckboxEdit\" ng-model=\"CaseService.kase.fts\" type=\"checkbox\"/></td></tr><tr ng-show=\"CaseService.showFts() &amp;&amp; CaseService.kase.fts\"><th class=\"rha-detail-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\">{{'24x7 Contact:'|translate}}</div></th><td><input id=\"rha-case-contact-24x7-edit\" ng-model=\"CaseService.kase.contact_info24_x7\" class=\"form-control\"/></td></tr><tr><th class=\"rha-detail-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\"><label for=\"rha-case-status\">{{'Status:'|translate}}</label></div><span ng-show=\"caseDetails.status.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk\"></span></th><td><div rha-selectloadingindicator=\"\" loading=\"statuses === undefined\" type=\"bootstrap\"><select id=\"rha-case-status\" name=\"status\" style=\"width: 100%;\" ng-model=\"CaseService.kase.status\" ng-options=\"s.name for s in statuses track by s.name\" class=\"form-control\"></select></div></td></tr><tr ng-hide=\"compact\"><th class=\"rha-detail-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\"><label for=\"rha-case-alt-id\">{{'Alternate Case ID:'|translate}}</label></div><span ng-show=\"caseDetails.alternate_id.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk\"></span></th><td><input id=\"rha-case-alt-id\" style=\"width: 100%\" ng-model=\"CaseService.kase.alternate_id\" name=\"alternate_id\" class=\"form-control\"/></td></tr></table></div><div class=\"col-md-4\"><table class=\"table details-table\"><tr><th><div style=\"vertical-align: 50%; display: inline-block;\"><label for=\"rha-product\">{{'Product:'|translate}}</label></div><span ng-show=\"caseDetails.product.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk\"></span></th><td><div rha-selectloadingindicator=\"\" loading=\"products === undefined\" type=\"bootstrap\"><select id=\"rha-product\" name=\"product\" style=\"width: 100%;\" ng-model=\"CaseService.kase.product\" ng-change=\"getProductVersions()\" ng-options=\"s.name for s in products track by s.name\" required=\"required\" class=\"form-control\"></select></div></td></tr><tr><th class=\"rha-detail-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\"><label for=\"rha-product-version\">{{'Product Version:'|translate}}</label></div><span ng-show=\"caseDetails.version.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk\"></span></th><td><div rha-selectloadingindicator=\"\" loading=\"CaseService.versions.length === 0\" type=\"bootstrap\"><select id=\"rha-product-version\" name=\"version\" style=\"width: 100%;\" ng-options=\"v for v in CaseService.versions track by v\" ng-model=\"CaseService.kase.version\" required=\"required\" class=\"form-control\"></select></div></td></tr><tr ng-hide=\"compact\"><th class=\"rha-detail-table-header\"><label for=\"rha-support-level\">{{'Support Level:'|translate}}</label></th><td id=\"rha-support-level\">{{CaseService.kase.entitlement.sla}}</td></tr><tr ng-hide=\"compact\"><th class=\"rha-detail-table-header\"><label for=\"rha-owner\">{{'Owner:'|translate}}</label></th><td id=\"rha-owner\">{{CaseService.kase.contact_name}} <{{CaseService.kase.contact_sso_username }}></td></tr><tr ng-hide=\"compact\"><th class=\"rha-detail-table-header\"><label for=\"rha-rh-owner\">{{'Red Hat Owner:'|translate}}</label></th><td id=\"rha-rh-owner\">{{CaseService.kase.owner}}</td></tr></table></div><div class=\"col-md-4\"><table class=\"table details-table\"><tr ng-hide=\"compact\"><th class=\"rha-detail-table-header\"><div style=\"vertical-align: 50%; display: inline-block;\"><label for=\"rha-group-select\">{{'Group:'|translate}}</label></div><span ng-show=\"caseDetails.group.$dirty\" style=\"display: inline-block;float: right; vertical-align: 50%;\" class=\"glyphicon glyphicon-asterisk\"></span></th><td><div rha-selectloadingindicator=\"\" loading=\"groups === undefined\" type=\"bootstrap\"><select id=\"rha-group-select\" name=\"group\" style=\"width: 100%;\" ng-options=\"g.name for g in groups track by g.number\" ng-model=\"CaseService.kase.group\" class=\"form-control\"><option value=\"\">Ungrouped Case</option></select></div></td></tr><tr ng-hide=\"compact\"><th class=\"rha-detail-table-header\"><label for=\"rha-opened\">{{'Opened:'|translate}}</label></th><td id=\"rha-opened\"><div>{{CaseService.kase.created_date | date:'MMM d, y h:mm:ss a Z'}}</div><div>{{CaseService.kase.created_by}}</div></td></tr><tr ng-hide=\"compact\"><th class=\"rha-detail-table-header\"><label for=\"rha-last-updated\">{{'Last Updated:'|translate}}</label></th><td id=\"rha-last-updated\"><div>{{CaseService.kase.last_modified_date | date:'MMM d, y h:mm:ss a Z'}}</div><div>{{CaseService.kase.last_modified_by}}</div></td></tr><tr ng-hide=\"compact\" ng-if=\"securityService.loginStatus.authedUser.is_internal\" class=\"rha-detail-acc-number\"><th class=\"rha-detail-table-header\"><label for=\"rha-account-number\">{{'Account Number:'|translate}}</label></th><td id=\"rha-account-number\">{{CaseService.kase.account_number}}</td></tr><tr ng-hide=\"compact\" ng-if=\"securityService.loginStatus.authedUser.is_internal\" class=\"rha-detail-acc-name\"><th class=\"rha-detail-table-header\"><label for=\"rha-account-name\">{{'Account Name:'|translate}}</label></th><td id=\"rha-account-name\">{{CaseService.account.name}}        </td></tr></table></div></div><div ng-if=\"!securityService.loginStatus.authedUser.is_internal\"><label for=\"rha-case-notes\">{{'Notes:'|translate}} </label><span ng-show=\"caseDetails.notes.$dirty\" class=\"glyphicon glyphicon-asterisk\"></span><textarea id=\"rha-case-notes\" style=\"width: 100%; height: 100px; max-width: 100%;\" ng-model=\"CaseService.kase.notes\" name=\"notes\"></textarea></div><div style=\"padding-top: 10px;\" class=\"row\"><div class=\"col-xs-12\"><div style=\"float: right;\"><button id=\"rha-caseupdateform-updatebutton\" name=\"updateButton\" ng-disabled=\"!caseDetails.$dirty\" ng-hide=\"updatingDetails\" ng-click=\"updateCase()\" translate=\"\" class=\"btn btn-primary\">Update Details</button><span ng-show=\"updatingDetails\" class=\"rha-search-spinner\"></span></div></div></div></div></div></div></form>");
 }]);
 
 angular.module("cases/views/edit.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/edit.html",
-    "<!DOCTYPE html><div id=\"redhat-access-case\" class=\"container-offset\"><div rha-header=\"\" page=\"caseView\"></div><div ng-show=\"securityService.loginStatus.isLoggedIn\" class=\"container-fluid rha-side-padding\"><div ng-show=\"securityService.loginStatus.isLoggedIn &amp;&amp; securityService.loginStatus.hasChat\" class=\"row\"><div class=\"pull-right\"><div rha-chatbutton=\"\"></div></div></div><div ng-show=\"EDIT_CASE_CONFIG.showDetails\" class=\"row\"><div class=\"col-xs-12\"><div rha-casedetails=\"\" compact=\"false\" loading=\"loading.kase\"></div></div></div><div ng-show=\"EDIT_CASE_CONFIG.showDescription\" class=\"row\"><div class=\"col-xs-12\"><div rha-casedescription=\"\" loading=\"loading.kase\"></div></div></div><div ng-show=\"EDIT_CASE_CONFIG.showBugzillas\" class=\"row\"><div class=\"col-xs-12\"><div rha-listbugzillas=\"\" loading=\"loading.kase\"></div></div></div><div ng-show=\"EDIT_CASE_CONFIG.showAttachments &amp;&amp; securityService.loginStatus.canAddAttachments\" class=\"row\"><div class=\"col-xs-12\"><div rha-caseattachments=\"\" loading=\"loading.attachments\"></div></div></div><div ng-show=\"EDIT_CASE_CONFIG.showRecommendations\" class=\"row\"><div class=\"col-xs-12\"><div rha-caserecommendations=\"\" loading=\"recommendationsLoading\"></div></div></div><div ng-show=\"EDIT_CASE_CONFIG.showComments\" class=\"row\"><div class=\"col-xs-12\"><div rha-casecomments=\"\" loading=\"loading.comments\"></div></div></div></div></div>");
+    "<!DOCTYPE html><div id=\"redhat-access-case\" class=\"container-offset\"><div rha-header=\"\" page=\"caseView\"></div><div ng-show=\"securityService.loginStatus.isLoggedIn &amp;&amp; !failedToLoadCase\" class=\"container-fluid rha-side-padding\"><div ng-show=\"securityService.loginStatus.isLoggedIn &amp;&amp; securityService.loginStatus.authedUser.has_chat\" class=\"row\"><div class=\"pull-right\"><div rha-chatbutton=\"\"></div></div></div><div ng-show=\"EDIT_CASE_CONFIG.showDetails\" class=\"row\"><div class=\"col-xs-12\"><div rha-casedetails=\"\" compact=\"false\" loading=\"loading.kase\"></div></div></div><div ng-show=\"EDIT_CASE_CONFIG.showDescription\" class=\"row\"><div class=\"col-xs-12\"><div rha-casedescription=\"\" loading=\"loading.kase\"></div></div></div><div ng-show=\"EDIT_CASE_CONFIG.showBugzillas\" class=\"row\"><div class=\"col-xs-12\"><div rha-listbugzillas=\"\" loading=\"loading.kase\"></div></div></div><div ng-show=\"EDIT_CASE_CONFIG.showAttachments &amp;&amp; securityService.loginStatus.authedUser.can_add_attachments\" class=\"row\"><div class=\"col-xs-12\"><div rha-caseattachments=\"\" loading=\"loading.attachments\"></div></div></div><div ng-show=\"EDIT_CASE_CONFIG.showRecommendations\" class=\"row\"><div class=\"col-xs-12\"><div rha-caserecommendations=\"\" loading=\"recommendationsLoading\"></div></div></div><div ng-show=\"EDIT_CASE_CONFIG.showComments\" class=\"row\"><div class=\"col-xs-12\"><div rha-casecomments=\"\" loading=\"loading.comments\"></div></div></div></div></div>");
 }]);
 
 angular.module("cases/views/editGroup.html", []).run(["$templateCache", function($templateCache) {
@@ -6070,22 +6398,22 @@ angular.module("cases/views/editGroup.html", []).run(["$templateCache", function
 
 angular.module("cases/views/emailNotifySelect.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/emailNotifySelect.html",
-    "<h4 translate=\"\" class=\"rha-section-header\">Email Notification Recipients</h4><span ng-show=\"!securityService.loginStatus.isLoggedIn  || CaseService.usersLoading || securityService.loggingIn\" style=\"margin-left: 5px;\" class=\"rha-search-spinner\"></span><div ng-show=\"securityService.userAllowedToManageEmailNotifications() &amp;&amp; securityService.loginStatus.isLoggedIn &amp;&amp; !CaseService.usersLoading &amp;&amp; !securityService.loggingIn\"><select chosen=\"chosen\" multiple=\"multiple\" ng-disabled=\"updatingList\" ng-model=\"CaseService.updatedNotifiedUsers\" ng-change=\"updateNotifyUsers()\" id=\"rha-email-notify-select\" width=\"&quot;100%&quot;\" ng-options=\"user.sso_username as user.sso_username for user in CaseService.users\"></select></div><div ng-if=\"!securityService.userAllowedToManageEmailNotifications() &amp;&amp; !securityService.loggingIn\"><div style=\"display: inline-block; width: 100%; padding: 6px;\" class=\"well\"><span ng-repeat=\"user in CaseService.updatedNotifiedUsers\" style=\"display: inline-block; word-wrap: break-word; padding: 4px; margin: 2px;\" class=\"well well-sm\">{{user}}</span></div></div>");
+    "<h4 translate=\"\" class=\"rha-section-header\">Email Notification Recipients</h4><span ng-show=\"!securityService.loginStatus.isLoggedIn  || CaseService.usersLoading || securityService.loggingIn\" style=\"margin-left: 5px;\" class=\"rha-search-spinner\"></span><div><select chosen=\"chosen\" multiple=\"multiple\" ng-disabled=\"updatingList\" ng-model=\"CaseService.updatedNotifiedUsers\" ng-change=\"updateNotifyUsers()\" id=\"rha-email-notify-select\" width=\"&quot;100%&quot;\" ng-options=\"user.sso_username as user.sso_username for user in CaseService.users\"></select></div>");
 }]);
 
 angular.module("cases/views/entitlementSelect.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/entitlementSelect.html",
-    "<div rha-selectloadingindicator=\"\" loading=\"CaseService.entitlementsLoading\" type=\"select2\"><select id=\"rha-entitlement-select\" chosen=\"chosen\" ng-disabled=\"!securityService.loginStatus.isLoggedIn\" ng-model=\"CaseService.entitlement\" ng-change=\"CaseService.onSelectChanged()\" width=\"&quot;100%&quot;\" ng-options=\"entitlement as entitlement for entitlement in CaseService.entitlements\"></select></div>");
+    "<div rha-selectloadingindicator=\"\" loading=\"CaseService.entitlementsLoading\" type=\"select2\"><select id=\"rha-entitlement-select\" ng-disabled=\"!securityService.loginStatus.isLoggedIn\" ng-model=\"CaseService.entitlement\" ng-change=\"CaseService.onSelectChanged()\" width=\"&quot;100%&quot;\" ng-options=\"entitlement as entitlement for entitlement in CaseService.entitlements\"></select></div>");
 }]);
 
 angular.module("cases/views/exportCSVButton.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/exportCSVButton.html",
-    "<button ng-click=\"exports()\" ng-hide=\"exporting\" translate=\"\" class=\"btn btn-secondary\">Export All as CSV</button><div ng-show=\"exporting\"><span class=\"rha-search-spinner\"></span><span>{{'Exporting CSV...'|translate}}</span></div>");
+    "<button ng-click=\"exports()\" ng-hide=\"exporting || ie8 || ie9\" translate=\"\" class=\"btn btn-secondary\">Export All as CSV</button><div ng-show=\"exporting\"><span class=\"rha-search-spinner\"></span><span>{{'Exporting CSV...'|translate}}</span></div>");
 }]);
 
 angular.module("cases/views/group.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/group.html",
-    "<div id=\"redhat-access-case\" class=\"container-offset\"><div rha-header=\"\" page=\"manageGroups\"></div><div ng-show=\"securityService.loginStatus.isLoggedIn\" class=\"container-fluid rha-side-padding\"><div style=\"padding-bottom: 20px;\" class=\"row\"><div class=\"col-xs-6\"><div rha-searchbox=\"\" placeholder=\"&quot;Search Groups&quot;\"></div></div><div class=\"col-xs-6\"><div rha-creategroupbutton=\"\" class=\"pull-right\"></div><div rha-deletegroupbutton=\"\" style=\"padding-right: 20px;\" class=\"pull-right\"></div><div style=\"padding-right: 20px;\" class=\"pull-right\"><button type=\"button\" translate=\"\" ng-show=\"canManageGroups\" ng-click=\"defaultCaseGroup()\" class=\"btn btn-primary\">Manage Default Case Groups</button></div></div></div><div class=\"row\"><div class=\"col-xs-12\"><div rha-grouplist=\"\"></div></div></div></div></div>");
+    "<div id=\"redhat-access-case\" class=\"container-offset\"><div rha-header=\"\" page=\"manageGroups\"></div><div ng-show=\"securityService.loginStatus.isLoggedIn\" class=\"container-fluid rha-side-padding\"><div style=\"padding-bottom: 20px;\" class=\"row\"><div class=\"col-xs-4\"><div rha-searchbox=\"\" placeholder=\"&quot;Search Groups&quot;\"></div></div><div class=\"col-xs-8\"><div rha-creategroupbutton=\"\" class=\"pull-right\"></div><div rha-deletegroupbutton=\"\" style=\"padding-right: 20px;\" class=\"pull-right\"></div><div style=\"padding-right: 20px;\" class=\"pull-right\"><button type=\"button\" translate=\"\" ng-show=\"canManageGroups\" ng-click=\"defaultCaseGroup()\" class=\"btn btn-primary btn-slim btn-small\">Manage Default Case Groups</button></div></div></div><div class=\"row\"><div class=\"col-xs-12\"><div rha-grouplist=\"\"></div></div></div></div></div>");
 }]);
 
 angular.module("cases/views/groupList.html", []).run(["$templateCache", function($templateCache) {
@@ -6100,7 +6428,7 @@ angular.module("cases/views/groupSelect.html", []).run(["$templateCache", functi
 
 angular.module("cases/views/list.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/list.html",
-    "<div id=\"redhat-access-case\" style=\"padding-bottom: 15px;\" class=\"container-offset\"><div rha-header=\"\" page=\"caseList\"></div><div class=\"container-fluid rha-side-padding\"><div class=\"row\"><div class=\"col-md-8\"><div rha-listfilter=\"\"></div></div><div class=\"col-md-4 text-right\"><span rha-chatbutton=\"\" class=\"pad-r-l\"></span><button ng-disabled=\"!securityService.loginStatus.isLoggedIn\" ui-sref=\"new\" translate=\"\" class=\"btn btn-primary\">Open a New Support Case</button></div></div></div><div style=\"margin-left: 10px; margin-right: 10px;\" class=\"rha-bottom-border\"></div><div class=\"container-fluid rha-side-padding\"><div ng-show=\"SearchCaseService.searching &amp;&amp; securityService.loginStatus.isLoggedIn\" class=\"row\"><div class=\"col-xs-12\"><span class=\"rha-search-spinner\"></span></div></div><div ng-show=\"SearchCaseService.cases.length == 0 &amp;&amp; !SearchCaseService.searching &amp;&amp; securityService.loginStatus.isLoggedIn\" class=\"row\"><div class=\"col-xs-12\"><div>{{'No cases found with given filters.'|translate}}</div></div></div><div ng-hide=\"SearchCaseService.cases.length == 0 || SearchCaseService.searching || !securityService.loginStatus.isLoggedIn\"><div class=\"row\"><div class=\"col-xs-12\"><table ng-table=\"tableParams\" style=\"text-align: left\" class=\"table table-bordered table-striped\"><tr ng-repeat=\"case in $data\"><td data-title=\"&quot;Case ID&quot;\" sortable=\"&quot;case_number&quot;\" style=\"width: 10%\"><a href=\"#/case/{{case.case_number}}\">{{case.case_number}}</a></td><td data-title=\"&quot;Summary&quot;\" sortable=\"&quot;summary&quot;\" style=\"width: 15%\">{{case.summary}}</td><td data-title=\"&quot;Product/Version&quot;\" sortable=\"&quot;product&quot;\">{{case.product}} / {{case.version}}</td><td data-title=\"&quot;Status&quot;\" sortable=\"&quot;status&quot;\">{{case.status}}</td><td data-title=\"&quot;Severity&quot;\" sortable=\"&quot;severity&quot;\">{{case.severity}}</td><td data-title=\"&quot;Owner&quot;\" sortable=\"&quot;owner&quot;\">{{case.contact_name}}</td><td data-title=\"&quot;Opened&quot;\" sortable=\"&quot;created_date&quot;\" style=\"width: 10%\">{{case.created_date | date:'longDate'}}</td><td data-title=\"&quot;Updated&quot;\" sortable=\"&quot;last_modified_date&quot;\" style=\"width: 10%\">{{case.last_modified_date | date:'longDate'}}</td></tr></table></div></div><div class=\"row\"><div class=\"col-xs-12\"><div rha-exportcsvbutton=\"\"></div></div></div></div></div></div>");
+    "<div id=\"redhat-access-case\" style=\"padding-bottom: 15px;\" class=\"container-offset\"><div rha-header=\"\" page=\"caseList\" ng-hide=\"NEW_CASE_CONFIG.isPCM\"></div><div ng-show=\"!securityService.loginStatus.userAllowedToManageCases &amp;&amp; securityService.loginStatus.isLoggedIn\" class=\"row\"><div>{{'User does not have permissions to manage cases.'|translate}}</div></div><div ng-hide=\"!securityService.loginStatus.userAllowedToManageCases &amp;&amp; securityService.loginStatus.isLoggedIn\"><div class=\"container-fluid rha-side-padding\"><div class=\"row\"><div class=\"col-md-8\"><div rha-listfilter=\"\"></div></div><div class=\"col-md-4 text-right\"><span rha-chatbutton=\"\" class=\"pad-r-l\"></span><button ng-disabled=\"!securityService.loginStatus.isLoggedIn\" ui-sref=\"new\" translate=\"\" class=\"btn btn-primary btn-slim btn-sm\">Open a New Support Case</button></div></div></div><div style=\"margin-left: 10px; margin-right: 10px;\" class=\"rha-bottom-border\"></div><div class=\"container-fluid rha-side-padding\"><div ng-show=\"SearchCaseService.searching &amp;&amp; securityService.loginStatus.isLoggedIn\" class=\"row\"><div class=\"col-xs-12\"><span class=\"rha-search-spinner\"></span></div></div><div ng-show=\"SearchCaseService.cases.length == 0 &amp;&amp; !SearchCaseService.searching &amp;&amp; securityService.loginStatus.isLoggedIn\" class=\"row\"><div class=\"col-xs-12\"><div>{{'No cases found with given filters.'|translate}}</div></div></div><div ng-hide=\"SearchCaseService.cases.length == 0 || SearchCaseService.searching || !securityService.loginStatus.isLoggedIn\"><div class=\"row\"><div class=\"col-xs-12\"><table ng-table=\"tableParams\" style=\"text-align: left\" class=\"table table-bordered table-striped\"><tr ng-repeat=\"case in $data\"><td data-title=\"'Case ID'|translate\" sortable=\"&quot;case_number&quot;\" style=\"width: 10%\"><a href=\"#/case/{{case.case_number}}\">{{case.case_number}}</a></td><td data-title=\"&quot;Summary&quot;|translate\" sortable=\"&quot;summary&quot;\" style=\"width: 15%\">{{case.summary}}</td><td data-title=\"&quot;Product/Version&quot;|translate\" sortable=\"&quot;product&quot;\">{{case.product}} / {{case.version}}</td><td data-title=\"&quot;Status&quot;|translate\" sortable=\"&quot;status&quot;\">{{case.status}}</td><td data-title=\"&quot;Severity&quot;|translate\" sortable=\"&quot;severity&quot;\">{{case.severity}}</td><td data-title=\"&quot;Owner&quot;|translate\" sortable=\"&quot;owner&quot;\">{{case.contact_name}}</td><td data-title=\"&quot;Opened&quot;|translate\" sortable=\"&quot;created_date&quot;\" style=\"width: 10%\">{{case.created_date | date:'longDate'}}</td><td data-title=\"&quot;Updated&quot;|translate\" sortable=\"&quot;last_modified_date&quot;\" style=\"width: 10%\">{{case.last_modified_date | date:'longDate'}}</td></tr></table></div></div><div class=\"row\"><div class=\"col-xs-12\"><div rha-exportcsvbutton=\"\"></div></div></div></div></div></div></div>");
 }]);
 
 angular.module("cases/views/listAttachments.html", []).run(["$templateCache", function($templateCache) {
@@ -6110,12 +6438,12 @@ angular.module("cases/views/listAttachments.html", []).run(["$templateCache", fu
 
 angular.module("cases/views/listBugzillas.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/listBugzillas.html",
-    "<div ng-show=\"securityService.loginStatus.isInternal\" class=\"redhat-access-bz\"><h4 style=\"padding-top: 20px;\" class=\"rha-section-header\">{{'Bugzilla Tickets'|translate}}</h4><span ng-show=\"loading\" class=\"rha-search-spinner\"></span><div ng-hide=\"CaseService.bugzillaList.bugzilla.length &gt; 0\" style=\"padding-bottom: 10px;\">{{'No linked bugzillas'|translate}}</div><div ng-show=\"CaseService.bugzillaList.bugzilla.length &gt; 0\" class=\"panel panel-default\"><table class=\"table table-hover table-bordered\"><thead><th>{{'Bugzilla Number'|translate}}</th><th>{{'Summary of Request'|translate}}</th></thead><tbody>  <tr ng-repeat=\"bugzilla in CaseService.bugzillaList.bugzilla\"><td><a href=\"{{bugzilla.resource_view_uri}}\" target=\"_blank\">{{bugzilla.bugzilla_number}}</a></td><td>{{bugzilla.summary}}</td></tr></tbody></table></div></div>");
+    "<div ng-show=\"securityService.loginStatus.authedUser.is_internal\" class=\"redhat-access-bz\"><h4 style=\"padding-top: 20px;\" class=\"rha-section-header\">{{'Bugzilla Tickets'|translate}}</h4><span ng-show=\"loading\" class=\"rha-search-spinner\"></span><div ng-hide=\"CaseService.bugzillaList.bugzilla.length &gt; 0\" style=\"padding-bottom: 10px;\">{{'No linked bugzillas'|translate}}</div><div ng-show=\"CaseService.bugzillaList.bugzilla.length &gt; 0\" class=\"panel panel-default\"><table class=\"table table-hover table-bordered\"><thead><th>{{'Bugzilla Number'|translate}}</th><th>{{'Summary of Request'|translate}}</th></thead><tbody>  <tr ng-repeat=\"bugzilla in CaseService.bugzillaList.bugzilla\"><td><a href=\"{{bugzilla.resource_view_uri}}\" target=\"_blank\">{{bugzilla.bugzilla_number}}</a></td><td>{{bugzilla.summary}}</td></tr></tbody></table></div></div>");
 }]);
 
 angular.module("cases/views/listFilter.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/listFilter.html",
-    "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-6 pad-b-l\"><div rha-searchbox=\"\" placeholder=\"Search\"></div></div><div class=\"col-md-3 pad-s-y\"><div><span popover=\"Filtering by case groups helps you find related cases.\" tabindex=\"0\" popover-append-to-body=\"true\" popover-trigger=\"mouseenter\" class=\"glyphicon glyphicon-question-sign pull-right\"></span><div rha-groupselect=\"\" ng-init=\"setSearchOptions(true)\"></div></div></div><div class=\"col-md-3 pad-s-y\"><div rha-statusselect=\"\"></div></div></div></div>");
+    "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-6 pad-b-l\"><div rha-searchbox=\"\" placeholder=\"'Search'|translate\"></div></div><div class=\"col-md-3 pad-s-y\"><div><span popover=\"{{'Filtering by case groups helps you find related cases.'|translate}}\" tabindex=\"0\" popover-append-to-body=\"true\" popover-trigger=\"mouseenter\" class=\"glyphicon glyphicon-question-sign pull-right\"></span><div rha-groupselect=\"\" ng-init=\"setSearchOptions(true)\"></div></div></div><div class=\"col-md-3 pad-s-y\"><div rha-statusselect=\"\"></div></div></div></div>");
 }]);
 
 angular.module("cases/views/listNewAttachments.html", []).run(["$templateCache", function($templateCache) {
@@ -6125,17 +6453,17 @@ angular.module("cases/views/listNewAttachments.html", []).run(["$templateCache",
 
 angular.module("cases/views/new.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/new.html",
-    "<div class=\"container-offset\"><div id=\"redhat-access-case\" class=\"container-fluid\"><div rha-header=\"\" page=\"newCase\"></div><div ng-show=\"securityService.loginStatus.isLoggedIn &amp;&amp; securityService.loginStatus.hasChat\" class=\"row\"><div class=\"pull-right\"><div rha-chatbutton=\"\" style=\"margin-right: 10px;\"></div></div></div><div ng-show=\"securityService.loginStatus.isLoggedIn &amp;&amp; securityService.loginStatus.hasChat\" class=\"rha-bottom-border\"></div><div class=\"row\"><div style=\"border-right: 1px solid; border-color: #cccccc;\" class=\"col-xs-6\"><div class=\"container-fluid rha-side-padding\"><div ng-class=\"{&quot;hidden&quot;: isPage2}\" id=\"rha-case-wizard-page-1\" class=\"rha-create-case-section\"><div ng-if=\"securityService.loginStatus.isInternal\"><div class=\"row rha-create-field\"><div class=\"col-md-3\"><label for=\"rha-account-number\">{{'Account:'|translate}}</label></div><div class=\"col-md-9\"><div rha-accountselect=\"\"></div></div></div><div class=\"row rha-create-field\"><div class=\"col-md-3\"><label for=\"rha-owners-select\">{{'Owner:'|translate}}</label></div><div class=\"col-md-9\"><div rha-ownerselect=\"\"></div></div></div></div><div class=\"row rha-create-field\"><div class=\"col-md-3\"><label for=\"rha-product-select\">{{'Product:'|translate}}</label></div><div class=\"col-md-9\"><div rha-selectloadingindicator=\"\" loading=\"productsLoading\" type=\"bootstrap\"><select id=\"rha-product-select\" ng-disabled=\"!securityService.loginStatus.isLoggedIn || submittingCase\" style=\"width: 100%;\" ng-model=\"CaseService.kase.product\" ng-change=\"getProductVersions(CaseService.kase.product);getRecommendations()\" ng-options=\"p as p.name for p in products\" options-disabled=\"p.isDisabled for p in products\" class=\"form-control\"></select></div></div></div><div class=\"row rha-create-field\"><div class=\"col-md-3\"><label for=\"rha-product-version-select\">{{'Product Version:'|translate}}</label></div><div class=\"col-md-9\"><div><div rha-selectloadingindicator=\"\" loading=\"versionLoading\" type=\"bootstrap\"><select id=\"rha-product-version-select\" style=\"width: 100%;\" ng-model=\"CaseService.kase.version\" ng-options=\"v for v in versions\" ng-change=\"CaseService.validateNewCasePage1();getRecommendations()\" ng-disabled=\"versionDisabled || !securityService.loginStatus.isLoggedIn || submittingCase\" class=\"form-control\"></select></div><div ng-show=\"CaseService.showVersionSunset()\" class=\"versionSunsetMessage\"><span>{{'This release is now retired, please refer to the recommended FAQ prior to filing a case'|translate}}</span></div></div></div></div><div class=\"row rha-create-field\"><div class=\"col-md-3\"><label for=\"rha-case-summary\">{{'Summary:'|translate}}</label></div><div class=\"col-md-9\"><input id=\"rha-case-summary\" style=\"width: 100%;\" ng-disabled=\"!securityService.loginStatus.isLoggedIn\" ng-change=\"CaseService.validateNewCasePage1()\" ng-model=\"CaseService.kase.summary\" class=\"form-control\"/></div></div><div class=\"row rha-create-field\"><div class=\"col-md-3\"><label for=\"rha-case-description\">{{'Description:'|translate}}</label></div><div class=\"col-md-9\"><textarea id=\"rha-case-description\" style=\"width: 100%; height: 200px; max-width: 100%;\" ng-model=\"CaseService.kase.description\" ng-change=\"CaseService.validateNewCasePage1()\" ng-disabled=\"!securityService.loginStatus.isLoggedIn || submittingCase\" class=\"form-control description-box\"></textarea></div></div><div class=\"row\"><div ng-class=\"{&quot;hidden&quot;: isPage2}\" class=\"col-xs-12\"><button style=\"float: right\" ng-click=\"doNext()\" ng-disabled=\"CaseService.newCasePage1Incomplete\" translate=\"\" class=\"btn btn-primary btn-next\">Next</button></div></div></div><div ng-class=\"{hidden: isPage1}\" id=\"rha-case-wizard-page-2\" class=\"rha-create-case-section\"><div class=\"rha-bottom-border\"><div class=\"row\"><div class=\"col-xs-12\"><div style=\"margin-bottom: 10px;\" class=\"rha-bold\">{{CaseService.kase.product.name}} {{CaseService.kase.version}}</div></div></div><div class=\"row\"><div class=\"col-xs-12\"><div style=\"font-size: 90%; margin-bottom: 4px;\" class=\"rha-bold\">{{CaseService.kase.summary}}</div></div></div><div class=\"row\"><div class=\"col-xs-12\"><div style=\"font-size: 85%\">{{CaseService.kase.description}}</div></div></div></div><div class=\"row rha-create-field\"><div ng-hide=\"CaseService.entitlements.length &lt;= 1\" class=\"col-md-4\"><label for=\"rha-entitlement-select\">Support Level:</label></div><div ng-show=\"CaseService.entitlements.length &lt;= 1\" class=\"col-md-8\">{{CaseService.entitlements[0]}}</div><div ng-hide=\"CaseService.entitlements.length &lt;= 1\" class=\"col-md-8\"><div rha-entitlementselect=\"\"></div></div></div><div class=\"row rha-create-field\"><div class=\"col-md-4\"><label for=\"rha-severity\">{{'Severity:'|translate}}</label></div><div class=\"col-md-8\"><div rha-loadingindicator=\"\" loading=\"severitiesLoading\"><select id=\"rha-severity\" style=\"width: 100%;\" ng-model=\"CaseService.kase.severity\" ng-change=\"validatePage2()\" ng-disabled=\"submittingCase\" ng-options=\"s.name for s in CaseService.severities track by s.name\" class=\"form-control\"></select></div></div></div><div ng-show=\"CaseService.showFts()\" style=\"padding-left: 30px;\"><div class=\"row rha-create-field\"><div class=\"col-md-12\"><span>{{'24x7 Support:'|translate}}</span><input type=\"checkbox\" ng-model=\"CaseService.fts\" style=\"display: inline-block; padding-left: 10px;\"/></div></div><div ng-show=\"CaseService.fts\" class=\"row rha-create-field\"><div class=\"col-md-4\"><div>{{'24x7 Contact:'|translate}}</div></div><div class=\"col-md-8\"><input ng-model=\"CaseService.fts_contact\" class=\"form-control\"/></div></div></div><div class=\"row rha-create-field\"><div class=\"col-md-4\"><label for=\"rha-group-select\">{{'Case Group:'|translate}}</label></div><div class=\"col-md-8\"><div rha-groupselect=\"\" ng-init=\"setSearchOptions('false')\"></div></div></div><div ng-show=\"NEW_CASE_CONFIG.showAttachments &amp;&amp; securityService.loginStatus.canAddAttachments\"><div class=\"row rha-create-field\"><div class=\"col-xs-12\"><label>{{'Attachments:'|translate}}</label></div></div><div class=\"rha-bottom-border\"><div style=\"overflow: auto\" class=\"row rha-create-field\"><div class=\"col-xs-12\"><div rha-listnewattachments=\"\"></div></div></div><div ng-hide=\"submittingCase\" class=\"row rha-create-field\"><div class=\"col-xs-12\"><div rha-attachlocalfile=\"\" disabled=\"submittingCase\"></div></div></div><div ng-hide=\"submittingCase\" class=\"row rha-create-field\"><div class=\"col-xs-12\"><div ng-show=\"NEW_CASE_CONFIG.showServerSideAttachments\"><div class=\"server-attach-header\">Server File(s) To Attach:<div rha-choicetree=\"\" ng-model=\"attachmentTree\" ng-controller=\"BackEndAttachmentsCtrl\"></div></div></div></div></div></div></div><div style=\"margin-top: 20px;\" class=\"row\"><div class=\"col-xs-6\"><button style=\"float: left\" ng-click=\"doPrevious()\" ng-disabled=\"submittingCase\" translate=\"\" class=\"btn btn-primary btn-previous\">Previous</button></div><div class=\"col-xs-6\"><button style=\"float: right\" ng-disabled=\"submittingCase\" ng-hide=\"submittingCase\" ng-click=\"doSubmit($event)\" translate=\"\" class=\"btn btn-primary btn-submit\">Submit</button><span ng-show=\"submittingCase\" style=\"float: right\" class=\"rha-search-spinner\"></span></div></div></div></div></div><div style=\"overflow: auto;\" ng-show=\"NEW_CASE_CONFIG.showRecommendations\" class=\"col-xs-6\"><div ng-controller=\"SearchController\" style=\"overflow: vertical;\"><div ng-hide=\"!NEW_CASE_CONFIG.isPCM\" rha-newrecommendations=\"\"></div><div ng-hide=\"NEW_CASE_CONFIG.isPCM\" rha-accordionsearchresults=\"\"></div></div></div></div></div></div>");
+    "<div id=\"redhat-access-case\"><div rha-header=\"\" page=\"newCase\"></div><div ng-show=\"securityService.loginStatus.isLoggedIn &amp;&amp; securityService.loginStatus.authedUser.has_chat\" class=\"row\"><div class=\"pull-right\"><div rha-chatbutton=\"\" style=\"margin-right: 10px;\"></div></div></div><div ng-show=\"securityService.loginStatus.isLoggedIn &amp;&amp; securityService.loginStatus.authedUser.has_chat\" class=\"rha-bottom-border\"></div><div style=\"margin-bottom: 0px;\" ng-hide=\"!NEW_CASE_CONFIG.isPCM\" class=\"row no-margin-bottom full-border\"><div class=\"col-md-4 center\"><label>{{'Product & Topic'|translate}}</label><div ng-attr-class=\"{{isPage1 &amp;&amp; 'no-fun' || 'fun' }}\"></div></div><div class=\"col-md-4 center\"><label>{{'Case Details'|translate}}</label><div ng-attr-class=\"{{(isPage2 &amp;&amp; !submittingCase) &amp;&amp; 'no-fun' || 'fun' }}\"></div></div><div class=\"col-md-4 center\"><label>{{'Creating Case'|translate}}</label><div ng-attr-class=\"{{submittingCase &amp;&amp; 'no-fun' || 'fun' }}\"></div></div></div><div ng-class=\"{'partial-border': NEW_CASE_CONFIG.isPCM}\" class=\"row\"><div style=\"border-right: 1px solid; border-color: #cccccc;\" class=\"col-xs-6\"><div ng-class=\"{&quot;hidden&quot;: isPage2}\" id=\"rha-case-wizard-page-1\" class=\"rha-create-case-section\"><div ng-if=\"securityService.loginStatus.authedUser.is_internal\"><div class=\"row rha-create-field\"><div class=\"col-md-3\"><label for=\"rha-account-number\">{{'Account:'|translate}}</label></div><div class=\"col-md-9\"><div rha-accountselect=\"\"></div></div></div><div class=\"row rha-create-field\"><div class=\"col-md-3\"><label for=\"rha-owners-select\">{{'Owner:'|translate}}</label></div><div class=\"col-md-9\"><div rha-ownerselect=\"\"></div></div></div></div><div class=\"row rha-create-field\"><div class=\"col-md-3\"><label for=\"rha-product-select\">{{'Product:'|translate}}</label></div><div class=\"col-md-9\"><div rha-selectloadingindicator=\"\" loading=\"productsLoading\" type=\"bootstrap\"><select id=\"rha-product-select\" ng-disabled=\"!securityService.loginStatus.isLoggedIn || submittingCase\" style=\"width: 100%;\" ng-model=\"CaseService.kase.product\" ng-change=\"getProductVersions(CaseService.kase.product);getRecommendations()\" ng-options=\"p.value as p.label for p in products\" options-disabled=\"p.isDisabled for p in products\" class=\"form-control\"></select></div></div></div><div class=\"row rha-create-field\"><div class=\"col-md-3\"><label for=\"rha-product-version-select\">{{'Product Version:'|translate}}</label></div><div class=\"col-md-9\"><div><div rha-selectloadingindicator=\"\" loading=\"versionLoading\" type=\"bootstrap\"><select id=\"rha-product-version-select\" style=\"width: 100%;\" ng-model=\"CaseService.kase.version\" ng-options=\"v for v in versions\" ng-change=\"CaseService.validateNewCasePage1();getRecommendations()\" ng-disabled=\"versionDisabled || !securityService.loginStatus.isLoggedIn || submittingCase\" class=\"form-control\"></select></div><div ng-show=\"CaseService.showVersionSunset()\" class=\"versionSunsetMessage\"><span>{{'This release is now retired, please refer to the recommended FAQ prior to filing a case'|translate}}</span></div></div></div></div><div class=\"row rha-create-field\"><div class=\"col-md-3\"><label for=\"rha-case-summary\">{{'Summary:'|translate}}</label></div><div class=\"col-md-9\"><input id=\"rha-case-summary\" style=\"width: 100%;\" ng-disabled=\"!securityService.loginStatus.isLoggedIn\" ng-change=\"CaseService.validateNewCasePage1()\" ng-model=\"CaseService.kase.summary\" class=\"form-control\"/></div></div><div class=\"row rha-create-field\"><div class=\"col-md-3\"><label for=\"rha-case-description\">{{'Description:'|translate}}</label></div><div class=\"col-md-9\"><textarea id=\"rha-case-description\" style=\"width: 100%; height: 200px; max-width: 100%;\" ng-model=\"CaseService.kase.description\" ng-change=\"CaseService.validateNewCasePage1()\" ng-disabled=\"!securityService.loginStatus.isLoggedIn || submittingCase\" class=\"form-control description-box\"></textarea></div></div><div class=\"row\"><div ng-class=\"{&quot;hidden&quot;: isPage2}\" class=\"col-xs-12\"><button style=\"float: right\" ng-click=\"doNext()\" ng-disabled=\"CaseService.newCasePage1Incomplete\" translate=\"\" class=\"btn btn-primary btn-next\">Next</button></div></div></div><div ng-class=\"{hidden: isPage1}\" id=\"rha-case-wizard-page-2\" class=\"rha-create-case-section\"><div class=\"rha-bottom-border\"><div class=\"row\"><div class=\"col-xs-12\"><div style=\"margin-bottom: 10px;\" class=\"rha-bold\">{{CaseService.kase.product.name}} {{CaseService.kase.version}}</div></div></div><div class=\"row\"><div class=\"col-xs-12\"><div style=\"font-size: 90%; margin-bottom: 4px;\" class=\"rha-bold\">{{CaseService.kase.summary}}</div></div></div><div class=\"row\"><div class=\"col-xs-12\"><div style=\"font-size: 85%\">{{CaseService.kase.description}}</div></div></div></div><div class=\"row rha-create-field\"><div class=\"col-md-4\"><label for=\"rha-entitlement-select\">{{'Support Level:'|translate}}</label></div><div ng-show=\"CaseService.entitlements.length &lt;= 1\" class=\"col-md-8\">{{CaseService.entitlements[0]}}</div><div ng-hide=\"CaseService.entitlements.length &lt;= 1\" class=\"col-md-8\"><div rha-entitlementselect=\"\"></div></div></div><div class=\"row rha-create-field\"><div class=\"col-md-4\"><label for=\"rha-severity\">{{'Severity:'|translate}}</label></div><div class=\"col-md-8\"><div rha-loadingindicator=\"\" loading=\"severitiesLoading\"><select id=\"rha-severity\" style=\"width: 100%;\" ng-model=\"CaseService.kase.severity\" ng-change=\"validatePage2()\" ng-disabled=\"submittingCase\" ng-options=\"s.name for s in CaseService.severities track by s.name\" class=\"form-control\"></select></div></div></div><div ng-show=\"CaseService.showFts()\"><div class=\"row rha-create-field\"><div class=\"col-md-4\"><label for=\"rha-ftsCheck\">{{'24x7 Support:'|translate}}</label></div><div class=\"col-md-8\"><input id=\"rha-ftsCheck\" type=\"checkbox\" ng-model=\"CaseService.fts\" style=\"display: inline-block;\"/></div></div><div ng-show=\"CaseService.fts\" class=\"row rha-create-field\"><div class=\"col-md-4\"><label for=\"rha-ftsContact\">{{'24x7 Contact:'|translate}}</label></div><div class=\"col-md-8\"><input id=\"rha-ftsContact\" ng-model=\"CaseService.fts_contact\" style=\"display: inline-block;\" class=\"form-control\"/></div></div></div><div class=\"row rha-create-field\"><div class=\"col-md-4\"><label for=\"rha-group-select\">{{'Case Group:'|translate}}</label></div><div class=\"col-md-8\"><div rha-groupselect=\"\" ng-init=\"setSearchOptions('false')\"></div></div></div><div ng-show=\"NEW_CASE_CONFIG.showAttachments &amp;&amp; securityService.loginStatus.authedUser.can_add_attachments\"><div class=\"row rha-create-field\"><div class=\"col-xs-12\"><label>{{'Attachments:'|translate}}</label></div></div><div ng-show=\"!ie8 || !NEW_CASE_CONFIG.isPCM\" class=\"rha-bottom-border\"><div style=\"overflow: auto\" class=\"row rha-create-field\"><div class=\"col-xs-12\"><div rha-listnewattachments=\"\"></div></div></div><div ng-hide=\"submittingCase\" class=\"row rha-create-field\"><div class=\"col-xs-12\"><div rha-attachlocalfile=\"\" disabled=\"submittingCase\"></div></div></div><div ng-hide=\"submittingCase\" class=\"row rha-create-field\"><div class=\"col-xs-12\"><div ng-show=\"NEW_CASE_CONFIG.showServerSideAttachments\"><div class=\"server-attach-header\">Server File(s) To Attach:<div rha-choicetree=\"\" ng-model=\"attachmentTree\" ng-controller=\"BackEndAttachmentsCtrl\"></div></div></div></div></div></div><div ng-show=\"ie8 &amp;&amp; NEW_CASE_CONFIG.isPCM\"><div ng-bind-html=\"ie8Message\"></div></div></div><div style=\"margin-top: 20px;\" class=\"row\"><div class=\"col-xs-6\"><button style=\"float: left\" ng-click=\"doPrevious()\" ng-disabled=\"submittingCase\" translate=\"\" class=\"btn btn-primary btn-previous\">Previous</button></div><div class=\"col-xs-6\"><button style=\"float: right\" ng-disabled=\"submittingCase\" ng-hide=\"submittingCase\" ng-click=\"doSubmit($event)\" translate=\"\" class=\"btn btn-primary btn-submit\">Submit</button><span ng-show=\"submittingCase\" style=\"float: right\" class=\"rha-search-spinner\"></span></div></div></div></div><div style=\"overflow: auto;\" ng-show=\"NEW_CASE_CONFIG.showRecommendations\" class=\"col-xs-6\"><div ng-controller=\"SearchController\" style=\"overflow: vertical;\"><div ng-hide=\"!NEW_CASE_CONFIG.isPCM\" rha-newrecommendations=\"\"></div><div ng-hide=\"NEW_CASE_CONFIG.isPCM\" rha-accordionsearchresults=\"\"></div></div></div></div></div>");
 }]);
 
 angular.module("cases/views/newRecommendationsSection.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/newRecommendationsSection.html",
-    "<div id=\"rha-new-recommendation-section\" class=\"row rha-bottom-border\"><div class=\"col-xs-12\"><div style=\"padding-bottom: 0\"><span><h4 style=\"padding-left: 10px; display: inline-block;\">Red Hat Access Recommendations</h4></span><span ng-show=\"searchInProgress.value\" class=\"rha-search-spinner\"></span></div></div></div><div class=\"col-xs-12\"><div class=\"recommendations-inner\"><ul style=\"display: block;\" class=\"recommendations\"><li ng-repeat=\"result in results\"><h4><span class=\"icon-solution\"></span><a ng-click=\"triggerAnalytics($event)\" href=\"{{result.view_uri}}\" target=\"_blank\">{{result.title}} </a></h4><p class=\"snippet\">{{result.resolution.text | recommendationsResolution}}</p><div class=\"row\"><div ng-repeat=\"product in result.products.product\"><div class=\"col-xs-3\"><span class=\"recommendations_products\">{{product}}</span></div></div><div ng-repeat=\"tag in result.tags.tag\"><div class=\"col-xs-3\"><span class=\"recommendations_tags\">{{tag}}</span></div></div></div></li></ul><div style=\"padding-top: 10px;\" ng-hide=\"results.length == 0\" class=\"row\"><div class=\"col-xs-12\"><pagination boundary-links=\"true\" total-items=\"SearchResultsService.results.length\" on-select-page=\"selectPage(page)\" items-per-page=\"itemsPerPage\" page=\"currentPage\" rotate=\"false\" max-size=\"maxPagerSize\" previous-text=\"&lt;\" next-text=\"&gt;\" first-text=\"&lt;&lt;\" last-text=\"&gt;&gt;\" class=\"pagination-sm\"></pagination></div></div></div></div>");
+    "<div id=\"rha-new-recommendation-section\" class=\"row rha-bottom-border\"><div class=\"col-xs-12\"><div style=\"padding-bottom: 0\"><span><h4 style=\"padding-left: 10px; display: inline-block;\">Red Hat Access Recommendations</h4></span><span ng-show=\"searchInProgress.value\" style=\"float: right;\" class=\"rha-search-spinner\"></span></div></div></div><div class=\"col-xs-12\"><div class=\"recommendations-inner\"><ul style=\"display: block;\" class=\"recommendations\"><li ng-repeat=\"result in results\"><h4><span class=\"icon-solution\"></span><a ng-click=\"triggerAnalytics($event)\" href=\"{{result.resource_view_uri}}\" target=\"_blank\">{{result.title}} </a></h4><p ng-bind-html=\"result.abstract\" class=\"snippet\"></p></li></ul><div style=\"padding-top: 10px;\" ng-hide=\"results.length == 0\" class=\"row\"><div class=\"col-xs-12\"><pagination boundary-links=\"true\" total-items=\"SearchResultsService.results.length\" on-select-page=\"selectPage(page)\" items-per-page=\"itemsPerPage\" page=\"currentPage\" rotate=\"false\" max-size=\"maxPagerSize\" previous-text=\"&lt;\" next-text=\"&gt;\" first-text=\"&lt;&lt;\" last-text=\"&gt;&gt;\" class=\"pagination-sm\"></pagination></div></div></div></div>");
 }]);
 
 angular.module("cases/views/ownerSelect.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/ownerSelect.html",
-    "<div><div rha-selectloadingindicator=\"\" loading=\"CaseService.usersLoading\" type=\"select2\"><select id=\"rha-owner-select\" chosen=\"chosen\" ng-disabled=\"!securityService.loginStatus.isLoggedIn\" ng-model=\"CaseService.owner\" ng-change=\"CaseService.onOwnerSelectChanged()\" ng-options=\"user.sso_username as (user.first_name + &quot; &quot; + user.last_name + &quot; &lt;&quot; + user.sso_username + &quot;&gt;&quot;) for user in CaseService.users\" width=\"&quot;100%&quot;\"></select></div></div>");
+    "<div><div rha-selectloadingindicator=\"\" loading=\"CaseService.usersLoading\" type=\"select2\"><select id=\"rha-owner-select\" chosen=\"chosen\" no_results_text=\"'No match found'|translate\" ng-disabled=\"!securityService.loginStatus.isLoggedIn\" ng-model=\"CaseService.owner\" ng-change=\"CaseService.onOwnerSelectChanged()\" ng-options=\"user.sso_username as (user.first_name + &quot; &quot; + user.last_name + &quot; &lt;&quot; + user.sso_username + &quot;&gt;&quot;) for user in CaseService.users\" width=\"&quot;100%&quot;\"></select></div></div>");
 }]);
 
 angular.module("cases/views/productSelect.html", []).run(["$templateCache", function($templateCache) {
@@ -6150,7 +6478,7 @@ angular.module("cases/views/recommendationsSection.html", []).run(["$templateCac
 
 angular.module("cases/views/requestManagementEscalationModal.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/requestManagementEscalationModal.html",
-    "<div class=\"modal-header\"><h3 translate=\"\">Request Management Escalation</h3></div><div style=\"padding: 20px;\" class=\"container-fluid\"><div class=\"row\"><div class=\"col-sm-12\"><span>{{'If you feel the issue has become more severe or the case should be a higher priority, please provide a detailed comment, and the case will be reviewed by a support manager.'|translate}}</span><a href=\"https://access.redhat.com/site/support/policy/mgt_escalation\" target=\"_blank\">{{'Learn more'|translate}}</a></div></div><div style=\"padding-top: 10px;\" class=\"row\"><div class=\"col-sm-12\"><div>{{'Comment:'|translate}}</div><textarea style=\"width: 100%; max-width: 100%; height: 200px;\" ng-model=\"CaseService.escalationCommentText\" ng-disabled=\"submittingRequest\" ng-change=\"onNewEscalationComment()\"></textarea></div></div><div style=\"border-top: 1px; solid #cccccc; padding-top: 10px;\" class=\"row\"><div class=\"col-sm-12\"><div class=\"pull-right\"><button style=\"margin-left: 10px;\" ng-click=\"submitRequestClick(CaseService.escalationCommentText)\" ng-disabled=\"submittingRequest || disableSubmitRequest\" class=\"btn-secondary btn\"><span>{{'Submit Request'|translate}}</span></button></div><button ng-click=\"closeModal()\" ng-disabled=\"submittingRequest\" class=\"btn-secondary btn pull-right\">Cancel</button><span ng-show=\"submittingRequest\" class=\"rha-search-spinner\"></span></div></div></div>");
+    "<div class=\"modal-header\"><h3 translate=\"\">Request Management Escalation</h3></div><div style=\"padding: 20px;\" class=\"container-fluid\"><div class=\"row\"><div class=\"col-sm-12\"><span>{{'If you feel the issue has become more severe or the case should be a higher priority, please provide a detailed comment, and the case will be reviewed by a support manager.'|translate}}</span><a href=\"https://access.redhat.com/site/support/policy/mgt_escalation\" target=\"_blank\">{{'Learn more'|translate}}</a></div></div><div style=\"padding-top: 10px;\" class=\"row\"><div class=\"col-sm-12\"><div>{{'Comment:'|translate}}</div><textarea style=\"width: 100%; max-width: 100%; height: 200px;\" ng-model=\"CaseService.escalationCommentText\" ng-disabled=\"submittingRequest\" ng-change=\"onNewEscalationComment()\"></textarea></div></div><div style=\"border-top: 1px; solid #cccccc; padding-top: 10px;\" class=\"row\"><div class=\"col-sm-12\"><div class=\"pull-right\"><button id=\"rha-case-escalation-submitbutton\" style=\"margin-left: 10px;\" ng-click=\"submitRequestClick(CaseService.escalationCommentText)\" ng-disabled=\"submittingRequest || disableSubmitRequest\" class=\"btn-secondary btn\"><span>{{'Submit Request'|translate}}</span></button></div><button ng-click=\"closeModal()\" ng-disabled=\"submittingRequest\" class=\"btn-secondary btn pull-right\">Cancel</button><span ng-show=\"submittingRequest\" class=\"rha-search-spinner\"></span></div></div></div>");
 }]);
 
 angular.module("cases/views/search.html", []).run(["$templateCache", function($templateCache) {
@@ -6160,7 +6488,7 @@ angular.module("cases/views/search.html", []).run(["$templateCache", function($t
 
 angular.module("cases/views/searchBox.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("cases/views/searchBox.html",
-    "<div class=\"input-group\"><input id=\"rha-searchform-searchbox\" ng-disabled=\"!securityService.loginStatus.isLoggedIn\" placeholder=\"{{placeholder}}\" ng-model=\"SearchBoxService.searchTerm\" ng-keypress=\"onFilterKeyPress($event)\" ng-change=\"SearchBoxService.onChange()\" class=\"form-control\"/><span class=\"input-group-btn\"><button id=\"rha-searchform-searchbutton\" ng-click=\"SearchBoxService.doSearch()\" ng-disabled=\"!securityService.loginStatus.isLoggedIn\" class=\"btn btn-default btn-primary\"><i class=\"glyphicon glyphicon-search\"></i> Search</button></span></div>");
+    "<div class=\"input-group\"><input id=\"rha-searchform-searchbox\" ng-disabled=\"!securityService.loginStatus.isLoggedIn\" placeholder=\"{{placeholder}}\" ng-model=\"SearchBoxService.searchTerm\" ng-keypress=\"onFilterKeyPress($event)\" ng-change=\"SearchBoxService.onChange()\" class=\"form-control\"/><span class=\"input-group-btn\"><button id=\"rha-searchform-searchbutton\" ng-click=\"SearchBoxService.doSearch()\" ng-disabled=\"!securityService.loginStatus.isLoggedIn\" class=\"btn btn-default btn-primary\"><i class=\"glyphicon glyphicon-search\"></i> {{'Search'|translate}}</button></span></div>");
 }]);
 
 angular.module("cases/views/searchResult.html", []).run(["$templateCache", function($templateCache) {

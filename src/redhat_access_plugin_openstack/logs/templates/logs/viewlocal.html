@@ -19,7 +19,25 @@
 strata.setRedhatClientID("redhat_access_plugin_openstack-6.0");
 angular.module('RedhatAccess.logViewer').config(function($urlRouterProvider) {
 	$urlRouterProvider.otherwise('/logviewer')
-}).value('hideMachinesDropdown', {value: true});
+})
+.value('hideMachinesDropdown', {value: true})
+.run(['gettextCatalog', function (gettextCatalog) {
+  function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) != -1) return c.substring(name.length,c.length);
+    }
+    return "";
+  }
+  var horizon_lang = getCookie('horizon_language');
+  if (horizon_lang === '') {
+    horizon_lang = 'en';
+  }
+  gettextCatalog.currentLanguage = horizon_lang;
+}]);
 angular.module('RedhatAccess.search').value('SEARCH_CONFIG',
     { openCaseRef: "/dashboard/redhat_access_plugin_openstack/support/#/case/new", showOpenCaseBtn: true }
     );

@@ -1,4 +1,4 @@
-/*! redhat_access_angular_ui - v0.9.15 - 2014-10-07
+/*! redhat_access_angular_ui - v0.9.56 - 2014-11-10
  * Copyright (c) 2014 ;
  * Licensed 
  */
@@ -3250,7 +3250,7 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
     }
 }(this));
 
-/*jslint browser: true, devel: true, todo: true, unparam: true */
+/*jslint browser: true, devel: true, todo: true, unparam: true, camelcase: false */
 /*global define, btoa, Markdown */
 /*
  Copyright 2014 Red Hat Inc.
@@ -3287,9 +3287,8 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
         portalHostname,
         strataHostname,
         baseAjaxParams = {},
-        authAjaxParams,
         checkCredentials,
-        checkCredentialsNoBasic,
+        fetchUser,
         fetchSolution,
         fetchArticle,
         searchArticles,
@@ -3304,6 +3303,7 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
         filterCases,
         createAttachment,
         deleteAttachment,
+        updateOwner,
         listCaseAttachments,
         getSymptomsFromText,
         listGroups,
@@ -3325,20 +3325,18 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
         fetchAccount,
         fetchURI,
         fetchEntitlements,
-        authHostname,
-        fetchAccountUsers;
+        fetchAccountUsers,
+        fetchUserChatSession;
 
-    strata.version = '1.0.41';
+    strata.version = '1.1.15';
     redhatClientID = 'stratajs-' + strata.version;
 
     if (window.portal && window.portal.host) {
         //if this is a chromed app this will work otherwise we default to prod
         portalHostname = new Uri(window.portal.host).host();
-        authHostname = portalHostname;
 
     } else {
         portalHostname = 'access.redhat.com';
-        authHostname = portalHostname;
     }
 
     if(localStorage && localStorage.getItem('portalHostname')) {
@@ -3366,18 +3364,8 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
 
     strata.setPortalHostname = function (hostname) {
         portalHostname = hostname;
-        authHostname = hostname;
         strataHostname = new Uri('https://api.' + portalHostname);
         strataHostname.addQueryParam(redhatClient, redhatClientID);
-    };
-
-    strata.setAuthHostname = function (hostname) {
-        authHostname = hostname;
-        authAjaxParams = $.extend({
-            url: 'https://' + authHostname +
-                '/services/user/status?jsoncallback=?',
-            dataType: 'jsonp'
-        }, baseAjaxParams);
     };
 
     strata.getAuthInfo = function () {
@@ -3406,9 +3394,8 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
 
     strata.clearCredentials = function () {
         strata.clearBasicAuth();
-        strata.clearCookieAuth().always(function() {
-            authedUser = {};
-        });
+        strata.clearCookieAuth();
+        authedUser = {};
     };
 
     strata.clearBasicAuth = function () {
@@ -3418,7 +3405,14 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
     };
 
     strata.clearCookieAuth = function () {
-        return $.post('https://signout-redhataccess.itos.redhat.com');
+        var logoutFrame = document.getElementById('rhLogoutFrame');
+        if (!logoutFrame) {
+            // First time logging out.
+            $('body').append('<iframe id="rhLogoutFrame" src="https://' + portalHostname + '/logout" name="rhLogoutFrame" style="display: none;"></iframe>');
+        } else {
+            // Will force the iframe to reload
+            logoutFrame.src = logoutFrame.src;
+        }
     };
 
 
@@ -3445,16 +3439,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
         xhrFields: {
             withCredentials: true
         },
-        contentType: 'application/json',
         data: {},
         dataType: 'json'
     };
-
-    authAjaxParams = $.extend({
-        url: 'https://' + authHostname +
-            '/services/user/status?jsoncallback=?',
-        dataType: 'jsonp'
-    }, baseAjaxParams);
 
     //Helper Functions
     //Convert Java Calendar class to something we can use
@@ -3580,69 +3567,21 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
         if (!$.isFunction(loginHandler)) { throw 'loginHandler callback must be supplied'; }
 
         checkCredentials = $.extend({}, baseAjaxParams, {
-            url: strataHostname.clone().setPath('/rs/users')
-                .addQueryParam('ssoUserName', authedUser.login),
-            context: authedUser,
+            url: strataHostname.clone().setPath('/rs/users/current'),
+            headers: {
+                accept: 'application/vnd.redhat.user+json'
+            },
             success: function (response) {
-                this.name = response.first_name + ' ' + response.last_name;
-                this.is_internal = response.is_internal;
-                this.org_admin = response.org_admin;
-                this.has_chat = response.has_chat;
-                this.session_id = response.session_id;
-                this.can_add_attachments = response.can_add_attachments;
-                loginHandler(true, this);
+                response.loggedInUser = response.first_name + ' ' + response.last_name;
+                loginHandler(true, response);
             },
             error: function () {
                 strata.clearBasicAuth();
+                strata.clearCookieAuth();
                 loginHandler(false);
             }
         });
-
-        var loginParams = $.extend({
-            context: authedUser,
-            success: function (response) {
-                //We have an SSO Cookie, check that it's still valid
-                if (response.authorized) {
-                    //Copy into our private obj
-                    authedUser = response;
-                    //Needs to be here so authedUser.login will resolve
-                    checkCredentialsNoBasic = $.extend({}, baseAjaxParams, {
-                        context: authedUser,
-                        url: strataHostname.clone().setPath('/rs/users')
-                            .addQueryParam('ssoUserName', authedUser.login),
-                        beforeSend: function (xhr) {
-                            xhr.setRequestHeader('X-Omit', 'WWW-Authenticate');
-                        },
-                        //We are all good
-                        success: function (response) {
-                            this.sso_username = response.sso_username;
-                            this.name = response.first_name + ' ' + response.last_name;
-                            this.is_internal = response.is_internal;
-                            this.org_admin = response.org_admin;
-                            this.has_chat = response.has_chat;
-                            this.session_id = response.session_id;
-                            this.can_add_attachments = response.can_add_attachments;
-                            loginHandler(true, this);
-                        },
-                        //We have an SSO Cookie but it's invalid
-                        error: function () {
-                            strata.clearCookieAuth().always(function() {
-                                loginHandler(false);
-                            });
-                        }
-                    });
-                    //Check /rs/users?ssoUserName=sso-id
-                    $.ajax(checkCredentialsNoBasic);
-                } else {
-                     strata.clearCookieAuth().always(function() {
-                        $.ajax(checkCredentials);
-                     });
-                }
-            }
-        }, authAjaxParams);
-
-        //Check if we have an SSO Cookie
-        $.ajax(loginParams);
+        $.ajax(checkCredentials);
     };
 
     //Sends data to the strata diagnostic toolchain
@@ -3675,19 +3614,25 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
         $.ajax(getSolutionsFromText);
     };
 
-    strata.recommendations = function (data, onSuccess, onFailure, limit) {
-        if (!$.isFunction(onSuccess)) { throw "onSuccess callback must be a function"; }
-        if (!$.isFunction(onFailure)) { throw "onFailure callback must be a function"; }
-        if (data === undefined) { data = ""; }
+    strata.recommendations = function (data, onSuccess, onFailure, limit, highlight, highlightTags) {
+        if (!$.isFunction(onSuccess)) { throw 'onSuccess callback must be a function'; }
+        if (!$.isFunction(onFailure)) { throw 'onFailure callback must be a function'; }
+        if (data === undefined) { data = ''; }
         if (limit === undefined) { limit = 50; }
+        if (highlight === undefined) { highlight = false; }
+
+        var tmpUrl = strataHostname.clone().setPath('/rs/problems')
+                .addQueryParam('limit', limit).addQueryParam('highlight', highlight);
+        if(highlightTags !== undefined){
+            tmpUrl.addQueryParam('highlightTags', highlightTags);
+        }
 
         var getRecommendationsFromText = $.extend({}, baseAjaxParams, {
-            url: strataHostname.clone().setPath('/rs/problems')
-                .addQueryParam('limit', limit),
-            data: data,
+            url: tmpUrl,
+            data: JSON.stringify(data),
             type: 'POST',
             method: 'POST',
-            contentType: 'text/plain',
+            contentType: 'application/json',
             headers: {
                 Accept: 'application/vnd.redhat.json.suggestions'
             },
@@ -3700,10 +3645,107 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
                 }
             },
             error: function (xhr, reponse, status) {
-                onFailure("Error " + xhr.status + " " + xhr.statusText, xhr, reponse, status);
+                onFailure('Error ' + xhr.status + ' ' + xhr.statusText, xhr, reponse, status);
             }
         });
         $.ajax(getRecommendationsFromText);
+    };
+
+    //TODO rip out when strata fixes endpoint
+    strata.recommendationsXmlHack = function (data, onSuccess, onFailure, limit, highlight, highlightTags) {
+        if (!$.isFunction(onSuccess)) { throw 'onSuccess callback must be a function'; }
+        if (!$.isFunction(onFailure)) { throw 'onFailure callback must be a function'; }
+        if (data === undefined) { data = ''; }
+        if (limit === undefined) { limit = 50; }
+        if (highlight === undefined) { highlight = false; }
+
+        var tmpUrl = strataHostname.clone().setPath('/rs/problems')
+                .addQueryParam('limit', limit).addQueryParam('highlight', highlight);
+        if(highlightTags !== undefined){
+            tmpUrl.addQueryParam('highlightTags', highlightTags);
+        }
+
+        var xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><case xmlns=\"http://www.redhat.com/gss/strata\">";
+        if(data.product !== undefined){
+            xmlString = xmlString.concat("<product>" + data.product + "</product>");
+        }if(data.version !== undefined){
+            xmlString = xmlString.concat("<version>" + data.version + "</version>");
+        }if(data.summary !== undefined){
+            xmlString = xmlString.concat("<summary>" + data.summary + "</summary>");
+        }if(data.description !== undefined){
+            xmlString = xmlString.concat("<description>" + data.description + "</description>");
+        }
+        xmlString = xmlString.concat("</case>");
+
+        var getRecommendationsFromText = $.extend({}, baseAjaxParams, {
+            url: tmpUrl,
+            data: xmlString,
+            type: 'POST',
+            method: 'POST',
+            contentType: 'application/xml',
+            headers: {
+                Accept: 'application/vnd.redhat.json.suggestions'
+            },
+            success: function (response) {
+                if(response.recommendation !== undefined){
+                    var suggestedRecommendations = response.recommendation;
+                    onSuccess(suggestedRecommendations);
+                } else {
+                    onSuccess([]);
+                }
+            },
+            error: function (xhr, reponse, status) {
+                onFailure('Error ' + xhr.status + ' ' + xhr.statusText, xhr, reponse, status);
+            }
+        });
+        $.ajax(getRecommendationsFromText);
+    };
+
+    //Base for users
+    strata.users = {};
+    strata.users.chatSession = {};
+    strata.users.get = function (onSuccess, onFailure, userId) {
+        if (!$.isFunction(onSuccess)) { throw 'onSuccess callback must be a function'; }
+        if (!$.isFunction(onFailure)) { throw 'onFailure callback must be a function'; }
+        if (userId === undefined) {
+            userId = 'current';
+        }
+
+        fetchUser = $.extend({}, baseAjaxParams, {
+            url: strataHostname.clone().setPath('/rs/users/' + userId),
+            headers: {
+                accept: 'application/vnd.redhat.user+json'
+            },
+            success: function (response) {
+                onSuccess(response);
+            },
+            error: function (xhr, reponse, status) {
+                onFailure('Error ' + xhr.status + ' ' + xhr.statusText, xhr, reponse, status);
+            }
+        });
+        $.ajax(fetchUser);
+    };
+
+    strata.users.chatSession.get = function (onSuccess, onFailure) {
+        if (!$.isFunction(onSuccess)) { throw 'onSuccess callback must be a function'; }
+        if (!$.isFunction(onFailure)) { throw 'onFailure callback must be a function'; }
+
+
+        fetchUserChatSession = $.extend({}, baseAjaxParams, {
+            url: strataHostname.clone().setPath('/rs/users/current/chatSession'),
+            type: 'POST',
+            method: 'POST',
+            headers: {
+                accept: 'application/json'
+            },
+            success: function (response) {
+                onSuccess(response);
+            },
+            error: function (xhr, reponse, status) {
+                onFailure('Error ' + xhr.status + ' ' + xhr.statusText, xhr, reponse, status);
+            }
+        });
+        $.ajax(fetchUserChatSession);
     };
 
     //Base for solutions
@@ -3843,6 +3885,7 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
     strata.cases.attachments = {};
     strata.cases.comments = {};
     strata.cases.notified_users = {};
+    strata.cases.owner = {};
 
     //Retrieve a case
     strata.cases.get = function (casenum, onSuccess, onFailure) {
@@ -3893,9 +3936,10 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
             url: url,
             type: 'PUT',
             method: 'PUT',
+            contentType: 'application/json',
             data: JSON.stringify(comment),
             statusCode: {
-                200: function(response) {
+                200: function() {
                   onSuccess();
                 },
                 400: onFailure
@@ -3956,10 +4000,20 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
             data: JSON.stringify(casecomment),
             type: 'POST',
             method: 'POST',
+            contentType: 'application/json',
             success: function (response, status, xhr) {
-                //Created case comment data is in the XHR
-                var commentnum = xhr.getResponseHeader('Location');
-                commentnum = commentnum.split('/').pop();
+                var commentnum;
+                if (response.id !== undefined){
+                    //For some reason the comment object is being returned in IE8
+                    commentnum = response.id;
+                } else if (response.location !== undefined && response.location[0] !== undefined){
+                    commentnum = response.location[0];
+                    commentnum = commentnum.split('/').pop();
+                } else{
+                    //Created case comment data is in the XHR
+                    commentnum = xhr.getResponseHeader('Location');
+                    commentnum = commentnum.split('/').pop();
+                }
                 onSuccess(commentnum);
             },
             error: function (xhr, reponse, status) {
@@ -4019,6 +4073,7 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
             data: '{"user": [{"ssoUsername":"' + ssoUserName + '"}]}',
             type: 'POST',
             method: 'POST',
+            contentType: 'application/json',
             headers: {
                 Accept: 'text/plain'
             },
@@ -4070,7 +4125,7 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
             url: url,
             contentType: 'text/csv',
             dataType: 'text',
-            success: function(data, response, status) {
+            success: function(data) {
                 var uri = 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data);
                 window.location = uri;
                 onSuccess();
@@ -4096,6 +4151,7 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
         filterCases = $.extend({}, baseAjaxParams, {
             url: url,
             data: JSON.stringify(casefilter),
+            contentType: 'application/json',
             type: 'POST',
             method: 'POST',
             success: function (response) {
@@ -4127,10 +4183,17 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
             data: JSON.stringify(casedata),
             type: 'POST',
             method: 'POST',
+            contentType: 'application/json',
             success: function (response, status, xhr) {
-                //Created case data is in the XHR
-                var casenum = xhr.getResponseHeader('Location');
-                casenum = casenum.split('/').pop();
+                 //Created case data is in the XHR
+                var casenum;
+                if (response.location !== undefined && response.location[0] !== undefined){
+                    casenum = response.location[0];
+                    casenum = casenum.split('/').pop();
+                } else{
+                    casenum = xhr.getResponseHeader('Location');
+                    casenum = casenum.split('/').pop();
+                }
                 onSuccess(casenum);
             },
             error: function (xhr, reponse, status) {
@@ -4165,6 +4228,7 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
             data: JSON.stringify(casedata),
             type: 'PUT',
             method: 'PUT',
+            contentType: 'application/json',
             statusCode: {
                 200: successCallback,
                 202: successCallback,
@@ -4172,6 +4236,9 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
             },
             success: function (response) {
                 onSuccess(response);
+            },
+            error: function (xhr, reponse, status) {
+                onFailure('Error ' + xhr.status + ' ' + xhr.statusText, xhr, reponse, status);
             }
         });
         $.ajax(updateCase);
@@ -4264,6 +4331,28 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
         $.ajax(deleteAttachment);
     };
 
+    //Change the case owner
+    strata.cases.owner.update = function (casenum, ssoUserName, onSuccess, onFailure) {
+        //Default parameter value
+        if (!$.isFunction(onSuccess)) { throw 'onSuccess callback must be a function'; }
+        if (!$.isFunction(onFailure)) { throw 'onFailure callback must be a function'; }
+        if (casenum === undefined) { onFailure('casenum must be defined'); }
+
+        var url = strataHostname.clone().setPath('/rs/internal/cases/' + casenum + '/changeowner').addQueryParam('contactSsoName', ssoUserName.toString());
+
+        updateOwner = $.extend({}, baseAjaxParams, {
+            url: url,
+            type: 'POST',
+            method: 'POST',
+            contentType: false,
+            success: onSuccess,
+            error: function (xhr, reponse, status) {
+                onFailure('Error ' + xhr.status + ' ' + xhr.statusText, xhr, reponse, status);
+            }
+        });
+        $.ajax(updateOwner);
+    };
+
     //Base for symptoms
     strata.symptoms = {};
 
@@ -4343,16 +4432,21 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
             url: url,
             type: 'POST',
             method: 'POST',
+            contentType: 'application/json',
             data: '{"name": "' + groupName + '"}',
             success: onSuccess,
             statusCode: {
                 201: function(response) {
-                    var locationHeader = response.getResponseHeader('Location');
-                    var groupNumber =
-                        locationHeader.slice(locationHeader.lastIndexOf('/') + 1);
+                    var groupNumber;
+                    if(response !== null){
+                        var locationHeader = response.getResponseHeader('Location');
+                        groupNumber =
+                            locationHeader.slice(locationHeader.lastIndexOf('/') + 1);
+                    }
                     onSuccess(groupNumber);
                 },
                 400: throwError,
+                409: throwError,
                 500: throwError
             }
         });
@@ -4375,6 +4469,7 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
             url: url,
             type: 'PUT',
             method: 'PUT',
+            contentType: 'application/json',
             data: group,
             success: onSuccess,
             statusCode: {
@@ -4407,10 +4502,11 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
             url: url,
             type: 'POST',
             method: 'POST',
+            contentType: 'application/json',
             data: JSON.stringify(group),
             success: onSuccess,
             statusCode: {
-                200: function(response) {
+                200: function() {
                     onSuccess();
                 },
                 400: throwError,
@@ -4439,7 +4535,7 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
             method: 'DELETE',
             success: onSuccess,
             statusCode: {
-                200: function(response) {
+                200: function() {
                     onSuccess();
                 },
                 400: throwError,
@@ -4492,10 +4588,11 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
             url: url,
             type: 'PUT',
             method: 'PUT',
+            contentType: 'application/json',
             data: JSON.stringify(strata.utils.fixUsersObject(users)),
             success: onSuccess,
             statusCode: {
-                200: function(response) {
+                200: function() {
                     onSuccess();
                 },
                 400: throwError,
@@ -4514,12 +4611,10 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
         if (!$.isFunction(onSuccess)) { throw 'onSuccess callback must be a function'; }
         if (!$.isFunction(onFailure)) { throw 'onFailure callback must be a function'; }
 
+        var url = strataHostname.clone().setPath('/rs/products/contact/' + ssoUserName);
         if (ssoUserName === undefined) {
-            var url = strataHostname.clone().setPath('/rs/products');
-        } else {
-            var url = strataHostname.clone().setPath('/rs/products/contact/' + ssoUserName);
+            url = strataHostname.clone().setPath('/rs/products');
         }
-
 
         listProducts = $.extend({}, baseAjaxParams, {
             url: url,
@@ -4736,6 +4831,7 @@ this.MarkdownExtra_Parser = MarkdownExtra_Parser;
             data: JSON.stringify(systemprofile),
             type: 'POST',
             method: 'POST',
+            contentType: 'application/json',
             success: function (response, status, xhr) {
                 //Created case data is in the XHR
                 var hash = xhr.getResponseHeader('Location');
