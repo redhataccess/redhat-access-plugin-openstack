@@ -7,12 +7,13 @@ import subprocess
 import shlex
 
 from horizon import exceptions
-from horizon import tables
 from horizon import views
 
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.instances.tables \
     import InstancesTable
+from openstack_dashboard.dashboards.project.instances.tables \
+    import InstancesFilterAction
 from openstack_dashboard.dashboards.project.instances.views \
     import IndexView as InstanceView
 from openstack_dashboard.dashboards.project.instances.tables \
@@ -39,6 +40,7 @@ class ListTable(InstancesTable):
     class Meta:
         name = "instances"
         verbose_name = "Instances"
+        table_actions = (InstancesFilterAction,)
         row_actions = (LogViewLink,)
 
 
