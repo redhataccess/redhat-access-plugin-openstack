@@ -19,7 +19,7 @@
 </pre>
 <div>
 <script>
-strata.setRedhatClientID("redhat_access_plugin_openstack-6.0.2");
+strata.setRedhatClientID("redhat_access_plugin_openstack-6.0.3");
 angular.module('RedhatAccess.search').value('SEARCH_CONFIG',
     { openCaseRef: "/dashboard/redhat_access_plugin_openstack/support/#/case/new", showOpenCaseBtn: true }
     );
@@ -53,10 +53,14 @@ angular.module('RedhatAccess.openstack_search', [
       }
       return "";
     }
+
     var horizon_lang = getCookie('horizon_language');
     if (horizon_lang === '') {
-      horizon_lang = 'en';
+        horizon_lang = 'en';
+    } else if (horizon_lang === 'zh_CN') {
+        horizon_lang = 'zh-Hans';
     }
+
     gettextCatalog.currentLanguage = horizon_lang;
   }]);
 angular.element(document).ready(function() {
