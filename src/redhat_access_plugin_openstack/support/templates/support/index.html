@@ -37,7 +37,7 @@ angular.module('RedhatAccess.cases')
   var horizon_lang = getCookie('horizon_language');
   if (horizon_lang === '') {
     horizon_lang = 'en';
-  } else if (horizon_lang === 'zh_CN') {
+  } else if (horizon_lang === 'zh-cn') {
     horizon_lang = 'zh-Hans';
   }
   gettextCatalog.currentLanguage = horizon_lang;
