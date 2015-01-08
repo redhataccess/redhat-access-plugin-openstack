@@ -14,7 +14,7 @@
 	</div>
 </div>
 <script>
-strata.setRedhatClientID("redhat_access_plugin_openstack-6.0.3");
+strata.setRedhatClientID("redhat_access_plugin_openstack-6.0.2");
 angular.module('RedhatAccess.search').config(function($urlRouterProvider) {
         $urlRouterProvider.otherwise('/search')
 })
@@ -31,9 +31,7 @@ angular.module('RedhatAccess.search').config(function($urlRouterProvider) {
   }
   var horizon_lang = getCookie('horizon_language');
   if (horizon_lang === '') {
-  horizon_lang = 'en';
-  } else if (horizon_lang === 'zh_CN') {
-    horizon_lang = 'zh-Hans';
+    horizon_lang = 'en';
   }
   gettextCatalog.currentLanguage = horizon_lang;
 }]);

@@ -16,7 +16,7 @@
 	</div>
 </div>
 <script>
-strata.setRedhatClientID("redhat_access_plugin_openstack-6.0.3");
+strata.setRedhatClientID("redhat_access_plugin_openstack-6.0.2");
 angular.module('RedhatAccess.logViewer').config(function($urlRouterProvider) {
 	$urlRouterProvider.otherwise('/logviewer')
 })
@@ -35,16 +35,14 @@ angular.module('RedhatAccess.logViewer').config(function($urlRouterProvider) {
   var horizon_lang = getCookie('horizon_language');
   if (horizon_lang === '') {
     horizon_lang = 'en';
-    } else if (horizon_lang === 'zh_CN') {
-        horizon_lang = 'zh-Hans';
-    }
+  }
   gettextCatalog.currentLanguage = horizon_lang;
 }]);
 angular.module('RedhatAccess.search').value('SEARCH_CONFIG',
     { openCaseRef: "/dashboard/redhat_access_plugin_openstack/support/#/case/new", showOpenCaseBtn: true }
     );
 angular.element(document).ready(function() {
-    angular.bootstrap(document.getElementById("redhat-access-logs"), ['RedhatAccess.logViewer']);
+	angular.bootstrap(document.getElementById("redhat-access-logs"), ['RedhatAccess.logViewer']);
 });
 </script>
 {% endblock %}
