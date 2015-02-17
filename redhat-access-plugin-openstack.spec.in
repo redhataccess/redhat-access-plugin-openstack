@@ -77,6 +77,10 @@ python /usr/share/openstack-dashboard/manage.py collectstatic --noinput
 /usr/share/openstack-dashboard/openstack_dashboard/
 
 %changelog
+* Tue Feb 17 2015 Dan Varga <dvarga@redhat.com> - 6.0.3-0
+- Remove local log viewer, non-deterministic in HA env
+- Resolves: bz1193583
+
 * Tue Dec 2 2014 Dan Varga <dvarga@redhat.com> - 6.0.2-0
 - Fix log instance table filter
 - Resolves: bz1169807
