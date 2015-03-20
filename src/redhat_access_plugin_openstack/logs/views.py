@@ -64,45 +64,6 @@ class LocalLogView(views.APIView):
         return {"console_log": data}
 
 
-def logs(request):
-    if request.method == 'GET':
-        path = request.GET.get('path')
-        LOG.debug("Path: %s" % path)
-        if path:
-            try:
-                f = open(path, 'r')
-            except:
-                LOG.error("Could not open file: %s" % path)
-                return http.HttpResponseServerError("Could not open file")
-            response = http.HttpResponse(content_type='text/plain')
-            response.write(f.read())
-            response.flush()
-            return response
-        else:
-            cmd_line = "find /var/log/ -group apache -type f"
-            args = shlex.split(cmd_line)
-            try:
-                p = subprocess.Popen(args,
-                                     shell=False,
-                                     stdout=subprocess.PIPE,
-                                     stderr=subprocess.PIPE)
-                out, err = p.communicate()
-                rc = p.returncode
-                LOG.debug("Find output: %s" % out)
-                LOG.debug("Find err: %s" % err)
-                LOG.debug("Find rc: %s" % str(rc))
-            except:
-                LOG.error("Could not list files")
-                return http.HttpResponseServerError("Could not list files")
-            response = http.HttpResponse(content_type='text/plain')
-            response.write(out.strip())
-            response.flush()
-            return response
-    else:
-        LOG.error("Unsupported Method")
-        return http.HttpResponseNotAllowed(['GET'])
-
-
 class LogView(views.APIView):
     template_name = 'redhat_access_plugin_openstack/logs/view.html'
 
