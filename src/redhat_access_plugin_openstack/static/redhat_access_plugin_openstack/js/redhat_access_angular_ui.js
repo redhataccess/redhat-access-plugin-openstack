@@ -141,7 +141,7 @@ angular.module('RedhatAccess.common', [
 'use strict';
 /*global $ */
 angular.module('RedhatAccess.header', []).value('TITLE_VIEW_CONFIG', {
-    show: 'false',
+    show: false,
     titlePrefix: 'Red Hat Access: '
 }).controller('TitleViewCtrl', [
     'TITLE_VIEW_CONFIG',

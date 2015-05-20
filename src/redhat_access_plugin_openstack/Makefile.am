@@ -22,6 +22,7 @@ MAINTAINERCLEANFILES = \
 	$(NULL)
 
 EXTRA_DIST = \
+	$(wildcard **/*.mo) \
 	$(NULL)
 
 SUBDIRS = logs search support static templates

@@ -9,12 +9,12 @@
 {% endblock page_header %}
 
 {% block redhat_access_plugin_openstack_main %}
-<div ng-non-bindable data-$injector="">
-<div id='redhat-access-search' ui-view autoscroll="false">
-	</div>
+<div ng-isolate-app="RedhatAccess.search">
+  <div id="redhat-access-search" ui-view autoscroll="false">
+  </div>
 </div>
 <script>
-strata.setRedhatClientID("redhat_access_plugin_openstack-6.0.3-1");
+strata.setRedhatClientID("redhat_access_plugin_openstack-7.0.0-0");
 angular.module('RedhatAccess.search').config(function($urlRouterProvider) {
         $urlRouterProvider.otherwise('/search')
 })
@@ -35,8 +35,33 @@ angular.module('RedhatAccess.search').config(function($urlRouterProvider) {
   }
   gettextCatalog.currentLanguage = horizon_lang;
 }]);
-angular.element(document).ready(function() {
-	angular.bootstrap(document.getElementById("redhat-access-search"), ['RedhatAccess.search']);
-});
+var app = document.querySelector('[ng-app]');
+if (app) {
+  angular.module(app.getAttribute('ng-app')).directive("ngIsolateApp", function() {
+      return {
+          "scope" : {},
+          "restrict" : "AEC",
+          "compile" : function(element, attrs) {
+              // removing body
+              var html = element.html();
+              element.html('');
+              return function(scope, element) {
+                  // destroy scope
+                  scope.$destroy();
+                  // async
+                  setTimeout(function() {
+                      // prepare root element for new app
+                      var newRoot = document.createElement("div");
+                      newRoot.innerHTML = html;
+                      // bootstrap module
+                      angular.bootstrap(newRoot, [attrs["ngIsolateApp"]]);
+                      // add it to page
+                      element.append(newRoot);
+                  });
+              }
+          }
+      }
+  });
+}
 </script>
 {% endblock %}
