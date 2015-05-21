@@ -76,6 +76,33 @@ AC_CONFIG_FILES([
 	src/Makefile
 	src/enabled/Makefile
 	src/redhat_access_plugin_openstack/Makefile
+	src/redhat_access_plugin_openstack/locale/Makefile
+	src/redhat_access_plugin_openstack/locale/de/Makefile
+	src/redhat_access_plugin_openstack/locale/de/LC_MESSAGES/Makefile
+	src/redhat_access_plugin_openstack/locale/es/Makefile
+	src/redhat_access_plugin_openstack/locale/es/LC_MESSAGES/Makefile
+	src/redhat_access_plugin_openstack/locale/fr/Makefile
+	src/redhat_access_plugin_openstack/locale/fr/LC_MESSAGES/Makefile
+	src/redhat_access_plugin_openstack/locale/hi/Makefile
+	src/redhat_access_plugin_openstack/locale/hi/LC_MESSAGES/Makefile
+	src/redhat_access_plugin_openstack/locale/it/Makefile
+	src/redhat_access_plugin_openstack/locale/it/LC_MESSAGES/Makefile
+	src/redhat_access_plugin_openstack/locale/ja/Makefile
+	src/redhat_access_plugin_openstack/locale/ja/LC_MESSAGES/Makefile
+	src/redhat_access_plugin_openstack/locale/jp/Makefile
+	src/redhat_access_plugin_openstack/locale/jp/LC_MESSAGES/Makefile
+	src/redhat_access_plugin_openstack/locale/ko/Makefile
+	src/redhat_access_plugin_openstack/locale/ko/LC_MESSAGES/Makefile
+	src/redhat_access_plugin_openstack/locale/pl/Makefile
+	src/redhat_access_plugin_openstack/locale/pl/LC_MESSAGES/Makefile
+	src/redhat_access_plugin_openstack/locale/pt/Makefile
+	src/redhat_access_plugin_openstack/locale/pt/LC_MESSAGES/Makefile
+	src/redhat_access_plugin_openstack/locale/ru/Makefile
+	src/redhat_access_plugin_openstack/locale/ru/LC_MESSAGES/Makefile
+	src/redhat_access_plugin_openstack/locale/zh_CN/Makefile
+	src/redhat_access_plugin_openstack/locale/zh_CN/LC_MESSAGES/Makefile
+	src/redhat_access_plugin_openstack/locale/zh_TW/Makefile
+	src/redhat_access_plugin_openstack/locale/zh_TW/LC_MESSAGES/Makefile
 	src/redhat_access_plugin_openstack/logs/Makefile
 	src/redhat_access_plugin_openstack/logs/templates/Makefile
 	src/redhat_access_plugin_openstack/logs/templates/logs/Makefile

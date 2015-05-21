@@ -24,12 +24,9 @@ MAINTAINERCLEANFILES = \
 EXTRA_DIST = \
 	$(NULL)
 
-SUBDIRS = logs search support static templates locale
+SUBDIRS = LC_MESSAGES
 
-dashboarddir=$(rhsupporttoollibdir)/dashboards/redhat_access_plugin_openstack
-dist_dashboard_PYTHON = \
-	*.py \
-	$(NULL)
+lcdir=$(rhsupporttoollibdir)/dashboards/redhat_access_plugin_openstack/locale/pl
 
 all-local: \
 	python-syntax-check \
